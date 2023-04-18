@@ -64,6 +64,7 @@ fun TransparentBar() {
 }
 
 
+@Preview
 @Composable
 fun Init() {
     val navController = rememberNavController()
@@ -81,10 +82,11 @@ fun NavGraphBuilder.addScreens(navController: NavHostController) {
     composable("home") {
         HomeScreen(navController)
     }
-    /*
+
     composable("ninelewis") {
         NineLewis(navController)
     }
+    /*
     composable("cowellstev") {
         CowellStev(navController)
     }
@@ -112,7 +114,6 @@ fun NavGraphBuilder.addScreens(navController: NavHostController) {
     composable("oakescafe") {
         OakesCafe(navController)
     }
-
      */
 }
 
@@ -120,5 +121,6 @@ fun NavGraphBuilder.addScreens(navController: NavHostController) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
+    Init()
 
 }

@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,11 +19,11 @@ import androidx.navigation.NavController
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    TwoByTwoGrid()
+    TwoByTwoGrid(navController)
 }
 
 @Composable
-fun TwoByTwoGrid() {
+fun TwoByTwoGrid(navController: NavController) {
     val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
     LazyVerticalGrid(
@@ -30,6 +33,15 @@ fun TwoByTwoGrid() {
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(10) { index ->
+            Button (
+                onClick =  { navController.navigate("ninelewis") },
+                modifier = Modifier.aspectRatio(1f),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Yellow)
+
+            ) {
+                Text(text = locations[index], color = Color.Black)
+            }
+            /*
             Box(
                 Modifier
                     .background(Color.Yellow, RoundedCornerShape(8.dp))
@@ -44,6 +56,8 @@ fun TwoByTwoGrid() {
                     color = Color.Black
                 )
             }
+
+             */
         }
     }
 }
