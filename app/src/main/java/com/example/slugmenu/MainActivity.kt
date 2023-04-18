@@ -51,12 +51,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    //Text(text = "UCSC Menu")
-                    Column() {
-                    //    Spacer(modifier = Modifier.height(160.dp))
-                        TwoByTwoGrid()
-                    }
-
+                    Init()
                 }
             }
         }
