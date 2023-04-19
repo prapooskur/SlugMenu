@@ -2,9 +2,12 @@ package com.example.slugmenu
 
 import android.content.ContentValues.TAG
 import android.util.Log
+import android.view.MenuItem
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -82,3 +85,8 @@ fun getWebData (inputUrl: String, time: Time): MutableList<String> {
     return listItems
 
 }
+
+suspend fun getMenuAsync(locationId: String): Array<MutableList<String>> = withContext(Dispatchers.IO) {
+    GetMenus(locationId)
+}
+

@@ -31,6 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.slugmenu.ui.theme.SlugMenuTheme
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -88,10 +89,15 @@ fun NavGraphBuilder.addScreens(navController: NavHostController) {
     val crownMerrillMenus: Array<MutableList<String>>
     val porterKresgeMenus: Array<MutableList<String>>
     runBlocking {
-        nineLewisMenus = GetMenus("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1")
-        cowellStevMenus = GetMenus("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1")
-        crownMerrillMenus = GetMenus("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1")
-        porterKresgeMenus = GetMenus("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1")
+        val nineLewisJob = async { getMenuAsync("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1") }
+        val cowellStevJob = async { getMenuAsync("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1") }
+        val crownMerrillJob = async { getMenuAsync("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1") }
+        val porterKresgeJob = async { getMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
+
+        nineLewisMenus = nineLewisJob.await()
+        cowellStevMenus = cowellStevJob.await()
+        crownMerrillMenus = crownMerrillJob.await()
+        porterKresgeMenus = porterKresgeJob.await()
     }
     composable("home") {
         HomeScreen(navController)
