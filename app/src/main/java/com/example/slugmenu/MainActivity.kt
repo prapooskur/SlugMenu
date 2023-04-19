@@ -51,8 +51,6 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            val navController = rememberNavController()
-
             SlugMenuTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(

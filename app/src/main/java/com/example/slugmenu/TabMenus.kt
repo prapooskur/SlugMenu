@@ -73,17 +73,6 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
 }
 
 
-suspend fun GetMenus(inputUrl: String): Array<MutableList<String>> {
-    return withContext(Dispatchers.IO) {
-        val breakfastMenu = getWebData(inputUrl, Time.BREAKFAST)
-        val lunchMenu = getWebData(inputUrl, Time.LUNCH)
-        val dinnerMenu = getWebData(inputUrl, Time.DINNER)
-        val lateNightMenu = getWebData(inputUrl, Time.LATENIGHT)
-
-        arrayOf(breakfastMenu, lunchMenu, dinnerMenu, lateNightMenu)
-    }
-}
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PrintMenu(itemList: MutableList<String>) {
@@ -118,7 +107,7 @@ fun PrintMenu(itemList: MutableList<String>) {
     }
 }
 
-
+/*
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DisplayMenu(inputUrl: String, time: Time) {
@@ -163,6 +152,8 @@ fun DisplayMenu(inputUrl: String, time: Time) {
 
     }
 }
+
+ */
 
 /*
 @Composable
