@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ListItem
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
@@ -23,82 +25,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 
 @Composable
-fun NineLewis(navController: NavController) {
+fun NineLewis(navController: NavController, menuList: Array<MutableList<String>>) {
     Log.d("TAG", "Hello, World!")
-    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
+//    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
+
 
     Column() {
-        TabBar()
-        Spacer(modifier = Modifier.height(25.dp))
-        DisplayMenu(inputUrl = nl, time = Time.LATENIGHT)
+        TabBar(menuList[0],menuList[1],menuList[2],menuList[3])
+//        DisplayMenu(inputUrl = nl, time = Time.DINNER)
     }
 
 }
 
 
-@Composable
-fun TabBar() {
-    var state by remember { mutableStateOf(0) }
-    val titles = listOf("Breakfast", "Lunch", "Dinner", "Late Night")
-
-    val menuItems = remember { mutableStateOf(mutableListOf<String>()) }
-
-    Column {
-        TabRow(selectedTabIndex = state) {
-            titles.forEachIndexed { index, title ->
-                Tab(
-                    selected = state == index,
-                    onClick = { state = index },
-                    text = { Text(text = title, fontSize = 12.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally), textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis) }
-                )
-            }
-        }
-
-    }
-}
-
-
-
-
-
-@Composable
-fun DisplayMenu(inputUrl: String, time: Time) {
-
-    var itemList by remember { mutableStateOf<List<String>>(emptyList()) }
-
-    LaunchedEffect(Unit) {
-        itemList = withContext(Dispatchers.IO) { // run the blocking network call on a background thread
-            getWebData(inputUrl, time)
-        }
-    }
-
-    LazyColumn {
-       items(itemList.size) {item ->
-           val itemval = "$item"
-           var boldness = FontWeight.Normal
-           if (itemval.contains("--")) {
-               boldness = FontWeight.ExtraBold
-           }
-           Text (
-               text = itemList[item]+"\n",
-               fontWeight = boldness,
-               color = Color.White
-           )
-       }
-
-    }
-}
-
-/*
-@Composable
-fun showMenuData(inputUrl: String, time: Time) {
-    val output: MutableList<String> = getWebData(inputUrl, time)
-    DisplayMenu(output)
-}
- */

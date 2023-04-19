@@ -31,6 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.slugmenu.ui.theme.SlugMenuTheme
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 
@@ -82,24 +83,35 @@ fun Init(startDestination: String) {
 }
 
 fun NavGraphBuilder.addScreens(navController: NavHostController) {
+    val nineLewisMenus: Array<MutableList<String>>
+    val cowellStevMenus: Array<MutableList<String>>
+    val crownMerrillMenus: Array<MutableList<String>>
+    val porterKresgeMenus: Array<MutableList<String>>
+    runBlocking {
+        nineLewisMenus = GetMenus("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1")
+        cowellStevMenus = GetMenus("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1")
+        crownMerrillMenus = GetMenus("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1")
+        porterKresgeMenus = GetMenus("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1")
+    }
     composable("home") {
         HomeScreen(navController)
     }
 
     composable("ninelewis") {
-        NineLewis(navController)
+        NineLewis(navController, nineLewisMenus)
     }
 
     composable("cowellstev") {
-        CowellStev(navController)
+        CowellStev(navController, cowellStevMenus)
     }
-    /*
+
     composable("crownmerrill") {
-        CrownMerrill(navController)
+        CrownMerrill(navController, crownMerrillMenus)
     }
     composable("porterkresge") {
-        PorterKresge(navController)
+        PorterKresge(navController, porterKresgeMenus)
     }
+    /*
     composable("perkcoffee") {
         PerkCoffee(navController)
     }

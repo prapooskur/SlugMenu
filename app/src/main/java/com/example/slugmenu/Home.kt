@@ -36,8 +36,8 @@ fun TwoByTwoGrid(navController: NavController) {
 
             var location: String
 
-            if (index % 2 == 0) {
-                location = "ninelewis"
+            if (index < 4) {
+                location = locationnav[index]
             } else {
                 location = "cowellstev"
             }

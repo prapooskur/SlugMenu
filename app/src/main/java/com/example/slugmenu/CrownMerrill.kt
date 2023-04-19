@@ -23,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun CowellStev(navController: NavController, menuList: Array<MutableList<String>>) {
+fun CrownMerrill(navController: NavController, menuList: Array<MutableList<String>>) {
     Log.d("TAG", "Hello, World!")
 //    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
 
