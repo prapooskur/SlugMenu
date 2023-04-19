@@ -56,7 +56,7 @@ fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
     cookies["WebInaCartQtys"] = ""
     cookies["WebInaCartRecipes"] = ""
 
-    val listItems = mutableListOf<String>()
+
     val allListItems = mutableListOf<MutableList<String>>()
 
 
@@ -66,31 +66,36 @@ fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
 
 //    val timeChoice = time.ordinal
     for (i in 0 until 4) {
+        val listItems = mutableListOf<String>()
+
+        Log.d("TAG","iterator val: $i")
         val rows: Elements = table[i].select("tr")
         val trs: Elements = rows.select("tr")
 //    println("start")
         for (j in trs) {
-//        println(j)
-//        println("start")
+//          println(j)
+//          println("start")
+
             var separators: String = j.select("span[style=\"color: #000000\"]").toString()
             var items: String = j.select("span[style=\"color: #585858\"]").toString()
-//            print(items)
+//          print(items)
             if (separators.length > 29 && !separators.contains("&nbsp;")) {
                 var cleanSeparator = separators.substring(29, separators.length - 7)
                 listItems.add(cleanSeparator)
-//            println(cleanSeparator)
+//              println(cleanSeparator)
             }
             if (items.length > 42 && items !in listItems) {
                 var cleanItem = items.substring(29, items.length - 13)
                 if (!listItems.contains(cleanItem)) {
-//                println("add")
-//                println(cleanItem)
+//                  println("add")
+//                  println(cleanItem)
                     listItems.add(cleanItem)
                 }
             }
+
         }
-        //END LOOP
         allListItems.add(listItems)
+        //END LOOP
     }
     return allListItems
 
@@ -99,6 +104,7 @@ fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
 suspend fun GetMenus(inputUrl: String): Array<MutableList<String>> {
     return withContext(Dispatchers.IO) {
         val menus = getWebData(inputUrl)
+//        Log.d("TAG", "array: $menus")
         arrayOf(menus[0], menus[1], menus[2], menus[3])
     }
 }

@@ -1,6 +1,7 @@
 package com.example.slugmenu
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -35,6 +36,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
+import kotlin.system.measureTimeMillis
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,17 +88,26 @@ fun NavGraphBuilder.addScreens(navController: NavHostController) {
     val cowellStevMenus: Array<MutableList<String>>
     val crownMerrillMenus: Array<MutableList<String>>
     val porterKresgeMenus: Array<MutableList<String>>
-    runBlocking {
-        val nineLewisJob = async { getMenuAsync("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1") }
-        val cowellStevJob = async { getMenuAsync("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1") }
-        val crownMerrillJob = async { getMenuAsync("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1") }
-        val porterKresgeJob = async { getMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
+    val scrapeTime = measureTimeMillis {
+        runBlocking {
+            val nineLewisJob =
+                async { getMenuAsync("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1") }
+            val cowellStevJob =
+                async { getMenuAsync("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1") }
+            val crownMerrillJob =
+                async { getMenuAsync("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1") }
+            val porterKresgeJob =
+                async { getMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
 
-        nineLewisMenus = nineLewisJob.await()
-        cowellStevMenus = cowellStevJob.await()
-        crownMerrillMenus = crownMerrillJob.await()
-        porterKresgeMenus = porterKresgeJob.await()
+            nineLewisMenus = nineLewisJob.await()
+            cowellStevMenus = cowellStevJob.await()
+            crownMerrillMenus = crownMerrillJob.await()
+            porterKresgeMenus = porterKresgeJob.await()
+        }
     }
+    Log.d("TAG", "Scrape time: "+scrapeTime+"ms.")
+
+
     composable("home") {
         HomeScreen(navController)
     }
