@@ -17,8 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.key.Key.Companion.Home
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavGraphBuilder
@@ -27,6 +30,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.slugmenu.ui.theme.SlugMenuTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.jsoup.Jsoup
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +57,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Init()
+                    Init("home")
                 }
             }
         }
@@ -64,19 +70,16 @@ fun TransparentBar() {
 }
 
 
-@Preview
 @Composable
-fun Init() {
+fun Init(startDestination: String) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = startDestination
     ) {
         addScreens(navController)
     }
 }
-
-
 
 fun NavGraphBuilder.addScreens(navController: NavHostController) {
     composable("home") {
@@ -86,10 +89,11 @@ fun NavGraphBuilder.addScreens(navController: NavHostController) {
     composable("ninelewis") {
         NineLewis(navController)
     }
-    /*
+
     composable("cowellstev") {
         CowellStev(navController)
     }
+    /*
     composable("crownmerrill") {
         CrownMerrill(navController)
     }
@@ -121,6 +125,6 @@ fun NavGraphBuilder.addScreens(navController: NavHostController) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    Init()
+    Init("home")
 
 }

@@ -33,8 +33,16 @@ fun TwoByTwoGrid(navController: NavController) {
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(10) { index ->
+
+            var location: String
+
+            if (index % 2 == 0) {
+                location = "ninelewis"
+            } else {
+                location = "cowellstev"
+            }
             Button (
-                onClick =  { navController.navigate("ninelewis") },
+                onClick =  { navController.navigate(location) },
                 modifier = Modifier.aspectRatio(1f),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Yellow)
 
