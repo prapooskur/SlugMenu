@@ -1,42 +1,39 @@
 package com.example.slugmenu
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.input.key.Key.Companion.Home
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.slugmenu.ui.theme.SlugMenuTheme
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
+import java.io.IOException
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.reflect.typeOf
 import kotlin.system.measureTimeMillis
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,19 +72,67 @@ fun TransparentBar() {
 @Composable
 fun Init(startDestination: String) {
     val navController = rememberNavController()
+    val context = LocalContext.current
+
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
-        addScreens(navController)
+        addScreens(navController, context)
     }
 }
 
-fun NavGraphBuilder.addScreens(navController: NavHostController) {
+fun NavGraphBuilder.addScreens(navController: NavHostController, context: Context) {
+
+    val date = LocalDate.now().toString()
+
+    val menuCache = File(context.cacheDir, "menuCache")
+    val dateCache = File(context.cacheDir, "dateCache")
+
+    if (!menuCache.exists()) {
+        menuCache.createNewFile()
+    }
+
+    if (!dateCache.exists()) {
+        dateCache.createNewFile()
+
+        /*
+        val dateWriter = BufferedWriter(FileWriter(dateCache))
+        dateWriter.write(date)
+        dateWriter.close()
+         */
+    }
+
+    val menuReader = BufferedReader(FileReader(menuCache))
+    val dateReader = BufferedReader(FileReader(dateCache))
+
+    val menuWriter = BufferedWriter(FileWriter(menuCache))
+    val dateWriter = BufferedWriter(FileWriter(dateCache))
+
+    try {
+        Log.d("TAG", "dateReader output: "+dateReader.readLine())
+        if (dateReader.readLine() == date) {
+            Log.d("TAG", "Date Cache hit")
+        } else {
+            Log.d("TAG", "Date Cache miss, writing $date to dateWriter")
+            dateWriter.write(date)
+        }
+    } catch (e: IOException) {
+        Log.e("TAG", "Error writing to date cache: ${e.message}")
+    } finally {
+        menuReader.close()
+        dateReader.close()
+        menuWriter.close()
+        dateWriter.close()
+    }
+
+
+
     val nineLewisMenus: Array<MutableList<String>>
     val cowellStevMenus: Array<MutableList<String>>
     val crownMerrillMenus: Array<MutableList<String>>
     val porterKresgeMenus: Array<MutableList<String>>
+
     val scrapeTime = measureTimeMillis {
         runBlocking {
             val nineLewisJob =
@@ -106,7 +151,6 @@ fun NavGraphBuilder.addScreens(navController: NavHostController) {
         }
     }
     Log.d("TAG", "Scrape time: "+scrapeTime+"ms.")
-
 
     composable("home") {
         HomeScreen(navController)
