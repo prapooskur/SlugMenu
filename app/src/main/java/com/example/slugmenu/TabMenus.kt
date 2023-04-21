@@ -32,7 +32,7 @@ import java.time.LocalDateTime
 @Composable
 fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, dinnerMenu: MutableList<String>, lateNightMenu: MutableList<String>) {
     val currentHour: Int = LocalDateTime.now().hour
-    Log.d("TAG","hour: "+currentHour)
+//    Log.d("TAG","hour: "+currentHour)
 
 
     val initState: Int = when {
@@ -43,7 +43,7 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
         currentHour in 23..23 && (!lateNightMenu.isEmpty()) -> 3
         else -> 0
     }
-    Log.d("TAG","initstate: "+initState)
+//    Log.d("TAG","initstate: "+initState)
 
     var state by remember { mutableStateOf(initState) }
 
