@@ -20,14 +20,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.slugmenu.ui.theme.SlugMenuTheme
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.FileReader
 import java.io.FileWriter
 import java.io.IOException
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -84,7 +90,7 @@ fun Init(startDestination: String) {
 
 fun NavGraphBuilder.addScreens(navController: NavHostController, context: Context) {
 
-    /*
+
     val date = LocalDate.now().toString()
 
     val menuCache = File(context.cacheDir, "menuCache")
@@ -96,64 +102,101 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
 
     if (!dateCache.exists()) {
         dateCache.createNewFile()
+        Log.d("TAG","creating cache file")
 
         /*
         val dateWriter = BufferedWriter(FileWriter(dateCache))
         dateWriter.write(date)
         dateWriter.close()
          */
+
     }
 
-    val menuReader = BufferedReader(FileReader(menuCache))
-    val dateReader = BufferedReader(FileReader(dateCache))
+    var cachedData: Array<Array<MutableList<String>>> = arrayOf(arrayOf())
 
-    val menuWriter = BufferedWriter(FileWriter(menuCache))
-    val dateWriter = BufferedWriter(FileWriter(dateCache))
+    val dateCheckReader = BufferedReader(FileReader(dateCache))
+    val menuReader = FileReader(menuCache)
+    val gson = Gson()
+    val menuString = menuReader.readText()
+
+
+    var menuCached: Boolean = false
+    var dateCached: Boolean = false
+
+    var nineLewisMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var cowellStevMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var crownMerrillMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var porterKresgeMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
 
     try {
-        Log.d("TAG", "dateReader output: "+dateReader.readLine())
-        if (dateReader.readLine() == date) {
-            Log.d("TAG", "Date Cache hit")
+        val cachedDate = dateCheckReader.readLine()
+        if (cachedDate == date && menuString != null && menuString != "") {
+            Log.d("TAG","menu string: $menuString")
+            val type = object : TypeToken<Array<Array<MutableList<String>>>>() {}.type
+            cachedData = gson.fromJson(menuString, type)
+            menuCached = true
         } else {
-            Log.d("TAG", "Date Cache miss, writing $date to dateWriter")
-            dateWriter.write(date)
+            menuCached = false
         }
     } catch (e: IOException) {
         Log.e("TAG", "Error writing to date cache: ${e.message}")
     } finally {
+        dateCheckReader.close()
         menuReader.close()
-        dateReader.close()
-        menuWriter.close()
-        dateWriter.close()
     }
 
-     */
+    val dateReader = BufferedReader(FileReader(dateCache))
 
+    try {
+        val cachedDate = dateReader.readLine()
+        Log.d("TAG", "dateReader cached output: $cachedDate")
+        if (cachedDate == date) {
+            Log.d("TAG", "Date Cache hit")
 
+        } else {
+            val dateWriter = BufferedWriter(FileWriter(dateCache))
+            Log.d("TAG", "Date Cache miss, writing $date to dateWriter")
+            dateWriter.write(date)
+            dateWriter.close()
 
-    val nineLewisMenus: Array<MutableList<String>>
-    val cowellStevMenus: Array<MutableList<String>>
-    val crownMerrillMenus: Array<MutableList<String>>
-    val porterKresgeMenus: Array<MutableList<String>>
-
-    val scrapeTime = measureTimeMillis {
-        runBlocking {
-            val nineLewisJob =
-                async { getMenuAsync("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1") }
-            val cowellStevJob =
-                async { getMenuAsync("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1") }
-            val crownMerrillJob =
-                async { getMenuAsync("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1") }
-            val porterKresgeJob =
-                async { getMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
-
-            nineLewisMenus = nineLewisJob.await()
-            cowellStevMenus = cowellStevJob.await()
-            crownMerrillMenus = crownMerrillJob.await()
-            porterKresgeMenus = porterKresgeJob.await()
         }
+    } catch (e: IOException) {
+        Log.e("TAG", "Error writing to date cache: ${e.message}")
+    } finally {
+        dateReader.close()
     }
-    Log.d("TAG", "Scrape time: "+scrapeTime+"ms.")
+
+    if (!menuCached) {
+        val scrapeTime = measureTimeMillis {
+            runBlocking {
+                val nineLewisJob =
+                    async { getMenuAsync("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1") }
+                val cowellStevJob =
+                    async { getMenuAsync("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1") }
+                val crownMerrillJob =
+                    async { getMenuAsync("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1") }
+                val porterKresgeJob =
+                    async { getMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
+
+                nineLewisMenus = nineLewisJob.await()
+                cowellStevMenus = cowellStevJob.await()
+                crownMerrillMenus = crownMerrillJob.await()
+                porterKresgeMenus = porterKresgeJob.await()
+
+            }
+            val menuWriter = FileWriter(menuCache)
+            menuWriter.write(gson.toJson(arrayOf(nineLewisMenus,cowellStevMenus,crownMerrillMenus,porterKresgeMenus)))
+            menuWriter.close()
+        }
+        Log.d("TAG", "Scrape time: " + scrapeTime + "ms.")
+    } else {
+        nineLewisMenus = cachedData[0]
+        cowellStevMenus = cachedData[1]
+        crownMerrillMenus = cachedData[2]
+        porterKresgeMenus = cachedData[3]
+        Log.d("TAG", "Menu cache hit.")
+    }
+
 
     composable("home") {
         HomeScreen(navController)
