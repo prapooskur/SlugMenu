@@ -52,11 +52,10 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
 
     var state by remember { mutableStateOf(initState) }
 
-    val titles: List<String>
-    if (lateNightMenu.isEmpty()) {
-        titles = listOf("Breakfast", "Lunch", "Dinner")
+    val titles: List<String> = if (lateNightMenu.isEmpty()) {
+        listOf("Breakfast", "Lunch", "Dinner")
     } else {
-        titles = listOf("Breakfast", "Lunch", "Dinner", "Late Night")
+        listOf("Breakfast", "Lunch", "Dinner", "Late Night")
     }
 
     val menuItems = remember { mutableStateOf(mutableListOf<String>()) }
