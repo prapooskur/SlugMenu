@@ -36,11 +36,15 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
 
 
     val initState: Int = when {
+        //Breakfast from 12AM-11PM
         currentHour in 0..11 -> 0
-        currentHour in 11..17 -> 1
-        currentHour in 17..20 -> 2
-        currentHour in 20..23 && (lateNightMenu.isEmpty()) -> 2
-        currentHour in 23..23 && (!lateNightMenu.isEmpty()) -> 3
+        // Lunch from 12PM-5PM
+        currentHour in 12..17 -> 1
+        // dinner from 5-8
+        currentHour in 17..19 -> 2
+        // Late night from 8-11
+        currentHour in 20..23 && (lateNightMenu.isEmpty()) -> 0
+        currentHour in 20..23 && (!lateNightMenu.isEmpty()) -> 3
         else -> 0
     }
 //    Log.d("TAG","initstate: "+initState)
