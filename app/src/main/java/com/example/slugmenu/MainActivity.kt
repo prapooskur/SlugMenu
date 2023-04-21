@@ -84,6 +84,7 @@ fun Init(startDestination: String) {
 
 fun NavGraphBuilder.addScreens(navController: NavHostController, context: Context) {
 
+    /*
     val date = LocalDate.now().toString()
 
     val menuCache = File(context.cacheDir, "menuCache")
@@ -125,6 +126,8 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
         menuWriter.close()
         dateWriter.close()
     }
+
+     */
 
 
 

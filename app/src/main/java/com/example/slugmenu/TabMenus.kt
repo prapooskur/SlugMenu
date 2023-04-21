@@ -1,5 +1,6 @@
 package com.example.slugmenu
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -18,16 +19,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.D
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Composable
 fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, dinnerMenu: MutableList<String>, lateNightMenu: MutableList<String>) {
-    var state by remember { mutableStateOf(0) }
+    val currentHour: Int = LocalDateTime.now().hour
+    Log.d("TAG","hour: "+currentHour)
+
+
+    val initState: Int = when {
+        currentHour in 0..11 -> 0
+        currentHour in 11..17 -> 1
+        currentHour in 17..20 -> 2
+        currentHour in 20..23 && (lateNightMenu.isEmpty()) -> 2
+        currentHour in 23..23 && (!lateNightMenu.isEmpty()) -> 3
+        else -> 0
+    }
+    Log.d("TAG","initstate: "+initState)
+
+    var state by remember { mutableStateOf(initState) }
 
     val titles: List<String>
     if (lateNightMenu.isEmpty()) {
