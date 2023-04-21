@@ -67,9 +67,19 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
                 Tab(
                     selected = state == index,
                     onClick = { state = index },
-                    text = { Text(text = title, fontSize = 12.sp, fontWeight = FontWeight.ExtraBold, modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally), textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis) }
+                    text = {
+                        Text(
+                            text = title,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally),
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 )
             }
         }
