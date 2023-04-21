@@ -45,6 +45,7 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
         // Late night from 8-11 if available, dinner archive otherwise
         currentHour in 20..23 && (lateNightMenu.isNotEmpty()) -> 3
         currentHour in 20..23 && (lateNightMenu.isEmpty()) -> 2
+        // if all else fails (even though it never should), default to breakfast
         else -> 0
     }
 //    Log.d("TAG","initstate: "+initState)
