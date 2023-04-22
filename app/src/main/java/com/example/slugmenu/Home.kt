@@ -34,12 +34,10 @@ fun TwoByTwoGrid(navController: NavController) {
     ) {
         items(10) { index ->
 
-            var location: String
-
-            if (index < 4) {
-                location = locationnav[index]
+            var location: String = if (index < 4) {
+                locationnav[index]
             } else {
-                location = "cowellstev"
+                "cowellstev"
             }
             Button (
                 onClick =  { navController.navigate(location) },
