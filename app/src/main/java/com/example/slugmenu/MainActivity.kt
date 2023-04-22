@@ -69,6 +69,7 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+    /*
     var pressedTime: Long = 0
     override fun onBackPressed() {
         // on below line we are checking if the press time is greater than 2 sec
@@ -83,6 +84,8 @@ class MainActivity : ComponentActivity() {
         // on below line initializing our press time variable
         pressedTime = System.currentTimeMillis();
     }
+
+     */
 }
 
 
@@ -216,18 +219,18 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     }
 
     composable("ninelewis") {
-        NineLewis(navController, nineLewisMenus)
+        DiningMenu(navController, nineLewisMenus)
     }
 
     composable("cowellstev") {
-        CowellStev(navController, cowellStevMenus)
+        DiningMenu(navController, cowellStevMenus)
     }
 
     composable("crownmerrill") {
-        CrownMerrill(navController, crownMerrillMenus)
+        DiningMenu(navController, crownMerrillMenus)
     }
     composable("porterkresge") {
-        PorterKresge(navController, porterKresgeMenus)
+        DiningMenu(navController, porterKresgeMenus)
     }
     /*
     composable("perkcoffee") {

@@ -52,7 +52,9 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
 
     var state by remember { mutableStateOf(initState) }
 
-    val titles: List<String> = if (lateNightMenu.isEmpty()) {
+    val titles: List<String> = if (breakfastMenu.isEmpty()) {
+        listOf("Closed")
+    } else if (lateNightMenu.isEmpty()) {
         listOf("Breakfast", "Lunch", "Dinner")
     } else {
         listOf("Breakfast", "Lunch", "Dinner", "Late Night")
@@ -108,34 +110,47 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PrintMenu(itemList: MutableList<String>) {
-    LazyColumn {
-        items(itemList.size) {item ->
-            val itemval = itemList[item]
-            var boldness = FontWeight.Normal
-            if (itemval.contains("--")) {
-                boldness = FontWeight.ExtraBold
-            }
-            ListItem(
-                modifier = Modifier.fillMaxWidth(),
-                text = {
-                    Text(
-                        itemList[item],
-                        fontWeight = boldness,
-                        color = Color.White
-                    )
+    if (itemList.size > 0) {
+        LazyColumn {
+            items(itemList.size) { item ->
+                val itemval = itemList[item]
+                var boldness = FontWeight.Normal
+                if (itemval.contains("--")) {
+                    boldness = FontWeight.ExtraBold
                 }
+                ListItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = {
+                        Text(
+                            itemList[item],
+                            fontWeight = boldness,
+                            color = Color.White
+                        )
+                    }
 
-            )
+                )
 
 
-            /*
+                /*
             Text (
                 text = itemList[item]+"\n",
                 fontWeight = boldness,
                 color = Color.White
             )
              */
+            }
         }
+    } else {
+        ListItem(
+            modifier = Modifier.fillMaxWidth(),
+            text = {
+                Text(
+                    text = "not open today :(",
+                    color = Color.White
+                )
+            }
+
+        )
     }
 }
 
