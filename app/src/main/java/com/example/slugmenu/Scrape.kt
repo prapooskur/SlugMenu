@@ -93,7 +93,7 @@ fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
                     if (!listItems.contains(cleanItem)) {
 //                  println("add")
 //                  println(cleanItem)
-                        cleanItem = cleanItem.replace("&amp;", "and")
+                        cleanItem = cleanItem.replace("&amp;", "&")
                         Log.d("TAG", cleanItem)
                         listItems.add(cleanItem)
                     }

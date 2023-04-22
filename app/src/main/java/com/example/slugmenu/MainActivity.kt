@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -66,13 +67,25 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+    }
+    var pressedTime: Long = 0
+    override fun onBackPressed() {
+        // on below line we are checking if the press time is greater than 2 sec
+        if (pressedTime + 2000 > System.currentTimeMillis()) {
+            // if time is greater than 2 sec we are closing the application.
+            super.onBackPressed()
+            finish()
+        } else {
+            // in else condition displaying a toast message.
+            Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
+        // on below line initializing our press time variable
+        pressedTime = System.currentTimeMillis();
     }
 }
 
-@Composable
-fun TransparentBar() {
 
-}
 
 
 @Composable
