@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
             finish()
         } else {
             // in else condition displaying a toast message.
-            Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT).show();
+            Toast.makeText(baseContext, "Press back again to exit", Toast.LENGTH_SHORT).show();
         }
         // on below line initializing our press time variable
         pressedTime = System.currentTimeMillis();
