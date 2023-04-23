@@ -3,22 +3,27 @@ package com.example.slugmenu
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.slugmenu.ui.theme.SlugMenuTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.async
@@ -38,17 +43,12 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-        /*
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
-        window.statusBarColor = Color.Transparent.toArgb()
-
-         */
-
+        
 
 
         setContent {
             SlugMenuTheme {
+                MenuBarColor(color = MaterialTheme.colorScheme.inversePrimary)
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -81,6 +81,12 @@ class MainActivity : ComponentActivity() {
 
 
 
+@Composable
+fun MenuBarColor(color: Color) {
+    val systemUiController = rememberSystemUiController()
+    val context = LocalContext.current
+    systemUiController.setStatusBarColor(color = color)
+}
 
 @Composable
 fun Init(startDestination: String) {
