@@ -1,19 +1,16 @@
 package com.example.slugmenu
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.SnackbarDefaults.backgroundColor
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
@@ -22,6 +19,7 @@ fun HomeScreen(navController: NavController) {
     TwoByTwoGrid(navController)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TwoByTwoGrid(navController: NavController) {
     val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
@@ -39,14 +37,35 @@ fun TwoByTwoGrid(navController: NavController) {
             } else {
                 "cowellstev"
             }
+            Card(
+                onClick = { navController.navigate(location) },
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .aspectRatio(1f),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = locations[index], color = MaterialTheme.colorScheme.onPrimary)
+                }
+            }
+            /*
             Button (
                 onClick =  { navController.navigate(location) },
-                modifier = Modifier.aspectRatio(1f),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Yellow)
+                modifier = Modifier.aspectRatio(1.5f),
+//                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Yellow)
 
             ) {
                 Text(text = locations[index], color = Color.Black)
             }
+             */
+
+
             /*
             Box(
                 Modifier

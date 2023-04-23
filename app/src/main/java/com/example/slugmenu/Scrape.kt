@@ -20,31 +20,6 @@ import org.jsoup.select.Elements
 import java.io.IOException
 import kotlin.system.measureTimeMillis
 
-
-/*
-enum class Time {
-    BREAKFAST,
-    LUNCH,
-    DINNER,
-    LATENIGHT
-}
- */
-
-/*
-@Composable
-fun WebScraper(inputUrl: String, time: Time) {
-    // Scrape data using JSoup
-    val scrapedData = getWebData(inputUrl)
-
-    // Display scraped data in a list
-    LazyColumn {
-        items(scrapedData.size) { item ->
-            Text(text = scrapedData[item])
-        }
-    }
-}
- */
-
 fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
     val baseurl: String = "https://nutrition.sa.ucsc.edu/shortmenu.aspx?sName=UC+Santa+Cruz+Dining&locationNum="
     val url: String = baseurl+inputUrl
