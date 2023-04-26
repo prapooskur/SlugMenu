@@ -5,12 +5,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SnackbarDefaults.backgroundColor
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,10 +33,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import java.time.LocalDateTime
 
 @Composable
-fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, dinnerMenu: MutableList<String>, lateNightMenu: MutableList<String>) {
+fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, dinnerMenu: MutableList<String>, lateNightMenu: MutableList<String>, navController: NavController) {
     val currentHour: Int = LocalDateTime.now().hour
 //    Log.d("TAG","hour: "+currentHour)
 
@@ -59,6 +70,15 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
     var state by remember { mutableStateOf(initState) }
 
     val menuItems = remember { mutableStateOf(mutableListOf<String>()) }
+
+    Surface(
+        tonalElevation = 8.dp
+    ) {
+        Column() {
+            TopBar(titleText = "college", color = MaterialTheme.colorScheme.primary, navController = navController)
+
+        }
+    }
 
     Column {
         TabRow(selectedTabIndex = state) {
@@ -102,6 +122,29 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
         }
 
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, navController: NavController) {
+    TopAppBar(
+        title = {
+            Text(
+                text = titleText,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = {navController.navigateUp()}) {
+                Icon(
+                    Icons.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        },
+        backgroundColor = color
+//        elevation = 8.dp
+    )
 }
 
 

@@ -12,7 +12,7 @@ fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>
 
 
     Column() {
-        TabBar(menuList[0],menuList[1],menuList[2],menuList[3])
+        TabBar(menuList[0],menuList[1],menuList[2],menuList[3], navController)
 //        DisplayMenu(inputUrl = nl, time = Time.DINNER)
     }
 

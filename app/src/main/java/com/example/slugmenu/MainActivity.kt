@@ -38,6 +38,7 @@ import java.time.LocalDate
 import kotlin.system.measureTimeMillis
 
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -48,7 +49,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SlugMenuTheme {
-                MenuBarColor(color = MaterialTheme.colorScheme.inversePrimary)
+                MenuBarColor(color = MaterialTheme.colorScheme.primary)
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -84,9 +85,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MenuBarColor(color: Color) {
     val systemUiController = rememberSystemUiController()
-    val context = LocalContext.current
     systemUiController.setStatusBarColor(color = color)
 }
+
 
 @Composable
 fun Init(startDestination: String) {
@@ -134,7 +135,7 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
 
 
     var menuCached: Boolean = false
-    var dateCached: Boolean = false
+//    var dateCached: Boolean = false
 
     var nineLewisMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
     var cowellStevMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
@@ -144,7 +145,7 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     try {
         val cachedDate = dateCheckReader.readLine()
         if (cachedDate == date && menuString != null && menuString != "") {
-            Log.d("TAG","menu string: $menuString")
+//            Log.d("TAG","menu string: $menuString")
             val type = object : TypeToken<Array<Array<MutableList<String>>>>() {}.type
             cachedData = gson.fromJson(menuString, type)
             menuCached = true
