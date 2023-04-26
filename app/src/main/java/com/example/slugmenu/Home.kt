@@ -3,7 +3,7 @@ package com.example.slugmenu
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -14,7 +14,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +31,9 @@ fun HomeScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
-            TopBarHome(titleText = "Slug Menu")
+            Surface(shadowElevation = 4.dp) {
+                TopBarHome(titleText = "Slug Menu")
+            }
         },
         content = {innerPadding ->
             Column(
@@ -65,6 +69,7 @@ fun LargeTopBar(titleText: String, color: Color = MaterialTheme.colorScheme.prim
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarHome(titleText: String, color: Color = MaterialTheme.colorScheme.primary) {
     TopAppBar(
@@ -74,8 +79,12 @@ fun TopBarHome(titleText: String, color: Color = MaterialTheme.colorScheme.prima
                 color = MaterialTheme.colorScheme.onPrimary
             )
         },
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = color),
+        /*
         backgroundColor = color,
         elevation = 8.dp
+
+         */
     )
 }
 
