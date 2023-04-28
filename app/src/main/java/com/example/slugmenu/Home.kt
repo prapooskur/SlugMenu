@@ -43,8 +43,8 @@ fun HomeScreen(navController: NavController) {
                     .fillMaxSize()
                     .padding(paddingValues = innerPadding) // padding applied here
             ) {
-                CardList(navController = navController)
-               // TwoByTwoGrid(navController = navController)
+//                CardList(navController = navController)
+                TwoByTwoGrid(navController = navController)
             }
         }
     )
