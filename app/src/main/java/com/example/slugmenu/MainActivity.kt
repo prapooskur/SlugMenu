@@ -217,18 +217,18 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     }
 
     composable("ninelewis") {
-        DiningMenu(navController, nineLewisMenus)
+        DiningMenu(navController, nineLewisMenus, "Nine/Lewis")
     }
 
     composable("cowellstev") {
-        DiningMenu(navController, cowellStevMenus)
+        DiningMenu(navController, cowellStevMenus, "Cowell/Stevenson")
     }
 
     composable("crownmerrill") {
-        DiningMenu(navController, crownMerrillMenus)
+        DiningMenu(navController, crownMerrillMenus, "Crown/Merrill")
     }
     composable("porterkresge") {
-        DiningMenu(navController, porterKresgeMenus)
+        DiningMenu(navController, porterKresgeMenus, "Porter/Kresge")
     }
     /*
     composable("perkcoffee") {

@@ -1,11 +1,12 @@
 package com.example.slugmenu
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -18,8 +19,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,10 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.pager.pagerTabIndicatorOffset
 import java.time.LocalDateTime
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, dinnerMenu: MutableList<String>, lateNightMenu: MutableList<String>, navController: NavController) {
+fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, dinnerMenu: MutableList<String>, lateNightMenu: MutableList<String>, navController: NavController, collegeName: String = "default college") {
     val currentHour: Int = LocalDateTime.now().hour
 //    Log.d("TAG","hour: "+currentHour)
 
@@ -68,20 +71,32 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
 //    Log.d("TAG","initstate: "+initState)
 
     var state by remember { mutableStateOf(initState) }
+    val pagerState = rememberPagerState()
 
-    val menuItems = remember { mutableStateOf(mutableListOf<String>()) }
+//    val menuItems = remember { mutableStateOf(mutableListOf<String>()) }
 
     Surface(
-        tonalElevation = 8.dp
+// elevation not necessary
+//        shadowElevation = 4.dp
     ) {
         Column() {
-            TopBar(titleText = "college", color = MaterialTheme.colorScheme.primary, navController = navController)
-
+            TopBar(titleText = collegeName, color = MaterialTheme.colorScheme.primary, navController = navController)
         }
     }
 
     Column {
-        TabRow(selectedTabIndex = state) {
+        TabRow(
+            selectedTabIndex = state
+            /*
+            selectedTabIndex = pagerState.currentPage,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                )
+            }
+
+             */
+        ) {
             titles.forEachIndexed { index, title ->
                 Tab(
                     selected = state == index,
