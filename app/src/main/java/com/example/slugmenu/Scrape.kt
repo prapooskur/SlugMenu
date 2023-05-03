@@ -34,12 +34,9 @@ fun scrapeDiningHall (inputUrl: String): MutableList<MutableList<String>> {
 
 
     val doc: Document = Jsoup.connect(url).cookies(cookies).get()
-//    println(doc)
     val parseTime = measureTimeMillis {
         val table: Elements =
             doc.select("table[width=100%][cellspacing=1][cellpadding=0][border=0]")
-
-//    val timeChoice = time.ordinal
 
         for (i in 0 until 4) {
             val listItems = mutableListOf<String>()
@@ -47,26 +44,18 @@ fun scrapeDiningHall (inputUrl: String): MutableList<MutableList<String>> {
             Log.d("TAG", "iterator val: $i")
             val rows: Elements = table[i].select("tr")
             val trs: Elements = rows.select("tr")
-//    println("start")
 
             for (j in trs) {
-//          println(j)
-//          println("start")
-
                 var separators: String = j.select("span[style=\"color: #000000\"]").toString()
                 var items: String = j.select("span[style=\"color: #585858\"]").toString()
-//          print(items)
                 if (separators.length > 29 && !separators.contains("&nbsp;")) {
                     var cleanSeparator = separators.substring(29, separators.length - 7)
                     listItems.add(cleanSeparator)
-//              println(cleanSeparator)
                 }
                 if (items.length > 42 && items !in listItems) {
                     var cleanItem = items.substring(29, items.length - 13)
                     cleanItem = cleanItem.replace("&amp;", "&")
                     if (!listItems.contains(cleanItem)) {
-//                  println("add")
-//                  println(cleanItem)
                         Log.d("TAG", "clean item: "+cleanItem)
                         listItems.add(cleanItem)
                     }
@@ -74,7 +63,6 @@ fun scrapeDiningHall (inputUrl: String): MutableList<MutableList<String>> {
 
             }
             allListItems.add(listItems)
-            //END LOOP
         }
     }
     Log.d("TAG", "Parse time: "+parseTime+"ms.")
@@ -110,12 +98,9 @@ fun scrapeCoffeeBar (inputUrl: String): MutableList<MutableList<String>> {
 
 
     val doc: Document = Jsoup.connect(url).cookies(cookies).get()
-//    println(doc)
     val parseTime = measureTimeMillis {
         val table: Elements =
             doc.select("table[width=100%][cellspacing=1][cellpadding=0][border=0]")
-
-//    val timeChoice = time.ordinal
 
         for (i in 0 until 4) {
             val listItems = mutableListOf<String>()
@@ -123,25 +108,21 @@ fun scrapeCoffeeBar (inputUrl: String): MutableList<MutableList<String>> {
             Log.d("TAG", "iterator val: $i")
             val rows: Elements = table[i].select("tr")
             val trs: Elements = rows.select("tr")
-//    println("start")
-            for (j in trs) {
-//          println(j)
-//          println("start")
 
+            for (j in trs) {
                 var separators: String = j.select("span[style=\"color: #000000\"]").toString()
                 var items: String = j.select("span[style=\"color: #585858\"]").toString()
-//          print(items)
+
                 if (separators.length > 29 && !separators.contains("&nbsp;")) {
                     var cleanSeparator = separators.substring(29, separators.length - 7)
                     listItems.add(cleanSeparator)
-//              println(cleanSeparator)
                 }
+
                 if (items.length > 42 && items !in listItems) {
                     var cleanItem = items.substring(29, items.length - 13)
+                    cleanItem = cleanItem.replace("&amp;", "&")
+
                     if (!listItems.contains(cleanItem)) {
-//                  println("add")
-//                  println(cleanItem)
-                        cleanItem = cleanItem.replace("&amp;", "&")
                         Log.d("TAG", cleanItem)
                         listItems.add(cleanItem)
                     }
@@ -149,7 +130,6 @@ fun scrapeCoffeeBar (inputUrl: String): MutableList<MutableList<String>> {
 
             }
             allListItems.add(listItems)
-            //END LOOP
         }
     }
     Log.d("TAG", "Parse time for Perks: "+parseTime+"ms.")
