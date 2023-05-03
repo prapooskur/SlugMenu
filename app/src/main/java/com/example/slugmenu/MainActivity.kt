@@ -3,7 +3,6 @@ package com.example.slugmenu
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -12,11 +11,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -184,13 +180,13 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
         val scrapeTime = measureTimeMillis {
             runBlocking {
                 val nineLewisJob =
-                    async { getMenuAsync("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1") }
+                    async { getDiningMenuAsync("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1") }
                 val cowellStevJob =
-                    async { getMenuAsync("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1") }
+                    async { getDiningMenuAsync("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1") }
                 val crownMerrillJob =
-                    async { getMenuAsync("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1") }
+                    async { getDiningMenuAsync("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1") }
                 val porterKresgeJob =
-                    async { getMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
+                    async { getDiningMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
 
                 nineLewisMenus = nineLewisJob.await()
                 cowellStevMenus = cowellStevJob.await()
