@@ -260,15 +260,6 @@ fun PrintMenu(itemList: MutableList<String>) {
                         thickness = 2.dp
                     )
                 }
-
-
-                /*
-            Text (
-                text = itemList[item]+"\n",
-                fontWeight = boldness,
-                color = Color.White
-            )
-             */
             }
         }
     } else {
@@ -326,16 +317,6 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
 
                     )
                 }
-
-
-
-                /*
-            Text (
-                text = itemList[item]+"\n",
-                fontWeight = boldness,
-                color = Color.White
-            )
-             */
             }
         }
     } else {
