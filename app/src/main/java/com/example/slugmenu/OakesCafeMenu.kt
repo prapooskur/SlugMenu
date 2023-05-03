@@ -109,11 +109,11 @@ fun PriceTabBar(breakfastMenu: MutableList<String>, allDayMenu: MutableList<Stri
         }
         when (state) {
             0 -> {
-                PrintMenu(itemList = breakfastMenu)
+                PrintPriceMenu(itemList = breakfastMenu)
                 // Content for Tab 1
             }
             1 -> {
-                PrintMenu(itemList = allDayMenu)
+                PrintPriceMenu(itemList = allDayMenu)
                 // Content for Tab 2
             }
         }
