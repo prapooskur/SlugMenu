@@ -290,22 +290,16 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
 
-                var divider: Boolean = false
-
-                divider =  itemval.contains("--")
-
-                if (divider) {
+                if (itemval.contains("--")) {
                     Divider(
                         thickness = 2.dp
                     )
 
                     ListItem(
-//                    modifier = Modifier.fillMaxWidth(),
                         headlineText = {
                             Text(
                                 itemList[item],
                                 fontWeight = FontWeight.ExtraBold,
-//                            color = Color.White
                                 textAlign = TextAlign.End
                             )
                         },
@@ -315,24 +309,6 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
                         thickness = 2.dp
                     )
                 }
-
-
-
-
-                /*
-                ListItem(
-//                    modifier = Modifier.fillMaxWidth(),
-                    headlineText = {
-                        Text(
-                            itemList[item],
-                            fontWeight = boldness,
-//                            color = Color.White
-                            textAlign = TextAlign.End
-                        )
-                    }
-
-                )
-                 */
 
                 if (itemval.contains("$") && !itemList[item+1].contains("$") ) {
                     ListItem(
