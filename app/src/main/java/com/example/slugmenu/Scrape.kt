@@ -89,12 +89,22 @@ suspend fun getDiningMenuAsync(locationId: String): Array<MutableList<String>> =
 
 suspend fun getCoffeeMenu(inputUrl: String): Array<MutableList<String>> {
     return withContext(Dispatchers.IO) {
-        val menus = getWebData(inputUrl)
+        val menu = getWebData(inputUrl)
 //        Log.d("TAG", "array: $menus")
-        arrayOf(menus[0])
+        arrayOf(menu[0])
     }
 }
 suspend fun getCoffeeMenuAsync(locationId: String): Array<MutableList<String>> = withContext(Dispatchers.IO) {
     getCoffeeMenu(locationId)
 }
 
+suspend fun getOakesMenu(inputUrl: String): Array<MutableList<String>> {
+    return withContext(Dispatchers.IO) {
+        val menus = getWebData(inputUrl)
+//        Log.d("TAG", "array: $menus")
+        arrayOf(menus[0],menus[1])
+    }
+}
+suspend fun getOakesMenuAsync(locationId: String): Array<MutableList<String>> = withContext(Dispatchers.IO) {
+    getOakesMenu(locationId)
+}
