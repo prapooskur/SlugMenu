@@ -289,40 +289,79 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
         LazyColumn {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
-                var boldness = FontWeight.Normal
+
                 var divider: Boolean = false
-                if (itemval.contains("--")) {
-                    boldness = FontWeight.ExtraBold
-                    divider = true
+
+                var isPrice: Boolean = false
+
+                if (itemval.contains("$")) {
+                    isPrice = true
                 }
+
+                divider =  itemval.contains("--")
+
                 if (divider) {
+                    Divider(
+                        thickness = 2.dp
+                    )
+
+                    ListItem(
+//                    modifier = Modifier.fillMaxWidth(),
+                        headlineText = {
+                            Text(
+                                itemList[item],
+                                fontWeight = FontWeight.ExtraBold,
+//                            color = Color.White
+                                textAlign = TextAlign.End
+                            )
+                        },
+                    )
+
                     Divider(
                         thickness = 2.dp
                     )
                 }
 
-                var isPrice: Boolean = false
-                if (itemval.contains("$")) {
-                    isPrice = true
-                }
 
 
+
+                /*
                 ListItem(
-                    modifier = Modifier.fillMaxWidth(),
+//                    modifier = Modifier.fillMaxWidth(),
                     headlineText = {
                         Text(
                             itemList[item],
                             fontWeight = boldness,
 //                            color = Color.White
+                            textAlign = TextAlign.End
                         )
                     }
 
                 )
-                if (divider) {
-                    Divider(
-                        thickness = 2.dp
+                 */
+
+                if (isPrice) {
+                    ListItem(
+//                    modifier = Modifier.fillMaxWidth(),
+                        headlineText = {
+                            Text(
+                                itemList[item+1],
+//                            color = Color.White
+                                textAlign = TextAlign.End
+                            )
+                        },
+                        supportingText = {
+                            Text(
+                                itemList[item],
+                                fontWeight = FontWeight.Bold,
+//                            color = Color.White
+                                textAlign = TextAlign.End
+                            )
+                        }
+
                     )
                 }
+
 
 
                 /*

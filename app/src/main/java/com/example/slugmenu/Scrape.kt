@@ -1,6 +1,7 @@
 package com.example.slugmenu
 
 import android.util.Log
+import com.example.slugmenu.ui.theme.md_theme_light_surfaceTint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -51,8 +52,12 @@ fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
                 if (separators.length > 29 && !separators.contains("&nbsp;")) {
                     var cleanSeparator = separators.substring(29, separators.length - 7)
                     cleanSeparator = cleanSeparator.replace("&amp;", "&")
+                    if (cleanSeparator.contains("New City of Santa Cruz Cup Fee of \$.025 BYO and save up to \$0.50 when ordering a togo drink --")) {
+                        cleanSeparator = cleanSeparator.substring(0,cleanSeparator.length - 95)
+                    }
                     listItems.add(cleanSeparator)
                 }
+
                 if (items.length > 42 && items !in listItems) {
                     var cleanItem = items.substring(29, items.length - 13)
                     cleanItem = cleanItem.replace("&amp;", "&")
