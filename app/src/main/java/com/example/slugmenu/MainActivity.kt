@@ -137,7 +137,12 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     var cowellStevMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
     var crownMerrillMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
     var porterKresgeMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
-    var perkCoffeeMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var perkCoffeeMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var terraFrescaMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var porterMarketMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var stevCoffeeMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var globalVillageMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var oakesCafeMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
 
     try {
         val cachedDate = dateCheckReader.readLine()
@@ -190,16 +195,31 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
                     async { getDiningMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
                 val perkCoffeeJob =
                     async { getCoffeeMenuAsync("22&locationName=Perk+Coffee+Bars&naFlag=1") }
+                val terraFrescaJob =
+                    async { getCoffeeMenuAsync("45&locationName=UCen+Coffee+Bar&naFlag=1") }
+                val porterMarketJob =
+                    async { getCoffeeMenuAsync("50&locationName=Porter+Market&naFlag=1") }
+                val stevCoffeeJob =
+                    async { getCoffeeMenuAsync("26&locationName=Stevenson+Coffee+House&naFlag=1") }
+                val globalVillageJob =
+                    async { getCoffeeMenuAsync("46&locationName=Global+Village+Cafe&naFlag=1") }
+                val oakesCafeJob =
+                    async { getCoffeeMenuAsync("23&locationName=Oakes+Cafe&naFlag=1") }
 
                 nineLewisMenus = nineLewisJob.await()
                 cowellStevMenus = cowellStevJob.await()
                 crownMerrillMenus = crownMerrillJob.await()
                 porterKresgeMenus = porterKresgeJob.await()
-                perkCoffeeMenus = perkCoffeeJob.await()
+                perkCoffeeMenu = perkCoffeeJob.await()
+                terraFrescaMenu = terraFrescaJob.await()
+                porterMarketMenu = porterMarketJob.await()
+                stevCoffeeMenu = stevCoffeeJob.await()
+                globalVillageMenu = globalVillageJob.await()
+                oakesCafeMenu = oakesCafeJob.await()
 
             }
             val menuWriter = FileWriter(menuCache)
-            menuWriter.write(gson.toJson(arrayOf(nineLewisMenus,cowellStevMenus,crownMerrillMenus,porterKresgeMenus,perkCoffeeMenus)))
+            menuWriter.write(gson.toJson(arrayOf(nineLewisMenus,cowellStevMenus,crownMerrillMenus,porterKresgeMenus,perkCoffeeMenu,terraFrescaMenu,porterMarketMenu,stevCoffeeMenu,globalVillageMenu,oakesCafeMenu)))
             menuWriter.close()
         }
         Log.d("TAG", "Scrape time: " + scrapeTime + "ms.")
@@ -208,7 +228,12 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
         cowellStevMenus = cachedData[1]
         crownMerrillMenus = cachedData[2]
         porterKresgeMenus = cachedData[3]
-        perkCoffeeMenus = cachedData[4]
+        perkCoffeeMenu = cachedData[4]
+        terraFrescaMenu = cachedData[5]
+        porterMarketMenu = cachedData[6]
+        stevCoffeeMenu = cachedData[7]
+        globalVillageMenu = cachedData[8]
+        oakesCafeMenu = cachedData[9]
         Log.d("TAG", "Menu cache hit.")
     }
 
@@ -236,24 +261,27 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     }
 
     composable("perkcoffee") {
-        CoffeeMenu(navController, perkCoffeeMenus[0], "Perk Coffee Bars")
+        CoffeeMenu(navController, perkCoffeeMenu[0], "Perk Coffee Bars")
     }
-    /*
+
     composable("terrafresca") {
-        TerraFresca(navController)
+        CoffeeMenu(navController, terraFrescaMenu[0], "Terra Fresca")
     }
+
     composable("portermarket") {
-        PorterMarket(navController)
+        CoffeeMenu(navController, porterMarketMenu[0], "Porter Market")
     }
+
     composable("stevcoffee") {
-        StevCoffee(navController)
+        CoffeeMenu(navController, stevCoffeeMenu[0], "Stevenson Coffee House")
     }
     composable("globalvillage") {
-        GlobalVillage(navController)
+        CoffeeMenu(navController, globalVillageMenu[0], "Global Village Cafe")
     }
     composable("oakescafe") {
-        OakesCafe(navController)
+        CoffeeMenu(navController, oakesCafeMenu[0], "Oakes Cafe")
     }
+    /*
      */
 }
 
