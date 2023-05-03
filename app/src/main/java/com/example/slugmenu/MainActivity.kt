@@ -204,7 +204,7 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
                 val globalVillageJob =
                     async { getCoffeeMenuAsync("46&locationName=Global+Village+Cafe&naFlag=1") }
                 val oakesCafeJob =
-                    async { getCoffeeMenuAsync("23&locationName=Oakes+Cafe&naFlag=1") }
+                    async { getOakesMenuAsync("23&locationName=Oakes+Cafe&naFlag=1") }
 
                 nineLewisMenus = nineLewisJob.await()
                 cowellStevMenus = cowellStevJob.await()
