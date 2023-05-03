@@ -48,6 +48,7 @@ fun scrapeDiningHall (inputUrl: String): MutableList<MutableList<String>> {
             val rows: Elements = table[i].select("tr")
             val trs: Elements = rows.select("tr")
 //    println("start")
+
             for (j in trs) {
 //          println(j)
 //          println("start")
@@ -62,11 +63,11 @@ fun scrapeDiningHall (inputUrl: String): MutableList<MutableList<String>> {
                 }
                 if (items.length > 42 && items !in listItems) {
                     var cleanItem = items.substring(29, items.length - 13)
+                    cleanItem = cleanItem.replace("&amp;", "&")
                     if (!listItems.contains(cleanItem)) {
 //                  println("add")
 //                  println(cleanItem)
-                        cleanItem = cleanItem.replace("&amp;", "&")
-                        Log.d("TAG", cleanItem)
+                        Log.d("TAG", "clean item: "+cleanItem)
                         listItems.add(cleanItem)
                     }
                 }
