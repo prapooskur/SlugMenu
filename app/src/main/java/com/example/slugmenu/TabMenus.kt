@@ -140,6 +140,69 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
 }
 
 
+//Single tab on top - for coffee bars and GVC
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun SingleTabBar(menu: MutableList<String>, navController: NavController, collegeName: String = "default college") {
+    val titles: List<String> = if (menu.isEmpty()) {
+        listOf("Closed")
+    } else {
+        listOf("All")
+    }
+
+    var state by remember { mutableStateOf(0) }
+
+    Surface(
+    ) {
+        Column() {
+            TopBar(titleText = collegeName, color = MaterialTheme.colorScheme.primary, navController = navController)
+        }
+    }
+
+    Column {
+        TabRow(
+            selectedTabIndex = state
+            /*
+            selectedTabIndex = pagerState.currentPage,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                )
+            }
+
+             */
+        ) {
+            titles.forEachIndexed { index, title ->
+                Tab(
+                    selected = state == index,
+                    onClick = { state = index },
+                    text = {
+                        Text(
+                            text = title,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally),
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                )
+            }
+        }
+        when (state) {
+            0 -> {
+                PrintMenu(itemList = menu)
+                // Content for Tab 1
+            }
+        }
+
+    }
+}
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, navController: NavController) {
@@ -181,6 +244,69 @@ fun PrintMenu(itemList: MutableList<String>) {
                         thickness = 2.dp
                     )
                 }
+                ListItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    headlineText = {
+                        Text(
+                            itemList[item],
+                            fontWeight = boldness,
+//                            color = Color.White
+                        )
+                    }
+
+                )
+                if (divider) {
+                    Divider(
+                        thickness = 2.dp
+                    )
+                }
+
+
+                /*
+            Text (
+                text = itemList[item]+"\n",
+                fontWeight = boldness,
+                color = Color.White
+            )
+             */
+            }
+        }
+    } else {
+        ListItem(
+            modifier = Modifier.fillMaxWidth(),
+            headlineText = {
+
+            }
+        )
+    }
+}
+
+//Menus with prices - Coffee Bars, Cafes, Markets
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun PrintPriceMenu(itemList: MutableList<String>) {
+    if (itemList.size > 0) {
+        LazyColumn {
+            items(itemList.size) { item ->
+                val itemval = itemList[item]
+                var boldness = FontWeight.Normal
+                var divider: Boolean = false
+                if (itemval.contains("--")) {
+                    boldness = FontWeight.ExtraBold
+                    divider = true
+                }
+                if (divider) {
+                    Divider(
+                        thickness = 2.dp
+                    )
+                }
+
+                var isPrice: Boolean = false
+                if (itemval.contains("$")) {
+                    isPrice = true
+                }
+
+
                 ListItem(
                     modifier = Modifier.fillMaxWidth(),
                     headlineText = {

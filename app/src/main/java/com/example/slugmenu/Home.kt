@@ -100,7 +100,7 @@ fun TwoByTwoGrid(navController: NavController) {
     ) {
         items(10) { index ->
 
-            val location: String = if (index < 4) {
+            val location: String = if (index < 6) {
                 locationnav[index]
             } else {
                 "cowellstev"

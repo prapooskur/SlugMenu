@@ -137,6 +137,7 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     var cowellStevMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
     var crownMerrillMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
     var porterKresgeMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var perkCoffeeMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
 
     try {
         val cachedDate = dateCheckReader.readLine()
@@ -187,15 +188,18 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
                     async { getDiningMenuAsync("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1") }
                 val porterKresgeJob =
                     async { getDiningMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
+                val perkCoffeeJob =
+                    async { getCoffeeMenuAsync("22&locationName=Perk+Coffee+Bars&naFlag=1") }
 
                 nineLewisMenus = nineLewisJob.await()
                 cowellStevMenus = cowellStevJob.await()
                 crownMerrillMenus = crownMerrillJob.await()
                 porterKresgeMenus = porterKresgeJob.await()
+                perkCoffeeMenus = perkCoffeeJob.await()
 
             }
             val menuWriter = FileWriter(menuCache)
-            menuWriter.write(gson.toJson(arrayOf(nineLewisMenus,cowellStevMenus,crownMerrillMenus,porterKresgeMenus)))
+            menuWriter.write(gson.toJson(arrayOf(nineLewisMenus,cowellStevMenus,crownMerrillMenus,porterKresgeMenus,perkCoffeeMenus)))
             menuWriter.close()
         }
         Log.d("TAG", "Scrape time: " + scrapeTime + "ms.")
@@ -204,6 +208,7 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
         cowellStevMenus = cachedData[1]
         crownMerrillMenus = cachedData[2]
         porterKresgeMenus = cachedData[3]
+        perkCoffeeMenus = cachedData[4]
         Log.d("TAG", "Menu cache hit.")
     }
 
@@ -229,10 +234,11 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     composable("porterkresge") {
         DiningMenu(navController, porterKresgeMenus, "Porter/Kresge")
     }
-    /*
+
     composable("perkcoffee") {
-        PerkCoffee(navController)
+        CoffeeMenu(navController, perkCoffeeMenus[0], "Perk Coffee Bars")
     }
+    /*
     composable("terrafresca") {
         TerraFresca(navController)
     }
