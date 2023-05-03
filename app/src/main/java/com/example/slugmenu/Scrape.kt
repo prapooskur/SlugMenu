@@ -53,7 +53,10 @@ fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
                     var cleanSeparator = separators.substring(29, separators.length - 7)
                     cleanSeparator = cleanSeparator.replace("&amp;", "&")
                     if (cleanSeparator.contains("New City of Santa Cruz Cup Fee of \$.025 BYO and save up to \$0.50 when ordering a togo drink --")) {
-                        cleanSeparator = cleanSeparator.substring(0,cleanSeparator.length - 95)
+                        cleanSeparator = cleanSeparator.substring(0, cleanSeparator.length - 95)
+                    } else if (cleanSeparator.contains("Now City of Santa Cruz Cup Fee of \$.025 BYO and save up to \$0.50 when ordering a togo drink --")) {
+                        cleanSeparator = cleanSeparator.substring(0, cleanSeparator.length - 95)
+                        cleanSeparator += " --"
                     }
                     listItems.add(cleanSeparator)
                 }
