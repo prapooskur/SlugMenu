@@ -37,7 +37,7 @@ fun HomeScreen(navController: NavController) {
     Scaffold(
         topBar = {
             Surface(shadowElevation = 4.dp) {
-                TopBarHome(titleText = "Slug Menu")
+                TopBarHome(titleText = "Slug Menu", navController)
             }
         },
         content = {innerPadding ->
@@ -60,7 +60,7 @@ fun HomeScreen(navController: NavController) {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarHome(titleText: String, color: Color = MaterialTheme.colorScheme.primary) {
+fun TopBarHome(titleText: String, navController: NavController, color: Color = MaterialTheme.colorScheme.primary) {
     TopAppBar(
         title = {
             Text(
@@ -69,7 +69,7 @@ fun TopBarHome(titleText: String, color: Color = MaterialTheme.colorScheme.prima
             )
         },
         actions = {
-            IconButton(onClick = { /* doSomething() */ }) {
+            IconButton(onClick = { navController.navigate("settings") }) {
                 Icon(
                     imageVector = Icons.Outlined.Settings,
                     contentDescription = "Settings",

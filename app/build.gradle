@@ -78,6 +78,7 @@ dependencies {
 
 
     //GSON (for caching allmenuarray)
+    //TODO - replace with mochi
     implementation("com.google.code.gson:gson:2.10.1")
 
     //Collapsing top bar?

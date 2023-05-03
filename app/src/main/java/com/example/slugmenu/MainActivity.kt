@@ -215,6 +215,9 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     composable("home") {
         HomeScreen(navController)
     }
+    composable("settings") {
+        SettingsScreen(navController)
+    }
 
     composable("ninelewis") {
         DiningMenu(navController, nineLewisMenus, "Nine/Lewis")
