@@ -336,20 +336,15 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
 
                 if (itemval.contains("$") && !itemList[item+1].contains("$") ) {
                     ListItem(
-//                    modifier = Modifier.fillMaxWidth(),
                         headlineText = {
                             Text(
                                 itemList[item+1],
-//                            color = Color.White
-                                textAlign = TextAlign.End
                             )
                         },
                         supportingText = {
                             Text(
                                 itemList[item],
                                 fontWeight = FontWeight.Bold,
-//                            color = Color.White
-                                textAlign = TextAlign.End
                             )
                         }
 
