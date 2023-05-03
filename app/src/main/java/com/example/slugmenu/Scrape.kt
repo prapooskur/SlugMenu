@@ -50,6 +50,7 @@ fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
                 var items: String = j.select("span[style=\"color: #585858\"]").toString()
                 if (separators.length > 29 && !separators.contains("&nbsp;")) {
                     var cleanSeparator = separators.substring(29, separators.length - 7)
+                    cleanSeparator = cleanSeparator.replace("&amp;", "&")
                     listItems.add(cleanSeparator)
                 }
                 if (items.length > 42 && items !in listItems) {
