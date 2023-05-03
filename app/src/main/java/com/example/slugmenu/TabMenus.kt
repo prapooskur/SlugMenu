@@ -73,12 +73,8 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
     var state by remember { mutableStateOf(initState) }
     val pagerState = rememberPagerState()
 
-//    val menuItems = remember { mutableStateOf(mutableListOf<String>()) }
 
-    Surface(
-// elevation not necessary
-//        shadowElevation = 4.dp
-    ) {
+    Surface() {
         Column() {
             TopBar(titleText = collegeName, color = MaterialTheme.colorScheme.primary, navController = navController)
         }
