@@ -292,12 +292,6 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
 
                 var divider: Boolean = false
 
-                var isPrice: Boolean = false
-
-                if (itemval.contains("$")) {
-                    isPrice = true
-                }
-
                 divider =  itemval.contains("--")
 
                 if (divider) {
@@ -340,7 +334,7 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
                 )
                  */
 
-                if (isPrice) {
+                if (itemval.contains("$") && !itemList[item+1].contains("$") ) {
                     ListItem(
 //                    modifier = Modifier.fillMaxWidth(),
                         headlineText = {
