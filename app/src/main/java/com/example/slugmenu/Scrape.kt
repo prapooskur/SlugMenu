@@ -1,5 +1,6 @@
 package com.example.slugmenu
 
+import android.net.http.HttpResponseCache.install
 import android.util.Log
 import com.example.slugmenu.ui.theme.md_theme_light_surfaceTint
 import kotlinx.coroutines.Dispatchers
@@ -8,6 +9,12 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import kotlin.system.measureTimeMillis
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.cookies.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
 
 
 /*
@@ -18,7 +25,29 @@ CATEGORIES:
 - scrapeMarket: Porter
  */
 
-fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
+suspend fun scrapeWebData (inputUrl: String): String {
+    val baseurl = "https://nutrition.sa.ucsc.edu/shortmenu.aspx?sName=UC+Santa+Cruz+Dining&locationNum="
+    val url: String = baseurl+inputUrl
+    val locationCookie: String = inputUrl.substring(0,2)
+
+    val client = HttpClient(CIO) {
+        install(HttpCookies) {}
+    }
+    val httpResponse: HttpResponse = client.get(url) {
+        cookie(name = "WebInaCartDates", value = "")
+        cookie(name = "WebInaCartLocation", value = locationCookie)
+        cookie(name = "WebInaCartMeals", value = "")
+        cookie(name = "WebInaCartQtys",value = "")
+        cookie(name = "WebInaCartRecipes",value = "")
+
+    }
+    val stringBody: String = httpResponse.body()
+    return(stringBody)
+    client.close()
+}
+
+suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
+    /*
     val baseurl: String = "https://nutrition.sa.ucsc.edu/shortmenu.aspx?sName=UC+Santa+Cruz+Dining&locationNum="
     val url: String = baseurl+inputUrl
     val locationCookie: String = inputUrl.substring(0,2)
@@ -29,12 +58,14 @@ fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
     cookies["WebInaCartMeals"] = ""
     cookies["WebInaCartQtys"] = ""
     cookies["WebInaCartRecipes"] = ""
+     */
 
 
     val allListItems = mutableListOf<MutableList<String>>()
 
+    val webScrapeData = scrapeWebData(inputUrl)
 
-    val doc: Document = Jsoup.connect(url).cookies(cookies).get()
+    val doc: Document = Jsoup.parse(webScrapeData)
     val parseTime = measureTimeMillis {
         val table: Elements =
             doc.select("table[width=100%][cellspacing=1][cellpadding=0][border=0]")
