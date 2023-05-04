@@ -2,7 +2,6 @@ package com.pras.slugmenu
 
 import android.net.http.HttpResponseCache.install
 import android.util.Log
-import com.pras.slugmenu.ui.theme.md_theme_light_surfaceTint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.*
 import androidx.navigation.NavController
-import com.google.accompanist.pager.ExperimentalPagerApi
 
 @Composable
 fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>>, collegeName: String) {
