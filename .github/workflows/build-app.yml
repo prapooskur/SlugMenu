@@ -24,7 +24,7 @@ jobs:
       
       - name: Build app
         working-directory: .
-        run: ./gradlew build
+        run: ./gradlew buildRelease
 
       - name: Sign app
         env:
