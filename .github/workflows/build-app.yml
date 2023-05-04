@@ -43,6 +43,7 @@ jobs:
             -Pandroid.injected.signing.key.password=KEY_PASSWORD
 
       - run: rm $GITHUB_WORKSPACE/signing-key.jks
+      - name: "Deleting keystore file"
         shell: bash
       
       - name: Upload apk as artifact
