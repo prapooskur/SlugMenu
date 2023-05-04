@@ -18,17 +18,14 @@ jobs:
           KEYSTORE_B64: ${{ secrets.keystore_b64 }}
         run: echo $KEYSTORE_B64 | base64 --decode > $GITHUB_WORKSPACE/signing-key.jks
 
-      - shell: bash
       - name: Setup Gradle
         working-directory: .
         run: chmod +x ./gradlew
       
-      - shell: bash
       - name: Build app
         working-directory: .
         run: ./gradlew build
 
-      - shell: bash
       - name: Sign app
         env:
           KEYSTORE_PASSWORD: ${{ secrets.keystore_password }}
@@ -42,8 +39,8 @@ jobs:
             -Pandroid.injected.signing.key.alias=KEY_ALIAS \
             -Pandroid.injected.signing.key.password=KEY_PASSWORD
 
-#      - name: "Deleting keystore file"
-#        run: rm $GITHUB_WORKSPACE/signing-key.jks
+      - name: "Deleting keystore file"
+        run: rm $GITHUB_WORKSPACE/signing-key.jks
 
       
       - name: Upload apk as artifact
