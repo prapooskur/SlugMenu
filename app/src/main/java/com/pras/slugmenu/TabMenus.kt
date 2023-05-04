@@ -250,7 +250,8 @@ fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, 
         title = {
             Text(
                 text = titleText,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontSize = 20.sp
             )
         },
         navigationIcon = {

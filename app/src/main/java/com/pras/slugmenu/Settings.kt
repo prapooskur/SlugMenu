@@ -30,7 +30,7 @@ fun SettingsScreen(navController: NavController) {
             }
         },
         content = {innerPadding ->
-            Text(text = "test menu",Modifier.padding(innerPadding))
+            Text(text = "test menu please ignore",Modifier.padding(innerPadding))
         }
     )
 }

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,6 +42,8 @@ fun HomeScreen(navController: NavController) {
             }
         },
         content = {innerPadding ->
+            TwoByTwoGrid(navController = navController, innerPadding = innerPadding)
+/*
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -49,6 +52,8 @@ fun HomeScreen(navController: NavController) {
 //                CardList(navController = navController)
                 TwoByTwoGrid(navController = navController)
             }
+
+ */
         }
     )
 }
@@ -65,7 +70,8 @@ fun TopBarHome(titleText: String, navController: NavController, color: Color = M
         title = {
             Text(
                 text = titleText,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = MaterialTheme.colorScheme.onPrimary,
+                fontSize = 20.sp
             )
         },
         actions = {
@@ -89,14 +95,19 @@ fun TopBarHome(titleText: String, navController: NavController, color: Color = M
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TwoByTwoGrid(navController: NavController) {
+fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
     val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
+    val locations2line = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues = innerPadding)
     ) {
         items(10) { index ->
 
@@ -120,38 +131,13 @@ fun TwoByTwoGrid(navController: NavController) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = locations[index], color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        text = locations[index],
+                        color = MaterialTheme.colorScheme.onPrimary,
+//                        fontSize = 16.sp
+                    )
                 }
             }
-            /*
-            Button (
-                onClick =  { navController.navigate(location) },
-                modifier = Modifier.aspectRatio(1.5f),
-//                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Yellow)
-
-            ) {
-                Text(text = locations[index], color = Color.Black)
-            }
-             */
-
-
-            /*
-            Box(
-                Modifier
-                    .background(Color.Yellow, RoundedCornerShape(8.dp))
-                    .aspectRatio(1f)
-            ) {
-                Text(
-                    text = locations[index],
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .wrapContentSize(align = Alignment.Center),
-                    color = Color.Black
-                )
-            }
-
-             */
         }
     }
 }
@@ -173,7 +159,7 @@ fun CardList(navController: NavController) {
     ) {
         items(locationnav.size) { index ->
 
-            val location: String = if (index < 4) {
+            val location: String = if (index < 10) {
                 locationnav[index]
             } else {
                 "cowellstev"
@@ -183,7 +169,7 @@ fun CardList(navController: NavController) {
                 onClick = { navController.navigate(location) },
                 shape = MaterialTheme.shapes.small,
                 modifier = Modifier
-                    .aspectRatio(4f),
+                    .aspectRatio(3f),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
 
             ) {
