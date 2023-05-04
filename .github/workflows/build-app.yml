@@ -20,7 +20,7 @@ jobs:
 
       - shell: bash
         env:
-          GRADLEW_DIR: ${{ secrets.gradlew_dir }}
+          GRADLEW_DIR: .
           KEYSTORE_PASSWORD: ${{ secrets.keystore_password }}
           KEY_ALIAS: ${{ secrets.key_alias }}
           KEY_PASSWORD: ${{ secrets.key_password }}
