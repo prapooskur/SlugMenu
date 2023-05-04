@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -25,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +38,126 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import java.time.LocalDateTime
+//Swipable tabs
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
+
+
+//Swipable tab bar - experimental
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun SwipableTabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, dinnerMenu: MutableList<String>, lateNightMenu: MutableList<String>, navController: NavController, collegeName: String = "default college") {
+    val currentHour: Int = LocalDateTime.now().hour
+//    Log.d("TAG","hour: "+currentHour)
+
+
+    val titles: List<String> = if (breakfastMenu.isEmpty() && lunchMenu.isEmpty() && dinnerMenu.isEmpty() && lateNightMenu.isEmpty()) {
+        listOf("Closed")
+    } else if (lateNightMenu.isEmpty()) {
+        listOf("Breakfast", "Lunch", "Dinner")
+    } else {
+        listOf("Breakfast", "Lunch", "Dinner", "Late Night")
+    }
+
+    val initState: Int = when {
+        titles.size <= 1 -> 0
+        //Breakfast from 12AM-11PM
+        currentHour in 0..11 -> 0
+        // Lunch from 12PM-5PM
+        currentHour in 12..17 -> 1
+        // dinner from 5-8
+        currentHour in 17..19 -> 2
+        // Late night from 8-11 if available, dinner archive otherwise
+        currentHour in 20..23 && (lateNightMenu.isNotEmpty()) -> 3
+        currentHour in 20..23 && (lateNightMenu.isEmpty()) -> 2
+        // if all else fails (even though it never should), default to breakfast
+        else -> 0
+    }
+//    Log.d("TAG","initstate: "+initState)
+
+    var state by remember { mutableStateOf(initState) }
+    val pagerState = androidx.compose.foundation.pager.rememberPagerState(initState)
+    val scope = rememberCoroutineScope()
+
+    Surface() {
+        Column() {
+            TopBar(titleText = collegeName, color = MaterialTheme.colorScheme.primary, navController = navController)
+        }
+    }
+
+    Column {
+        TabRow(
+            selectedTabIndex = state,
+            indicator = { tabPositions -> // 3.
+                TabRowDefaults.Indicator(
+                    Modifier.pagerTabIndicatorOffset(
+                        pagerState,
+                        tabPositions
+                    )
+                )
+            }
+            /*
+            selectedTabIndex = pagerState.currentPage,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                )
+            }
+
+             */
+
+        ) {
+            titles.forEachIndexed { index, title ->
+                Tab(
+                    selected = state == index,
+                    onClick = { state = index; scope.launch{pagerState.scrollToPage(index)} },
+                    text = {
+                        Text(
+                            text = title,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally),
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                )
+            }
+        }
+        HorizontalPager(
+            pageCount = titles.size,
+            state = pagerState
+        ) {state ->
+            when (state) {
+                0 -> {
+                    PrintMenu(itemList = breakfastMenu)
+                    // Content for Tab 1
+                }
+                1 -> {
+                    PrintMenu(itemList = lunchMenu)
+                    // Content for Tab 2
+                }
+                2 -> {
+                    PrintMenu(itemList = dinnerMenu)
+                    // Content for Tab 3
+                }
+                3 -> {
+                    PrintMenu(itemList = lateNightMenu)
+                    // Content for Tab 3
+                }
+            }
+        }
+
+    }
+}
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -71,8 +191,6 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
 //    Log.d("TAG","initstate: "+initState)
 
     var state by remember { mutableStateOf(initState) }
-    val pagerState = rememberPagerState()
-
 
     Surface() {
         Column() {
@@ -134,70 +252,6 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
 
     }
 }
-
-
-//Single tab on top - for coffee bars and GVC
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun SingleTabBar(menu: MutableList<String>, navController: NavController, collegeName: String = "default college") {
-    val titles: List<String> = if (menu.isEmpty()) {
-        listOf("Closed")
-    } else {
-        listOf("All")
-    }
-
-    var state by remember { mutableStateOf(0) }
-
-    Surface(
-    ) {
-        Column() {
-            TopBar(titleText = collegeName, color = MaterialTheme.colorScheme.primary, navController = navController)
-        }
-    }
-
-    Column {
-        TabRow(
-            selectedTabIndex = state
-            /*
-            selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
-                )
-            }
-
-             */
-        ) {
-            titles.forEachIndexed { index, title ->
-                Tab(
-                    selected = state == index,
-                    onClick = { state = index },
-                    text = {
-                        Text(
-                            text = title,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentWidth(Alignment.CenterHorizontally),
-                            textAlign = TextAlign.Center,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                )
-            }
-        }
-        when (state) {
-            0 -> {
-                PrintMenu(itemList = menu)
-                // Content for Tab 1
-            }
-        }
-
-    }
-}
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

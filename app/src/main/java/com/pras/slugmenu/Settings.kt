@@ -1,5 +1,7 @@
 package com.pras.slugmenu
 
+import android.content.Context
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +18,7 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController) {
+//    val sharedPrefs = getDefaultSharedPreferences(context)
     Scaffold(
         topBar = {
             Surface(shadowElevation = 4.dp) {

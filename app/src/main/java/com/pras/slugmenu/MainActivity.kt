@@ -146,7 +146,7 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
 
     try {
         val cachedDate = dateCheckReader.readLine()
-        if (cachedDate == date && menuString != null && menuString != "") {
+        if (cachedDate == date && menuString != "") {
 //            Log.d("TAG","menu string: $menuString")
             val type = object : TypeToken<Array<Array<MutableList<String>>>>() {}.type
             cachedData = gson.fromJson(menuString, type)
