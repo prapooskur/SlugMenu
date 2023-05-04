@@ -35,9 +35,9 @@ jobs:
         run: |
           ./gradlew assembleRelease \
             -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/signing-key.jks \
-            -Pandroid.injected.signing.store.password=KEYSTORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=KEY_PASSWORD
+            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
 
       - name: "Deleting keystore file"
         run: rm $GITHUB_WORKSPACE/signing-key.jks
