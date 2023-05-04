@@ -43,7 +43,6 @@ jobs:
             -Pandroid.injected.signing.key.password=KEY_PASSWORD
 
       - name: "Deleting keystore file"
-        shell: bash
         run: rm $GITHUB_WORKSPACE/signing-key.jks
 
       
