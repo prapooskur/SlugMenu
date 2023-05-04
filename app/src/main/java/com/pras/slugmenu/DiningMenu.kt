@@ -6,7 +6,6 @@ import androidx.compose.runtime.*
 import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>>, collegeName: String) {
     Log.d("TAG", "Hello, World!")
