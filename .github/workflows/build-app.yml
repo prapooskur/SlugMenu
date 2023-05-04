@@ -21,18 +21,12 @@ jobs:
       - shell: bash
       - name: Setup Gradle
         working-directory: .
-        run: |
-          chmod +x ./gradlew
+        run: chmod +x ./gradlew
       
       - shell: bash
       - name: Build app
         working-directory: .
-          ./gradlew build
-          ./gradlew assembleRelease \
-            -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/signing-key.jks \
-            -Pandroid.injected.signing.store.password=KEYSTORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=KEY_PASSWORD
+        run: ./gradlew build
 
       - shell: bash
       - name: Sign app
@@ -41,6 +35,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.key_alias }}
           KEY_PASSWORD: ${{ secrets.key_password }}
         working-directory: .
+        run: |
           ./gradlew assembleRelease \
             -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/signing-key.jks \
             -Pandroid.injected.signing.store.password=KEYSTORE_PASSWORD \
