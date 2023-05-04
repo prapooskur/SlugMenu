@@ -5,16 +5,17 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import java.time.LocalDateTime
+//Swipable tabs
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 
 @Composable
 fun OakesCafeMenu(navController: NavController, menu: Array<MutableList<String>>, name: String) {
@@ -60,13 +67,10 @@ fun PriceTabBar(breakfastMenu: MutableList<String>, allDayMenu: MutableList<Stri
 //    Log.d("TAG","initstate: "+initState)
 
     var state by remember { mutableStateOf(initState) }
-    val pagerState = rememberPagerState()
-
-//    val menuItems = remember { mutableStateOf(mutableListOf<String>()) }
+    val pagerState = androidx.compose.foundation.pager.rememberPagerState(initState)
+    val scope = rememberCoroutineScope()
 
     Surface(
-// elevation not necessary
-//        shadowElevation = 4.dp
     ) {
         Column() {
             TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
@@ -75,21 +79,20 @@ fun PriceTabBar(breakfastMenu: MutableList<String>, allDayMenu: MutableList<Stri
 
     Column {
         TabRow(
-            selectedTabIndex = state
-            /*
-            selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions ->
+            selectedTabIndex = state,
+            indicator = { tabPositions -> // 3.
                 TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                    Modifier.pagerTabIndicatorOffset(
+                        pagerState,
+                        tabPositions
+                    )
                 )
             }
-
-             */
         ) {
             titles.forEachIndexed { index, title ->
                 Tab(
                     selected = state == index,
-                    onClick = { state = index },
+                    onClick = { state = index; scope.launch{pagerState.scrollToPage(index)} },
                     text = {
                         Text(
                             text = title,
@@ -106,16 +109,20 @@ fun PriceTabBar(breakfastMenu: MutableList<String>, allDayMenu: MutableList<Stri
                 )
             }
         }
-        when (state) {
-            0 -> {
-                PrintPriceMenu(itemList = breakfastMenu)
-                // Content for Tab 1
-            }
-            1 -> {
-                PrintPriceMenu(itemList = allDayMenu)
-                // Content for Tab 2
+        HorizontalPager(
+            pageCount = titles.size,
+            state = pagerState
+        ) {state ->
+            when (state) {
+                0 -> {
+                    PrintPriceMenu(itemList = breakfastMenu)
+                    // Content for Tab 1
+                }
+                1 -> {
+                    PrintPriceMenu(itemList = allDayMenu)
+                    // Content for Tab 2
+                }
             }
         }
-
     }
 }

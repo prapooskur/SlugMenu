@@ -100,16 +100,6 @@ fun SwipableTabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<St
                     )
                 )
             }
-            /*
-            selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
-                )
-            }
-
-             */
-
         ) {
             titles.forEachIndexed { index, title ->
                 Tab(
