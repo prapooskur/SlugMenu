@@ -1,4 +1,4 @@
-package com.example.slugmenu.ui.theme
+package com.pras.slugmenu.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF006494)

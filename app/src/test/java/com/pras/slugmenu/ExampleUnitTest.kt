@@ -1,4 +1,4 @@
-package com.example.slugmenu
+package com.pras.slugmenu
 
 import org.junit.Test
 

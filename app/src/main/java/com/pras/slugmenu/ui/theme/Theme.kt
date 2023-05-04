@@ -1,4 +1,4 @@
-package com.example.slugmenu.ui.theme
+package com.pras.slugmenu.ui.theme
 
 import android.app.Activity
 import android.os.Build

@@ -1,4 +1,4 @@
-package com.example.slugmenu
+package com.pras.slugmenu
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi

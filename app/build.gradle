@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.slugmenu'
+    namespace 'com.pras.slugmenu'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.slugmenu"
+        applicationId "com.pras.slugmenu"
         minSdk 26
         targetSdk 33
         versionCode 1

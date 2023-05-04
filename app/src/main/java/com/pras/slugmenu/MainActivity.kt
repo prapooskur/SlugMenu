@@ -1,4 +1,4 @@
-package com.example.slugmenu
+package com.pras.slugmenu
 
 import android.content.Context
 import android.os.Bundle
@@ -18,7 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.slugmenu.ui.theme.SlugMenuTheme
+import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

@@ -1,4 +1,4 @@
-package com.example.slugmenu
+package com.pras.slugmenu
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

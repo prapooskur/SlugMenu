@@ -1,4 +1,4 @@
-package com.example.slugmenu.ui.theme
+package com.pras.slugmenu.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
