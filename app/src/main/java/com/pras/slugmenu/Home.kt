@@ -43,13 +43,14 @@ fun HomeScreen(navController: NavController) {
         },
         content = {innerPadding ->
             TwoByTwoGrid(navController = navController, innerPadding = innerPadding)
+//            CardList(navController = navController)
 /*
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues = innerPadding) // padding applied here
             ) {
-//                CardList(navController = navController)
+//
                 TwoByTwoGrid(navController = navController)
             }
 
@@ -98,7 +99,7 @@ fun TopBarHome(titleText: String, navController: NavController, color: Color = M
 fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
     val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
-    val locations2line = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+//    val locations2line = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
