@@ -14,6 +14,12 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.IOException
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 
 /*
@@ -23,6 +29,41 @@ CATEGORIES:
 - scrapeCafe: McHenry, Oakes
 - scrapeMarket: Porter
  */
+
+suspend fun scrapeWebDataOkHTTP (inputUrl: String): String {
+    val baseurl = "https://nutrition.sa.ucsc.edu/shortmenu.aspx?sName=UC+Santa+Cruz+Dining&locationNum="
+    val url: String = baseurl+inputUrl
+    val locationCookie: String = inputUrl.substring(0,2)
+
+    //extremely scuffed cache time solution
+    val now = LocalDateTime.now()
+    val endOfDay = now.with(LocalTime.MAX)
+    val duration = Duration.between(now, endOfDay)
+    val secondsLeft: Int = duration.seconds.toInt()
+
+
+    val client = OkHttpClient()
+
+    val request = Request.Builder()
+        .url(url)
+        .addHeader("Cookie", "WebInaCartDates=")
+        .addHeader("Cookie", "WebInaCartLocation=$locationCookie")
+        .addHeader("Cookie", "WebInaCartMeals=")
+        .addHeader("Cookie", "WebInaCartQtys=")
+        .addHeader("Cookie", "WebInaCartRecipes=")
+        .header("Cache-Control", "max-age=$secondsLeft")
+        .build()
+
+    var html = ""
+    try {
+        val response = client.newCall(request).execute()
+        html = response.body?.string().toString()
+    } catch (e: IOException) {
+        Log.d("TAG", "Exception while scraping: $e")
+    }
+    return html
+}
+
 
 suspend fun scrapeWebData (inputUrl: String): String {
     val baseurl = "https://nutrition.sa.ucsc.edu/shortmenu.aspx?sName=UC+Santa+Cruz+Dining&locationNum="
@@ -63,7 +104,7 @@ suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
 
     val allListItems = mutableListOf<MutableList<String>>()
 
-    val webScrapeData = scrapeWebData(inputUrl)
+    val webScrapeData = scrapeWebDataOkHTTP(inputUrl)
 
     val doc: Document = Jsoup.parse(webScrapeData)
     val parseTime = measureTimeMillis {
