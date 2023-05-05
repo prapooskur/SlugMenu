@@ -1,6 +1,5 @@
 package com.pras.slugmenu
 
-import android.net.http.HttpResponseCache.install
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,10 +23,9 @@ import java.time.LocalTime
 
 /*
 CATEGORIES:
-- scrapeDiningHall: 9/10, C/S, Cr/M, P/K
-- scrapeCoffeeBar: Perks, Terra Fresca, Stevenson
-- scrapeCafe: McHenry, Oakes
-- scrapeMarket: Porter
+- getDiningMenu: 9/10, C/S, Cr/M, P/K
+- getSingleMenu: Perks, Terra Fresca, Stevenson, Porter, Global Village
+- getOakesMenu: Oakes
  */
 
 suspend fun scrapeWebDataOkHTTP (inputUrl: String): String {
@@ -41,16 +39,18 @@ suspend fun scrapeWebDataOkHTTP (inputUrl: String): String {
     val duration = Duration.between(now, endOfDay)
     val secondsLeft: Int = duration.seconds.toInt()
 
+    Log.d("TAG", "Seconds left in day: $secondsLeft")
+
 
     val client = OkHttpClient()
 
     val request = Request.Builder()
         .url(url)
-        .addHeader("Cookie", "WebInaCartDates=")
+        .addHeader("Cookie", "WebInaCartDates")
         .addHeader("Cookie", "WebInaCartLocation=$locationCookie")
-        .addHeader("Cookie", "WebInaCartMeals=")
-        .addHeader("Cookie", "WebInaCartQtys=")
-        .addHeader("Cookie", "WebInaCartRecipes=")
+        .addHeader("Cookie", "WebInaCartMeals")
+        .addHeader("Cookie", "WebInaCartQtys")
+        .addHeader("Cookie", "WebInaCartRecipes")
         .header("Cache-Control", "max-age=$secondsLeft")
         .build()
 
@@ -61,6 +61,7 @@ suspend fun scrapeWebDataOkHTTP (inputUrl: String): String {
     } catch (e: IOException) {
         Log.d("TAG", "Exception while scraping: $e")
     }
+    Log.d("TAG", "HTML: $html")
     return html
 }
 
@@ -104,7 +105,7 @@ suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
 
     val allListItems = mutableListOf<MutableList<String>>()
 
-    val webScrapeData = scrapeWebDataOkHTTP(inputUrl)
+    val webScrapeData = scrapeWebData(inputUrl)
 
     val doc: Document = Jsoup.parse(webScrapeData)
     val parseTime = measureTimeMillis {
@@ -162,15 +163,15 @@ suspend fun getDiningMenuAsync(locationId: String): Array<MutableList<String>> =
     getDiningMenu(locationId)
 }
 
-suspend fun getCoffeeMenu(inputUrl: String): Array<MutableList<String>> {
+suspend fun getSingleMenu(inputUrl: String): Array<MutableList<String>> {
     return withContext(Dispatchers.IO) {
         val menu = getWebData(inputUrl)
 //        Log.d("TAG", "array: $menus")
         arrayOf(menu[0])
     }
 }
-suspend fun getCoffeeMenuAsync(locationId: String): Array<MutableList<String>> = withContext(Dispatchers.IO) {
-    getCoffeeMenu(locationId)
+suspend fun getSingleMenuAsync(locationId: String): Array<MutableList<String>> = withContext(Dispatchers.IO) {
+    getSingleMenu(locationId)
 }
 
 suspend fun getOakesMenu(inputUrl: String): Array<MutableList<String>> {

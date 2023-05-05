@@ -194,15 +194,15 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
                 val porterKresgeJob =
                     async { getDiningMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
                 val perkCoffeeJob =
-                    async { getCoffeeMenuAsync("22&locationName=Perk+Coffee+Bars&naFlag=1") }
+                    async { getSingleMenuAsync("22&locationName=Perk+Coffee+Bars&naFlag=1") }
                 val terraFrescaJob =
-                    async { getCoffeeMenuAsync("45&locationName=UCen+Coffee+Bar&naFlag=1") }
+                    async { getSingleMenuAsync("45&locationName=UCen+Coffee+Bar&naFlag=1") }
                 val porterMarketJob =
-                    async { getCoffeeMenuAsync("50&locationName=Porter+Market&naFlag=1") }
+                    async { getSingleMenuAsync("50&locationName=Porter+Market&naFlag=1") }
                 val stevCoffeeJob =
-                    async { getCoffeeMenuAsync("26&locationName=Stevenson+Coffee+House&naFlag=1") }
+                    async { getSingleMenuAsync("26&locationName=Stevenson+Coffee+House&naFlag=1") }
                 val globalVillageJob =
-                    async { getCoffeeMenuAsync("46&locationName=Global+Village+Cafe&naFlag=1") }
+                    async { getSingleMenuAsync("46&locationName=Global+Village+Cafe&naFlag=1") }
                 val oakesCafeJob =
                     async { getOakesMenuAsync("23&locationName=Oakes+Cafe&naFlag=1") }
 
