@@ -1,6 +1,6 @@
 name: Build and Sign App
 run-name: Building and signing app
-on: [workflow_dispatch]
+on: [workflow_dispatch,push]
 jobs:
   build-app:
     runs-on: ubuntu-latest
