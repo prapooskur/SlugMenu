@@ -248,11 +248,9 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     composable("ninelewis") {
         DiningMenu(navController, nineLewisMenus, "Nine/Lewis")
     }
-
     composable("cowellstev") {
         DiningMenu(navController, cowellStevMenus, "Cowell/Stevenson")
     }
-
     composable("crownmerrill") {
         DiningMenu(navController, crownMerrillMenus, "Crown/Merrill")
     }
@@ -261,28 +259,24 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     }
 
     composable("perkcoffee") {
-        NonDiningMenu(navController, perkCoffeeMenu[0], "Perk Coffee Bars")
+        NonDiningMenu(navController, perkCoffeeMenu, "Perk Coffee Bars")
     }
-
     composable("terrafresca") {
-        NonDiningMenu(navController, terraFrescaMenu[0], "Terra Fresca")
+        NonDiningMenu(navController, terraFrescaMenu, "Terra Fresca")
     }
-
     composable("portermarket") {
-        NonDiningMenu(navController, porterMarketMenu[0], "Porter Market")
+        NonDiningMenu(navController, porterMarketMenu, "Porter Market")
     }
-
     composable("stevcoffee") {
-        NonDiningMenu(navController, stevCoffeeMenu[0], "Stevenson Coffee House")
+        NonDiningMenu(navController, stevCoffeeMenu, "Stevenson Coffee House")
     }
     composable("globalvillage") {
-        NonDiningMenu(navController, globalVillageMenu[0], "Global Village Cafe")
+        NonDiningMenu(navController, globalVillageMenu, "Global Village Cafe")
     }
+
     composable("oakescafe") {
         OakesCafeMenu(navController, oakesCafeMenu, "Oakes Cafe")
     }
-    /*
-     */
 }
 
 

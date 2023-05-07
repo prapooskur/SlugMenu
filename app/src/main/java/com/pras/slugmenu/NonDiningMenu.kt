@@ -6,13 +6,16 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
-fun NonDiningMenu(navController: NavController, menu: MutableList<String>, name: String) {
-    Log.d("TAG", "Opening CoffeeMenu!")
+fun NonDiningMenu(navController: NavController, menu: Array<MutableList<String>>, name: String) {
+    Log.d("TAG", "Opening NonDiningMenu!")
 //    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
     Column() {
         TopBar(titleText = name, navController = navController)
-        PrintPriceMenu(itemList = menu)
-
+        if (menu.isNotEmpty()) {
+            PrintPriceMenu(itemList = menu[0])
+        } else {
+            PrintPriceMenu(itemList = mutableListOf<String>())
+        }
     }
 
 }

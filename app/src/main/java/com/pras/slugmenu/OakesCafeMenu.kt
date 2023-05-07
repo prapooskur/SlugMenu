@@ -37,7 +37,11 @@ fun OakesCafeMenu(navController: NavController, menu: Array<MutableList<String>>
     Log.d("TAG", "Opening OakesCafeMenu!")
 //    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
     Column() {
-        PriceTabBar(menu[0],menu[1],navController,name)
+        if (menu.isNotEmpty()) {
+            PriceTabBar(menu[0], menu[1], navController, name)
+        } else {
+            PriceTabBar(mutableListOf<String>(), mutableListOf<String>(), navController, name)
+        }
     }
 
 }

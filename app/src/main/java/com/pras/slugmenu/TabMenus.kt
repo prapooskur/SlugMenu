@@ -314,7 +314,7 @@ fun PrintMenu(itemList: MutableList<String>) {
 }
 
 //Menus with prices - Coffee Bars, Cafes, Markets
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrintPriceMenu(itemList: MutableList<String>) {
     if (itemList.size > 0) {

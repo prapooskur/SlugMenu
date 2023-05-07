@@ -15,6 +15,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import retrofit2.Retrofit
 import java.io.IOException
 import java.time.Duration
 import java.time.LocalDateTime
@@ -26,6 +27,39 @@ CATEGORIES:
 - getDiningMenu: 9/10, C/S, Cr/M, P/K
 - getSingleMenu: Perks, Terra Fresca, Stevenson, Porter, Global Village
 - getOakesMenu: Oakes
+ */
+
+/*
+suspend fun scrapeWebDataRetrofit (inputUrl: String): String {
+    val baseurl = "https://nutrition.sa.ucsc.edu/shortmenu.aspx?sName=UC+Santa+Cruz+Dining&locationNum="
+    val url: String = baseurl+inputUrl
+    val locationCookie: String = inputUrl.substring(0,2)
+
+    //extremely scuffed cache time solution
+    val now = LocalDateTime.now()
+    val endOfDay = now.with(LocalTime.MAX)
+    val duration = Duration.between(now, endOfDay)
+    val secondsLeft: Int = duration.seconds.toInt()
+
+    Log.d("TAG", "Seconds left in day: $secondsLeft")
+
+
+    val client = Retrofit.Builder()
+        .baseUrl(url)
+        .
+        .build();
+
+    var html = ""
+    try {
+        val response = client.newCall(request).execute()
+        html = response.body?.string().toString()
+    } catch (e: IOException) {
+        Log.d("TAG", "Exception while scraping: $e")
+    }
+    Log.d("TAG", "HTML: $html")
+    return html
+}
+
  */
 
 suspend fun scrapeWebDataOkHTTP (inputUrl: String): String {
@@ -46,11 +80,11 @@ suspend fun scrapeWebDataOkHTTP (inputUrl: String): String {
 
     val request = Request.Builder()
         .url(url)
-        .addHeader("Cookie", "WebInaCartDates")
-        .addHeader("Cookie", "WebInaCartLocation=$locationCookie")
-        .addHeader("Cookie", "WebInaCartMeals")
-        .addHeader("Cookie", "WebInaCartQtys")
-        .addHeader("Cookie", "WebInaCartRecipes")
+        .header("Cookie", "WebInaCartDates")
+        .header("Cookie", "WebInaCartLocation=$locationCookie")
+        .header("Cookie", "WebInaCartMeals")
+        .header("Cookie", "WebInaCartQtys")
+        .header("Cookie", "WebInaCartRecipes")
         .header("Cache-Control", "max-age=$secondsLeft")
         .build()
 
@@ -167,7 +201,13 @@ suspend fun getSingleMenu(inputUrl: String): Array<MutableList<String>> {
     return withContext(Dispatchers.IO) {
         val menu = getWebData(inputUrl)
 //        Log.d("TAG", "array: $menus")
-        arrayOf(menu[0])
+        Log.d("TAG", "array: "+menu.size)
+        if (menu.size > 0) {
+            arrayOf(menu[0])
+        } else {
+            arrayOf()
+        }
+
     }
 }
 suspend fun getSingleMenuAsync(locationId: String): Array<MutableList<String>> = withContext(Dispatchers.IO) {
@@ -178,7 +218,11 @@ suspend fun getOakesMenu(inputUrl: String): Array<MutableList<String>> {
     return withContext(Dispatchers.IO) {
         val menus = getWebData(inputUrl)
 //        Log.d("TAG", "array: $menus")
-        arrayOf(menus[0],menus[1])
+        if (menus.size > 0) {
+            arrayOf(menus[0],menus[1])
+        } else {
+            arrayOf()
+        }
     }
 }
 suspend fun getOakesMenuAsync(locationId: String): Array<MutableList<String>> = withContext(Dispatchers.IO) {

@@ -87,6 +87,8 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-websockets:$ktor_version")
 
+    // Retrofit (HTTP caching test)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
     //Android navigation and Material 3
     def nav_version = "2.5.3"
     implementation("androidx.navigation:navigation-compose:$nav_version")
