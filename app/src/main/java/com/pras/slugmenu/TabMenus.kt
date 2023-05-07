@@ -393,3 +393,59 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
         }
     }
 }
+
+//Menus with multiple lists of prices - Oakes
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PrintOakesMenu(itemList: MutableList<String>) {
+    if (itemList.size > 0) {
+        LazyColumn {
+            items(itemList.size) { item ->
+                val itemval = itemList[item]
+
+                if (itemval.contains("--")) {
+                    Divider(
+                        thickness = 2.dp
+                    )
+
+                    ListItem(
+                        headlineText = {
+                            Text(
+                                itemList[item],
+                                fontWeight = FontWeight.ExtraBold,
+                                textAlign = TextAlign.End
+                            )
+                        },
+                    )
+
+                    Divider(
+                        thickness = 2.dp
+                    )
+                }
+
+                if (itemval.contains("$") && !itemList[item+1].contains("$") ) {
+                    ListItem(
+                        headlineText = {
+                            Text(
+                                itemList[item+1],
+                            )
+                        },
+                        supportingText = {
+                            Text(
+                                itemList[item],
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+
+                    )
+                }
+            }
+        }
+    } else {
+        ListItem(
+            modifier = Modifier.fillMaxWidth(),
+            headlineText = {
+            }
+        )
+    }
+}
