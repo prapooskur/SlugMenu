@@ -361,12 +361,35 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
             }
         }
     } else {
-        ListItem(
-            modifier = Modifier.fillMaxWidth(),
-            headlineText = {
-
+        TabRow(
+            selectedTabIndex = 0
+            /*
+            selectedTabIndex = pagerState.currentPage,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
+                )
             }
 
-        )
+             */
+        ) {
+            Tab(
+                selected = true,
+                onClick = { /*nothing*/ },
+                text = {
+                    Text(
+                        text = "Closed",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally),
+                        textAlign = TextAlign.Center,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            )
+        }
     }
 }
