@@ -38,9 +38,9 @@ fun OakesCafeMenu(navController: NavController, menu: Array<MutableList<String>>
 //    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
     Column() {
         if (menu.isNotEmpty()) {
-            PriceTabBar(menu[0], menu[1], navController, name)
+            PriceTabBar(menu, navController, name)
         } else {
-            PriceTabBar(mutableListOf<String>(), mutableListOf<String>(), navController, name)
+            PriceTabBar(arrayOf(mutableListOf<String>(), mutableListOf<String>()), navController, name)
         }
     }
 
@@ -48,12 +48,12 @@ fun OakesCafeMenu(navController: NavController, menu: Array<MutableList<String>>
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PriceTabBar(breakfastMenu: MutableList<String>, allDayMenu: MutableList<String>, navController: NavController, locationName: String = "default college") {
+fun PriceTabBar(menuArray: Array<MutableList<String>>, navController: NavController, locationName: String = "default college") {
     val currentHour: Int = LocalDateTime.now().hour
 //    Log.d("TAG","hour: "+currentHour)
 
 
-    val titles: List<String> = if (breakfastMenu.isEmpty() && allDayMenu.isEmpty()) {
+    val titles: List<String> = if (menuArray[0].isEmpty() && menuArray[1].isEmpty()) {
         listOf("Closed")
     } else {
         listOf("Breakfast", "All Day")
@@ -117,16 +117,7 @@ fun PriceTabBar(breakfastMenu: MutableList<String>, allDayMenu: MutableList<Stri
             pageCount = titles.size,
             state = pagerState
         ) {state ->
-            when (state) {
-                0 -> {
-                    PrintOakesMenu(itemList = breakfastMenu)
-                    // Content for Tab 1
-                }
-                1 -> {
-                    PrintOakesMenu(itemList = allDayMenu)
-                    // Content for Tab 2
-                }
-            }
+            PrintOakesMenu(itemList = menuArray[state])
         }
     }
 }

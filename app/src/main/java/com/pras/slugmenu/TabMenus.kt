@@ -50,14 +50,14 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SwipableTabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, dinnerMenu: MutableList<String>, lateNightMenu: MutableList<String>, navController: NavController, collegeName: String = "default college") {
+fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavController, collegeName: String = "default college") {
     val currentHour: Int = LocalDateTime.now().hour
 //    Log.d("TAG","hour: "+currentHour)
 
 
-    val titles: List<String> = if (breakfastMenu.isEmpty() && lunchMenu.isEmpty() && dinnerMenu.isEmpty() && lateNightMenu.isEmpty()) {
+    val titles: List<String> = if (menuArray[0].isEmpty() && menuArray[1].isEmpty() && menuArray[2].isEmpty() && menuArray[3].isEmpty()) {
         listOf("Closed")
-    } else if (lateNightMenu.isEmpty()) {
+    } else if (menuArray[3].isEmpty()) {
         listOf("Breakfast", "Lunch", "Dinner")
     } else {
         listOf("Breakfast", "Lunch", "Dinner", "Late Night")
@@ -72,8 +72,8 @@ fun SwipableTabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<St
         // dinner from 5-8
         currentHour in 17..19 -> 2
         // Late night from 8-11 if available, dinner archive otherwise
-        currentHour in 20..23 && (lateNightMenu.isNotEmpty()) -> 3
-        currentHour in 20..23 && (lateNightMenu.isEmpty()) -> 2
+        currentHour in 20..23 && (menuArray[3].isNotEmpty()) -> 3
+        currentHour in 20..23 && (menuArray[3].isEmpty()) -> 2
         // if all else fails (even though it never should), default to breakfast
         else -> 0
     }
@@ -125,24 +125,7 @@ fun SwipableTabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<St
             pageCount = titles.size,
             state = pagerState
         ) {state ->
-            when (state) {
-                0 -> {
-                    PrintMenu(itemList = breakfastMenu)
-                    // Content for Tab 1
-                }
-                1 -> {
-                    PrintMenu(itemList = lunchMenu)
-                    // Content for Tab 2
-                }
-                2 -> {
-                    PrintMenu(itemList = dinnerMenu)
-                    // Content for Tab 3
-                }
-                3 -> {
-                    PrintMenu(itemList = lateNightMenu)
-                    // Content for Tab 3
-                }
-            }
+            PrintMenu(itemList = menuArray[state])
         }
 
     }

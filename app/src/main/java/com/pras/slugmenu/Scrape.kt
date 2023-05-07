@@ -59,9 +59,9 @@ suspend fun scrapeWebDataRetrofit (inputUrl: String): String {
     Log.d("TAG", "HTML: $html")
     return html
 }
-
  */
 
+//cookies currently don't work on this
 suspend fun scrapeWebDataOkHTTP (inputUrl: String): String {
     val baseurl = "https://nutrition.sa.ucsc.edu/shortmenu.aspx?sName=UC+Santa+Cruz+Dining&locationNum="
     val url: String = baseurl+inputUrl

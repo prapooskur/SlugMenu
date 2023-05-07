@@ -12,7 +12,7 @@ fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>
 
 
     Column {
-        SwipableTabBar(menuList[0],menuList[1],menuList[2],menuList[3], navController, collegeName)
+        SwipableTabBar(menuList, navController, collegeName)
 //        TabBar(menuList[0],menuList[1],menuList[2],menuList[3], navController, collegeName)
 //        tabsWithSwiping()
 //        DisplayMenu(inputUrl = nl, time = Time.DINNER)
