@@ -35,12 +35,11 @@ suspend fun scrapeWebData (inputUrl: String): String {
         cookie(name = "WebInaCartMeals", value = "")
         cookie(name = "WebInaCartQtys",value = "")
         cookie(name = "WebInaCartRecipes",value = "")
-
     }
     client.close()
+
     val stringBody: String = httpResponse.body()
     return(stringBody)
-
 }
 
 suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
