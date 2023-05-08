@@ -188,14 +188,6 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     if (!menuCached) {
         val scrapeTime = measureTimeMillis {
             runBlocking {
-                val nineLewisJob =
-                    async { getDiningMenuAsync("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1") }
-                val cowellStevJob =
-                    async { getDiningMenuAsync("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1") }
-                val crownMerrillJob =
-                    async { getDiningMenuAsync("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1") }
-                val porterKresgeJob =
-                    async { getDiningMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
                 val perkCoffeeJob =
                     async { getSingleMenuAsync("22&locationName=Perk+Coffee+Bars&naFlag=1") }
                 val terraFrescaJob =
@@ -209,10 +201,6 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
                 val oakesCafeJob =
                     async { getOakesMenuAsync("23&locationName=Oakes+Cafe&naFlag=1") }
 
-                nineLewisMenus = nineLewisJob.await()
-                cowellStevMenus = cowellStevJob.await()
-                crownMerrillMenus = crownMerrillJob.await()
-                porterKresgeMenus = porterKresgeJob.await()
                 perkCoffeeMenu = perkCoffeeJob.await()
                 terraFrescaMenu = terraFrescaJob.await()
                 porterMarketMenu = porterMarketJob.await()
@@ -222,21 +210,17 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
 
             }
             val menuWriter = FileWriter(menuCache)
-            menuWriter.write(gson.toJson(arrayOf(nineLewisMenus,cowellStevMenus,crownMerrillMenus,porterKresgeMenus,perkCoffeeMenu,terraFrescaMenu,porterMarketMenu,stevCoffeeMenu,globalVillageMenu,oakesCafeMenu)))
+            menuWriter.write(gson.toJson(arrayOf(perkCoffeeMenu,terraFrescaMenu,porterMarketMenu,stevCoffeeMenu,globalVillageMenu,oakesCafeMenu)))
             menuWriter.close()
         }
         Log.d("TAG", "Scrape time: " + scrapeTime + "ms.")
     } else {
-        nineLewisMenus = cachedData[0]
-        cowellStevMenus = cachedData[1]
-        crownMerrillMenus = cachedData[2]
-        porterKresgeMenus = cachedData[3]
-        perkCoffeeMenu = cachedData[4]
-        terraFrescaMenu = cachedData[5]
-        porterMarketMenu = cachedData[6]
-        stevCoffeeMenu = cachedData[7]
-        globalVillageMenu = cachedData[8]
-        oakesCafeMenu = cachedData[9]
+        perkCoffeeMenu = cachedData[0]
+        terraFrescaMenu = cachedData[1]
+        porterMarketMenu = cachedData[2]
+        stevCoffeeMenu = cachedData[3]
+        globalVillageMenu = cachedData[4]
+        oakesCafeMenu = cachedData[5]
         Log.d("TAG", "Menu cache hit.")
     }
 
