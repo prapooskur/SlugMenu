@@ -101,6 +101,8 @@ fun Init(startDestination: String) {
 fun NavGraphBuilder.addScreens(navController: NavHostController, context: Context) {
 
 
+    //file caching solution, replace with room and move to on menu open
+
     val date = LocalDate.now().toString()
 
     val menuCache = File(context.cacheDir, "menuCache")
@@ -238,6 +240,9 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     }
 
 
+
+    val menuDb = MenuDatabase.getInstance(context)
+
     composable("home") {
         HomeScreen(navController)
     }
@@ -246,16 +251,16 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     }
 
     composable("ninelewis") {
-        DiningMenu(navController, nineLewisMenus, "Nine/Lewis")
+        DiningMenuRoom(navController, "Nine/Lewis","40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1",menuDb)
     }
     composable("cowellstev") {
-        DiningMenu(navController, cowellStevMenus, "Cowell/Stevenson")
+        DiningMenuRoom(navController, "Cowell/Stevenson","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1",menuDb)
     }
     composable("crownmerrill") {
-        DiningMenu(navController, crownMerrillMenus, "Crown/Merrill")
+        DiningMenuRoom(navController, "Crown/Merrill","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1",menuDb)
     }
     composable("porterkresge") {
-        DiningMenu(navController, porterKresgeMenus, "Porter/Kresge")
+        DiningMenuRoom(navController, "Porter/Kresge","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1",menuDb)
     }
 
     composable("perkcoffee") {

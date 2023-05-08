@@ -12,9 +12,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 data class UserPreferences(val GridView: Boolean)
-class PreferencesDatastore(val context: Context) {
+
+class PreferencesDatastore(private val context: Context) {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-    val USELIST = booleanPreferencesKey("use_list")
+
+    private val USELIST = booleanPreferencesKey("use_list")
 
     val useListFlow: Flow<Boolean> = context.dataStore.data
         .map {preferences ->
@@ -26,8 +28,5 @@ class PreferencesDatastore(val context: Context) {
             settings[USELIST] = enable
         }
     }
-
-
-
-
 }
+
