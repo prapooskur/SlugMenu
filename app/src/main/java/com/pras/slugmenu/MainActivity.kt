@@ -2,7 +2,6 @@ package com.pras.slugmenu
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -20,18 +19,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import java.io.BufferedReader
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileReader
-import java.io.FileWriter
-import java.io.IOException
-import java.time.LocalDate
-import kotlin.system.measureTimeMillis
 
 
 
