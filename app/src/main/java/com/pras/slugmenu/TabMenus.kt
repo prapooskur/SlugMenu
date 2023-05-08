@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -35,14 +34,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.pager.pagerTabIndicatorOffset
 import java.time.LocalDateTime
 //Swipable tabs
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 
 
@@ -85,8 +79,8 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavCont
     val pagerState = androidx.compose.foundation.pager.rememberPagerState(initState)
     val scope = rememberCoroutineScope()
 
-    Surface() {
-        Column() {
+    Surface {
+        Column {
             TopBar(titleText = collegeName, color = MaterialTheme.colorScheme.primary, navController = navController)
         }
     }
@@ -133,7 +127,8 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavCont
     }
 }
 
-
+//replaced with swipabletabbar
+/*
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, dinnerMenu: MutableList<String>, lateNightMenu: MutableList<String>, navController: NavController, collegeName: String = "default college") {
@@ -227,8 +222,8 @@ fun TabBar(breakfastMenu: MutableList<String>, lunchMenu: MutableList<String>, d
 
     }
 }
+ */
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, navController: NavController) {
     TopAppBar(
@@ -252,7 +247,7 @@ fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, 
 }
 
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrintMenu(itemList: MutableList<String>) {
     if (itemList.size > 0) {
@@ -260,7 +255,7 @@ fun PrintMenu(itemList: MutableList<String>) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
                 var boldness = FontWeight.Normal
-                var divider: Boolean = false
+                var divider = false
                 if (itemval.contains("--")) {
                     boldness = FontWeight.ExtraBold
                     divider = true
