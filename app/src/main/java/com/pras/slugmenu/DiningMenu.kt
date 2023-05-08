@@ -57,8 +57,8 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             SwipableTabBar(menuList, navController, locationName)
         } else {
             // Otherwise, display a loading indicator
-            Surface() {
-                Column() {
+            Surface {
+                Column {
                     TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
                 }
             }
