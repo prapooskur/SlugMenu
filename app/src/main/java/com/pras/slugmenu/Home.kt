@@ -29,11 +29,30 @@ import androidx.navigation.NavController
 @Composable
 fun HomeScreen(navController: NavController) {
     //Collapsing toolbar rewrite later?
-
     Scaffold(
         topBar = {
             Surface(shadowElevation = 4.dp) {
-                TopBarHome(titleText = "Slug Menu", navController)
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Slug Menu",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 20.sp
+                        )
+                    },
+                    actions = {
+                        IconButton(onClick = { navController.navigate("settings") }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Settings,
+                                contentDescription = "Settings",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+
+                        }
+                    },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+                )
+
             }
         },
         content = {innerPadding ->
