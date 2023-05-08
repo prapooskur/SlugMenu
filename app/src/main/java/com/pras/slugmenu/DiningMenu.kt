@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +43,7 @@ fun DiningMenuRoom(navController: NavController, collegeName: String, collegeUrl
     val menuDao = menuDatabase.menuDao()
 
     // Define a state to hold the retrieved Menu object
-    var menuList: Array<MutableList<String>> = arrayOf()
+    var menuList: Array<MutableList<String>> = arrayOf(mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf())
 
     // Define a state to hold a flag indicating whether the data has been loaded from the cache
     val dataLoadedState = remember { mutableStateOf(false) }
@@ -52,9 +54,11 @@ fun DiningMenuRoom(navController: NavController, collegeName: String, collegeUrl
             val menu = menuDao.getMenu(collegeName)
             if (menu != null && menu.cacheDate == currentDate) {
                 menuList = MenuTypeConverters().fromString(menu.menus)
+                Log.d("TAG","menu list: ${menuList.size}")
                 dataLoadedState.value = true
             } else {
-                menuList = getDiningMenu(collegeUrl)
+                menuList = getDiningMenuAsync(collegeUrl)
+                Log.d("TAG","menu list: ${menuList.size}")
                 menuDao.insertMenu(Menu(collegeName, MenuTypeConverters().fromList(menuList), currentDate))
                 dataLoadedState.value = true
             }
@@ -65,11 +69,15 @@ fun DiningMenuRoom(navController: NavController, collegeName: String, collegeUrl
 
     Column {
         if (dataLoadedState.value) {
-            Log.d("TAG","menu list: $menuList")
             // If the data has been loaded from the cache, display the menu
             SwipableTabBar(menuList, navController, collegeName)
         } else {
             // Otherwise, display a loading indicator
+            Surface() {
+                Column() {
+                    TopBar(titleText = collegeName, color = MaterialTheme.colorScheme.primary, navController = navController)
+                }
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()

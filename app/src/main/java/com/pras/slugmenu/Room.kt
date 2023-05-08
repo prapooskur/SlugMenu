@@ -1,6 +1,7 @@
 package com.pras.slugmenu
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
@@ -34,16 +35,15 @@ interface MenuDao {
 class MenuTypeConverters {
     @TypeConverter
     fun fromString(value: String): Array<MutableList<String>> {
+        Log.d("TAG","from string value: $value")
         val listType = object : TypeToken<Array<MutableList<String>>>() {}.type
-        val immutableLists = Gson().fromJson<Array<List<String>>>(value, listType)
-        return immutableLists.map { it.toMutableList() }.toTypedArray()
+        return Gson().fromJson(value, listType)
     }
 
     @TypeConverter
     fun fromList(value: Array<MutableList<String>>): String {
-        val immutableLists = value.map { it.toList() }
-        return Gson().toJson(immutableLists)
-
+        Log.d("TAG","from list value: $value")
+        return Gson().toJson(value)
     }
 }
 

@@ -55,7 +55,9 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavCont
 //    Log.d("TAG","hour: "+currentHour)
 
 
-    val titles: List<String> = if (menuArray[0].isEmpty() && menuArray[1].isEmpty() && menuArray[2].isEmpty() && menuArray[3].isEmpty()) {
+    val titles: List<String> = if (menuArray.isEmpty()) {
+        listOf("Null")
+    } else if (menuArray[0].isEmpty() && menuArray[1].isEmpty() && menuArray[2].isEmpty() && menuArray[3].isEmpty()) {
         listOf("Closed")
     } else if (menuArray[3].isEmpty()) {
         listOf("Breakfast", "Lunch", "Dinner")

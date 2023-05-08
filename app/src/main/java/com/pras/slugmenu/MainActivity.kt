@@ -152,6 +152,7 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
 //            Log.d("TAG","menu string: $menuString")
             val type = object : TypeToken<Array<Array<MutableList<String>>>>() {}.type
             cachedData = gson.fromJson(menuString, type)
+            Log.d("TAG","cached data: $cachedData")
             menuCached = true
         } else {
             menuCached = false

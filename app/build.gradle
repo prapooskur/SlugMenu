@@ -133,6 +133,9 @@ dependencies {
     //GSON (for caching allmenuarray)
     //TODO - replace with moshi or room?
     implementation("com.google.code.gson:gson:2.10.1")
+    //moshi
+    implementation("com.squareup.moshi:moshi:1.14.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
 
     //Collapsing top bar?
     implementation("me.onebone:toolbar-compose:2.3.5")
