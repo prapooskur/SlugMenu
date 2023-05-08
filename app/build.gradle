@@ -108,17 +108,13 @@ dependencies {
 
     // jsoup HTML parser library @ https://jsoup.org/
     implementation ("org.jsoup:jsoup:1.15.4")
-    // OkHttp for HTTP requests
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
-    // ktor (alternative HTTP test)
+    // ktor for http requests
     def ktor_version="2.3.0"
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-websockets:$ktor_version")
 
-    // Retrofit (HTTP caching test)
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
     //Android navigation and Material 3
     def nav_version = "2.5.3"
     implementation("androidx.navigation:navigation-compose:$nav_version")
@@ -130,7 +126,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 
 
-    //GSON (for caching allmenuarray)
+    //GSON (for saving menus as a string)
     //TODO - replace with moshi or room?
     implementation("com.google.code.gson:gson:2.10.1")
     //moshi
@@ -138,13 +134,13 @@ dependencies {
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
 
     //Collapsing top bar?
-    implementation("me.onebone:toolbar-compose:2.3.5")
+//    implementation("me.onebone:toolbar-compose:2.3.5")
 
     //Save settings?
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     //Colored Splash Screen
-    implementation "androidx.core:core-splashscreen:1.0.0"
+    implementation "androidx.core:core-splashscreen:1.0.1"
 
     //Room (alternate caching implementation)
     def room_version = "2.5.1"

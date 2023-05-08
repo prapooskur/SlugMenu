@@ -40,7 +40,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import kotlinx.coroutines.launch
 
 
-//Swipable tab bar - experimental
+//Swipable tab bar
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

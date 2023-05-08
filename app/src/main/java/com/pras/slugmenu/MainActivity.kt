@@ -278,5 +278,4 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
 @Composable
 fun DefaultPreview() {
     Init("home")
-
 }
