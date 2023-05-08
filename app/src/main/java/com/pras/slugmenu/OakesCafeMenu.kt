@@ -2,8 +2,11 @@ package com.pras.slugmenu
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -27,10 +30,70 @@ import androidx.navigation.NavController
 import java.time.LocalDateTime
 //Swipable tabs
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.time.LocalDate
+
+
+@Composable
+fun OakesCafeMenuRoom(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
+    Log.d("TAG", "Opening OakesCafeMenu with room!")
+
+    val currentDate = LocalDate.now().toString()
+    val menuDao = menuDatabase.menuDao()
+
+    var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf(),mutableListOf())) }
+    val dataLoadedState = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        // Launch a coroutine to retrieve the menu from the database
+        withContext(Dispatchers.IO) {
+            val menu = menuDao.getMenu(locationName)
+            if (menu != null && menu.cacheDate == currentDate) {
+                menuList = MenuTypeConverters().fromString(menu.menus)
+                Log.d("TAG","menu list: ${menuList.size}")
+                dataLoadedState.value = true
+            } else {
+                menuList = getOakesMenuAsync(locationUrl)
+                Log.d("TAG","menu list: ${menuList.size}")
+                menuDao.insertMenu(Menu(locationName, MenuTypeConverters().fromList(menuList), currentDate))
+                dataLoadedState.value = true
+            }
+        }
+    }
+
+    Column() {
+        TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
+        if (dataLoadedState.value) {
+            if (menuList.isNotEmpty()) {
+                PriceTabBar(menuList, navController, locationName)
+            } else {
+                PriceTabBar(
+                    arrayOf(mutableListOf<String>(), mutableListOf<String>()),
+                    navController,
+                    locationName
+                )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 16.dp),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+    }
+
+}
 
 @Composable
 fun OakesCafeMenu(navController: NavController, menu: Array<MutableList<String>>, name: String) {
@@ -73,13 +136,6 @@ fun PriceTabBar(menuArray: Array<MutableList<String>>, navController: NavControl
     var state by remember { mutableStateOf(initState) }
     val pagerState = androidx.compose.foundation.pager.rememberPagerState(initState)
     val scope = rememberCoroutineScope()
-
-    Surface(
-    ) {
-        Column() {
-            TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
-        }
-    }
 
     Column {
         TabRow(

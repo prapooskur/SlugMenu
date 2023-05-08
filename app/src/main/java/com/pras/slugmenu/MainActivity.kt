@@ -101,8 +101,9 @@ fun Init(startDestination: String) {
 fun NavGraphBuilder.addScreens(navController: NavHostController, context: Context) {
 
 
-    //file caching solution, replace with room and move to on menu open
+    //legacy file caching, has been replaced with room
 
+    /*
     val date = LocalDate.now().toString()
 
     val menuCache = File(context.cacheDir, "menuCache")
@@ -195,6 +196,8 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
         Log.d("TAG", "Menu cache hit.")
     }
 
+     */
+
 
 
     val menuDb = MenuDatabase.getInstance(context)
@@ -232,11 +235,11 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
         NonDiningMenuRoom(navController, "Stevenson Coffee House","26&locationName=Stevenson+Coffee+House&naFlag=1",menuDb)
     }
     composable("globalvillage") {
-        NonDiningMenuRoom(navController, "Global Village Cafe","23&locationName=Oakes+Cafe&naFlag=1",menuDb)
+        NonDiningMenuRoom(navController, "Global Village Cafe","46&locationName=Global+Village+Cafe&naFlag=1",menuDb)
     }
 
     composable("oakescafe") {
-        OakesCafeMenu(navController, oakesCafeMenu, "Oakes Cafe")
+        OakesCafeMenuRoom(navController, "Oakes Cafe","23&locationName=Oakes+Cafe&naFlag=1",menuDb)
     }
 }
 
