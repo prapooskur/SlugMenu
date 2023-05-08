@@ -40,6 +40,8 @@ fun HomeScreen(navController: NavController) {
                             fontSize = 20.sp
                         )
                     },
+                    //currently nonfunctional
+                    /*
                     actions = {
                         IconButton(onClick = { navController.navigate("settings") }) {
                             Icon(
@@ -50,6 +52,7 @@ fun HomeScreen(navController: NavController) {
 
                         }
                     },
+                     */
                     colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                 )
 
