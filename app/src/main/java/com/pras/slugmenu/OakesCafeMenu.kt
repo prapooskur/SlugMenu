@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -32,9 +31,6 @@ import java.time.LocalDateTime
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -69,16 +65,14 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
         }
     }
 
-    Column() {
+    Column {
         TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
         if (dataLoadedState.value) {
             if (menuList.isNotEmpty()) {
-                PriceTabBar(menuList, navController, locationName)
+                PriceTabBar(menuList)
             } else {
                 PriceTabBar(
-                    arrayOf(mutableListOf<String>(), mutableListOf<String>()),
-                    navController,
-                    locationName
+                    arrayOf(mutableListOf(), mutableListOf()),
                 )
             }
         } else {
@@ -95,6 +89,8 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
 
 }
 
+//replaced with oakescafemenuroom
+/*
 @Composable
 fun OakesCafeMenu(navController: NavController, menu: Array<MutableList<String>>, name: String) {
     Log.d("TAG", "Opening OakesCafeMenu!")
@@ -108,10 +104,11 @@ fun OakesCafeMenu(navController: NavController, menu: Array<MutableList<String>>
     }
 
 }
+ */
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PriceTabBar(menuArray: Array<MutableList<String>>, navController: NavController, locationName: String = "default college") {
+fun PriceTabBar(menuArray: Array<MutableList<String>>) {
     val currentHour: Int = LocalDateTime.now().hour
 //    Log.d("TAG","hour: "+currentHour)
 
