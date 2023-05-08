@@ -136,6 +136,15 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     var menuCached: Boolean = false
 //    var dateCached: Boolean = false
 
+    var nineLewisMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var cowellStevMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var crownMerrillMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var porterKresgeMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var perkCoffeeMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var terraFrescaMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var porterMarketMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var stevCoffeeMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
+    var globalVillageMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
     var oakesCafeMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
 
     try {
@@ -144,7 +153,6 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
 //            Log.d("TAG","menu string: $menuString")
             val type = object : TypeToken<Array<Array<MutableList<String>>>>() {}.type
             cachedData = gson.fromJson(menuString, type)
-            Log.d("TAG","cached data: $cachedData")
             menuCached = true
         } else {
             menuCached = false
@@ -180,22 +188,57 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     if (!menuCached) {
         val scrapeTime = measureTimeMillis {
             runBlocking {
+                val nineLewisJob =
+                    async { getDiningMenuAsync("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1") }
+                val cowellStevJob =
+                    async { getDiningMenuAsync("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1") }
+                val crownMerrillJob =
+                    async { getDiningMenuAsync("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1") }
+                val porterKresgeJob =
+                    async { getDiningMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
+                val perkCoffeeJob =
+                    async { getSingleMenuAsync("22&locationName=Perk+Coffee+Bars&naFlag=1") }
+                val terraFrescaJob =
+                    async { getSingleMenuAsync("45&locationName=UCen+Coffee+Bar&naFlag=1") }
+                val porterMarketJob =
+                    async { getSingleMenuAsync("50&locationName=Porter+Market&naFlag=1") }
+                val stevCoffeeJob =
+                    async { getSingleMenuAsync("26&locationName=Stevenson+Coffee+House&naFlag=1") }
+                val globalVillageJob =
+                    async { getSingleMenuAsync("46&locationName=Global+Village+Cafe&naFlag=1") }
                 val oakesCafeJob =
                     async { getOakesMenuAsync("23&locationName=Oakes+Cafe&naFlag=1") }
 
+                nineLewisMenus = nineLewisJob.await()
+                cowellStevMenus = cowellStevJob.await()
+                crownMerrillMenus = crownMerrillJob.await()
+                porterKresgeMenus = porterKresgeJob.await()
+                perkCoffeeMenu = perkCoffeeJob.await()
+                terraFrescaMenu = terraFrescaJob.await()
+                porterMarketMenu = porterMarketJob.await()
+                stevCoffeeMenu = stevCoffeeJob.await()
+                globalVillageMenu = globalVillageJob.await()
                 oakesCafeMenu = oakesCafeJob.await()
 
             }
             val menuWriter = FileWriter(menuCache)
-            menuWriter.write(gson.toJson(arrayOf(oakesCafeMenu)))
+            menuWriter.write(gson.toJson(arrayOf(nineLewisMenus,cowellStevMenus,crownMerrillMenus,porterKresgeMenus,perkCoffeeMenu,terraFrescaMenu,porterMarketMenu,stevCoffeeMenu,globalVillageMenu,oakesCafeMenu)))
             menuWriter.close()
         }
         Log.d("TAG", "Scrape time: " + scrapeTime + "ms.")
     } else {
-        oakesCafeMenu = cachedData[0]
+        nineLewisMenus = cachedData[0]
+        cowellStevMenus = cachedData[1]
+        crownMerrillMenus = cachedData[2]
+        porterKresgeMenus = cachedData[3]
+        perkCoffeeMenu = cachedData[4]
+        terraFrescaMenu = cachedData[5]
+        porterMarketMenu = cachedData[6]
+        stevCoffeeMenu = cachedData[7]
+        globalVillageMenu = cachedData[8]
+        oakesCafeMenu = cachedData[9]
         Log.d("TAG", "Menu cache hit.")
     }
-
      */
 
 
