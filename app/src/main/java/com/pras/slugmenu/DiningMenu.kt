@@ -13,9 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
@@ -35,7 +33,7 @@ fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>
 }
 
 @Composable
-fun DiningMenuRoom(navController: NavController, collegeName: String, collegeUrl: String, menuDatabase: MenuDatabase) {
+fun DiningMenuRoom(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
     Log.d("TAG", "Hello, World from room!")
 //    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
 
@@ -51,15 +49,15 @@ fun DiningMenuRoom(navController: NavController, collegeName: String, collegeUrl
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
         withContext(Dispatchers.IO) {
-            val menu = menuDao.getMenu(collegeName)
+            val menu = menuDao.getMenu(locationName)
             if (menu != null && menu.cacheDate == currentDate) {
                 menuList = MenuTypeConverters().fromString(menu.menus)
                 Log.d("TAG","menu list: ${menuList.size}")
                 dataLoadedState.value = true
             } else {
-                menuList = getDiningMenuAsync(collegeUrl)
+                menuList = getDiningMenuAsync(locationUrl)
                 Log.d("TAG","menu list: ${menuList.size}")
-                menuDao.insertMenu(Menu(collegeName, MenuTypeConverters().fromList(menuList), currentDate))
+                menuDao.insertMenu(Menu(locationName, MenuTypeConverters().fromList(menuList), currentDate))
                 dataLoadedState.value = true
             }
         }
@@ -70,12 +68,12 @@ fun DiningMenuRoom(navController: NavController, collegeName: String, collegeUrl
     Column {
         if (dataLoadedState.value) {
             // If the data has been loaded from the cache, display the menu
-            SwipableTabBar(menuList, navController, collegeName)
+            SwipableTabBar(menuList, navController, locationName)
         } else {
             // Otherwise, display a loading indicator
             Surface() {
                 Column() {
-                    TopBar(titleText = collegeName, color = MaterialTheme.colorScheme.primary, navController = navController)
+                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
                 }
             }
             Box(
