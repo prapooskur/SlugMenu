@@ -48,13 +48,13 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
         }
     }
 
-    Column() {
+    Column {
         TopBar(titleText = locationName, navController = navController)
         if (dataLoadedState.value) {
             if (menuList.isNotEmpty()) {
                 PrintPriceMenu(itemList = menuList[0])
             } else {
-                PrintPriceMenu(itemList = mutableListOf<String>())
+                PrintPriceMenu(itemList = mutableListOf())
             }
         } else {
             Box(
@@ -70,6 +70,9 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
 
 }
 
+
+//replaced with NonDiningMenuRoom
+/*
 @Composable
 fun NonDiningMenu(navController: NavController, menu: Array<MutableList<String>>, name: String) {
     Log.d("TAG", "Opening NonDiningMenu!")
@@ -84,3 +87,4 @@ fun NonDiningMenu(navController: NavController, menu: Array<MutableList<String>>
     }
 
 }
+*/
