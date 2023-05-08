@@ -43,7 +43,7 @@ fun DiningMenuRoom(navController: NavController, collegeName: String, collegeUrl
     val menuDao = menuDatabase.menuDao()
 
     // Define a state to hold the retrieved Menu object
-    var menuList: Array<MutableList<String>> = arrayOf(mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf())
+    var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf())) }
 
     // Define a state to hold a flag indicating whether the data has been loaded from the cache
     val dataLoadedState = remember { mutableStateOf(false) }
