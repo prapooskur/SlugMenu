@@ -58,7 +58,7 @@ abstract class MenuDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): MenuDatabase {
             if (instance == null) {
-                instance = Room.databaseBuilder(context.applicationContext, MenuDatabase::class.java, "mydatabase.db")
+                instance = Room.databaseBuilder(context.applicationContext, MenuDatabase::class.java, "menus.db")
                     .fallbackToDestructiveMigration()
                     .build()
             }
