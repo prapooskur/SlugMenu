@@ -74,6 +74,7 @@ fun HomeScreen(navController: NavController) {
  */
         }
     )
+
 }
 
 // this is how tonal elevation is done, hardcode it in for primarycolor somehow?
@@ -114,7 +115,7 @@ fun TopBarHome(titleText: String, navController: NavController, color: Color = M
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
-    val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+    val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
 //    val locations2line = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
 

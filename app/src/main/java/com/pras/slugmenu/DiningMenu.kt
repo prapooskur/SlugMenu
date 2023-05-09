@@ -1,6 +1,7 @@
 package com.pras.slugmenu
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,10 +12,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
 
 
@@ -31,6 +34,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
     // Define a state to hold a flag indicating whether the data has been loaded from the cache
     val dataLoadedState = remember { mutableStateOf(false) }
+    var noInternet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
@@ -41,12 +45,27 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                 menuList = MenuTypeConverters().fromString(menu.menus)
                 dataLoadedState.value = true
             } else {
-                menuList = getDiningMenuAsync(locationUrl)
-                menuDao.insertMenu(Menu(locationName, MenuTypeConverters().fromList(menuList), currentDate))
+                try {
+                    menuList = getDiningMenuAsync(locationUrl)
+                    menuDao.insertMenu(
+                        Menu(
+                            locationName,
+                            MenuTypeConverters().fromList(menuList),
+                            currentDate
+                        )
+                    )
+                } catch (e: UnresolvedAddressException) {
+                    noInternet = true
+
+                }
                 dataLoadedState.value = true
             }
         }
     }
+    if (noInternet) {
+        ShortToast("No internet connection")
+    }
+
 
 
 
@@ -71,6 +90,11 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             }
         }
     }
+}
+
+@Composable
+fun ShortToast(text: String) {
+    Toast.makeText(LocalContext.current, text, Toast.LENGTH_SHORT).show();
 }
 
 //replaced with diningmenuroom

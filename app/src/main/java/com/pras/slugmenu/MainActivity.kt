@@ -2,6 +2,7 @@ package com.pras.slugmenu
 
 import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -22,16 +26,23 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 
+private const val SETTINGS_NAME = "user_settings"
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+    name = SETTINGS_NAME
+)
+
 class MainActivity : ComponentActivity() {
+
+    lateinit var userSettings: PreferencesDatastore
     override fun onCreate(savedInstanceState: Bundle?) {
+        
 
         super.onCreate(savedInstanceState)
 
-        
-
+        userSettings = PreferencesDatastore(dataStore)
 
         setContent {
-            SlugMenuTheme {
+            SlugMenuTheme(userSettings = userSettings) {
                 MenuBarColor(color = MaterialTheme.colorScheme.primary)
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -44,6 +55,8 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+
+    //figure out how to get this working only on home screen
     /*
     var pressedTime: Long = 0
     override fun onBackPressed() {
@@ -59,8 +72,8 @@ class MainActivity : ComponentActivity() {
         // on below line initializing our press time variable
         pressedTime = System.currentTimeMillis();
     }
-
      */
+
 }
 
 
@@ -86,149 +99,6 @@ fun Init(startDestination: String) {
 }
 
 fun NavGraphBuilder.addScreens(navController: NavHostController, context: Context) {
-
-
-    //legacy file caching, has been replaced with room
-
-    /*
-    val date = LocalDate.now().toString()
-
-    val menuCache = File(context.cacheDir, "menuCache")
-    val dateCache = File(context.cacheDir, "dateCache")
-
-    if (!menuCache.exists()) {
-        menuCache.createNewFile()
-    }
-
-    if (!dateCache.exists()) {
-        dateCache.createNewFile()
-        Log.d("TAG","creating cache file")
-
-        /*
-        val dateWriter = BufferedWriter(FileWriter(dateCache))
-        dateWriter.write(date)
-        dateWriter.close()
-         */
-
-    }
-
-    var cachedData: Array<Array<MutableList<String>>> = arrayOf(arrayOf())
-
-    val dateCheckReader = BufferedReader(FileReader(dateCache))
-    val menuReader = FileReader(menuCache)
-    val gson = Gson()
-    val menuString = menuReader.readText()
-
-
-    var menuCached: Boolean = false
-//    var dateCached: Boolean = false
-
-    var nineLewisMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
-    var cowellStevMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
-    var crownMerrillMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
-    var porterKresgeMenus: Array<MutableList<String>> = arrayOf(mutableListOf())
-    var perkCoffeeMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
-    var terraFrescaMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
-    var porterMarketMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
-    var stevCoffeeMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
-    var globalVillageMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
-    var oakesCafeMenu: Array<MutableList<String>> = arrayOf(mutableListOf())
-
-    try {
-        val cachedDate = dateCheckReader.readLine()
-        if (cachedDate == date && menuString != "") {
-//            Log.d("TAG","menu string: $menuString")
-            val type = object : TypeToken<Array<Array<MutableList<String>>>>() {}.type
-            cachedData = gson.fromJson(menuString, type)
-            menuCached = true
-        } else {
-            menuCached = false
-        }
-    } catch (e: IOException) {
-        Log.e("TAG", "Error writing to date cache: ${e.message}")
-    } finally {
-        dateCheckReader.close()
-        menuReader.close()
-    }
-
-    val dateReader = BufferedReader(FileReader(dateCache))
-
-    try {
-        val cachedDate = dateReader.readLine()
-        Log.d("TAG", "dateReader cached output: $cachedDate")
-        if (cachedDate == date) {
-            Log.d("TAG", "Date Cache hit")
-
-        } else {
-            val dateWriter = BufferedWriter(FileWriter(dateCache))
-            Log.d("TAG", "Date Cache miss, writing $date to dateWriter")
-            dateWriter.write(date)
-            dateWriter.close()
-
-        }
-    } catch (e: IOException) {
-        Log.e("TAG", "Error writing to date cache: ${e.message}")
-    } finally {
-        dateReader.close()
-    }
-
-    if (!menuCached) {
-        val scrapeTime = measureTimeMillis {
-            runBlocking {
-                val nineLewisJob =
-                    async { getDiningMenuAsync("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1") }
-                val cowellStevJob =
-                    async { getDiningMenuAsync("05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1") }
-                val crownMerrillJob =
-                    async { getDiningMenuAsync("20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1") }
-                val porterKresgeJob =
-                    async { getDiningMenuAsync("25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1") }
-                val perkCoffeeJob =
-                    async { getSingleMenuAsync("22&locationName=Perk+Coffee+Bars&naFlag=1") }
-                val terraFrescaJob =
-                    async { getSingleMenuAsync("45&locationName=UCen+Coffee+Bar&naFlag=1") }
-                val porterMarketJob =
-                    async { getSingleMenuAsync("50&locationName=Porter+Market&naFlag=1") }
-                val stevCoffeeJob =
-                    async { getSingleMenuAsync("26&locationName=Stevenson+Coffee+House&naFlag=1") }
-                val globalVillageJob =
-                    async { getSingleMenuAsync("46&locationName=Global+Village+Cafe&naFlag=1") }
-                val oakesCafeJob =
-                    async { getOakesMenuAsync("23&locationName=Oakes+Cafe&naFlag=1") }
-
-                nineLewisMenus = nineLewisJob.await()
-                cowellStevMenus = cowellStevJob.await()
-                crownMerrillMenus = crownMerrillJob.await()
-                porterKresgeMenus = porterKresgeJob.await()
-                perkCoffeeMenu = perkCoffeeJob.await()
-                terraFrescaMenu = terraFrescaJob.await()
-                porterMarketMenu = porterMarketJob.await()
-                stevCoffeeMenu = stevCoffeeJob.await()
-                globalVillageMenu = globalVillageJob.await()
-                oakesCafeMenu = oakesCafeJob.await()
-
-            }
-            val menuWriter = FileWriter(menuCache)
-            menuWriter.write(gson.toJson(arrayOf(nineLewisMenus,cowellStevMenus,crownMerrillMenus,porterKresgeMenus,perkCoffeeMenu,terraFrescaMenu,porterMarketMenu,stevCoffeeMenu,globalVillageMenu,oakesCafeMenu)))
-            menuWriter.close()
-        }
-        Log.d("TAG", "Scrape time: " + scrapeTime + "ms.")
-    } else {
-        nineLewisMenus = cachedData[0]
-        cowellStevMenus = cachedData[1]
-        crownMerrillMenus = cachedData[2]
-        porterKresgeMenus = cachedData[3]
-        perkCoffeeMenu = cachedData[4]
-        terraFrescaMenu = cachedData[5]
-        porterMarketMenu = cachedData[6]
-        stevCoffeeMenu = cachedData[7]
-        globalVillageMenu = cachedData[8]
-        oakesCafeMenu = cachedData[9]
-        Log.d("TAG", "Menu cache hit.")
-    }
-     */
-
-
 
     val menuDb = MenuDatabase.getInstance(context)
 

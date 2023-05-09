@@ -43,20 +43,6 @@ suspend fun scrapeWebData (inputUrl: String): String {
 }
 
 suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
-    /*
-    val baseurl: String = "https://nutrition.sa.ucsc.edu/shortmenu.aspx?sName=UC+Santa+Cruz+Dining&locationNum="
-    val url: String = baseurl+inputUrl
-    val locationCookie: String = inputUrl.substring(0,2)
-
-    val cookies = HashMap<String, String>()
-    cookies["WebInaCartDates"] = ""
-    cookies["WebInaCartLocation"] = locationCookie
-    cookies["WebInaCartMeals"] = ""
-    cookies["WebInaCartQtys"] = ""
-    cookies["WebInaCartRecipes"] = ""
-     */
-
-
     val allListItems = mutableListOf<MutableList<String>>()
 
     val webScrapeData = scrapeWebData(inputUrl)
