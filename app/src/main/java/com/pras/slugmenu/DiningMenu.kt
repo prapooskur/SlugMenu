@@ -36,13 +36,12 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
         // Launch a coroutine to retrieve the menu from the database
         withContext(Dispatchers.IO) {
             val menu = menuDao.getMenu(locationName)
+            //return cached menu if it was cached today, get new data if it wasn't
             if (menu != null && menu.cacheDate == currentDate) {
                 menuList = MenuTypeConverters().fromString(menu.menus)
-                Log.d("TAG","menu list: ${menuList.size}")
                 dataLoadedState.value = true
             } else {
                 menuList = getDiningMenuAsync(locationUrl)
-                Log.d("TAG","menu list: ${menuList.size}")
                 menuDao.insertMenu(Menu(locationName, MenuTypeConverters().fromList(menuList), currentDate))
                 dataLoadedState.value = true
             }
