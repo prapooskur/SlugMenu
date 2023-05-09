@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
 
 
@@ -30,6 +31,8 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
 
     var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf())) }
     val dataLoadedState = remember { mutableStateOf(false) }
+    var noInternet by remember { mutableStateOf(false) }
+
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
@@ -37,15 +40,26 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
             val menu = menuDao.getMenu(locationName)
             if (menu != null && menu.cacheDate == currentDate) {
                 menuList = MenuTypeConverters().fromString(menu.menus)
-                Log.d("TAG","menu list: ${menuList.size}")
                 dataLoadedState.value = true
             } else {
-                menuList = getSingleMenuAsync(locationUrl)
-                Log.d("TAG","menu list: ${menuList.size}")
-                menuDao.insertMenu(Menu(locationName, MenuTypeConverters().fromList(menuList), currentDate))
+                try {
+                    menuList = getSingleMenuAsync(locationUrl)
+                    menuDao.insertMenu(
+                        Menu(
+                            locationName,
+                            MenuTypeConverters().fromList(menuList),
+                            currentDate
+                        )
+                    )
+                } catch (e: UnresolvedAddressException) {
+                    noInternet = true
+                }
                 dataLoadedState.value = true
             }
         }
+    }
+    if (noInternet) {
+        ShortToast("No internet connection")
     }
 
     Column {

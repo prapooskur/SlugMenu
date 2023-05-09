@@ -56,7 +56,6 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                     )
                 } catch (e: UnresolvedAddressException) {
                     noInternet = true
-
                 }
                 dataLoadedState.value = true
             }

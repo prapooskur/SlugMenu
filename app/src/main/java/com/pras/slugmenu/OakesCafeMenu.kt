@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
-
 
 @Composable
 fun OakesCafeMenuRoom(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
@@ -47,6 +47,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
 
     var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf(),mutableListOf())) }
     val dataLoadedState = remember { mutableStateOf(false) }
+    var noInternet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
@@ -57,12 +58,25 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
                 Log.d("TAG","menu list: ${menuList.size}")
                 dataLoadedState.value = true
             } else {
-                menuList = getOakesMenuAsync(locationUrl)
-                Log.d("TAG","menu list: ${menuList.size}")
-                menuDao.insertMenu(Menu(locationName, MenuTypeConverters().fromList(menuList), currentDate))
+                try {
+                    menuList = getOakesMenuAsync(locationUrl)
+                    Log.d("TAG", "menu list: ${menuList.size}")
+                    menuDao.insertMenu(
+                        Menu(
+                            locationName,
+                            MenuTypeConverters().fromList(menuList),
+                            currentDate
+                        )
+                    )
+                } catch (e: UnresolvedAddressException) {
+                    noInternet = true
+                }
                 dataLoadedState.value = true
             }
         }
+    }
+    if (noInternet) {
+        ShortToast("No internet connection")
     }
 
     Column {
@@ -88,23 +102,6 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
     }
 
 }
-
-//replaced with oakescafemenuroom
-/*
-@Composable
-fun OakesCafeMenu(navController: NavController, menu: Array<MutableList<String>>, name: String) {
-    Log.d("TAG", "Opening OakesCafeMenu!")
-//    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
-    Column() {
-        if (menu.isNotEmpty()) {
-            PriceTabBar(menu, navController, name)
-        } else {
-            PriceTabBar(arrayOf(mutableListOf<String>(), mutableListOf<String>()), navController, name)
-        }
-    }
-
-}
- */
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -174,3 +171,21 @@ fun PriceTabBar(menuArray: Array<MutableList<String>>) {
         }
     }
 }
+
+
+//replaced with oakescafemenuroom
+/*
+@Composable
+fun OakesCafeMenu(navController: NavController, menu: Array<MutableList<String>>, name: String) {
+    Log.d("TAG", "Opening OakesCafeMenu!")
+//    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
+    Column() {
+        if (menu.isNotEmpty()) {
+            PriceTabBar(menu, navController, name)
+        } else {
+            PriceTabBar(arrayOf(mutableListOf<String>(), mutableListOf<String>()), navController, name)
+        }
+    }
+
+}
+ */
