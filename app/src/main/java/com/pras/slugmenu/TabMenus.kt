@@ -1,5 +1,6 @@
 package com.pras.slugmenu
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,6 +44,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 
 
 //Swipable tab bar
@@ -51,6 +53,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavController, collegeName: String = "default college") {
     val currentHour: Int = LocalDateTime.now().hour
+    val currentMinute: Int = LocalDateTime.now().minute
+    val currentDay: DayOfWeek = LocalDateTime.now().dayOfWeek
+    Log.d("TAG", "day: $currentDay")
 //    Log.d("TAG","hour: "+currentHour)
 
 
@@ -64,19 +69,39 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavCont
         listOf("Breakfast", "Lunch", "Dinner", "Late Night")
     }
 
-    val initState: Int = when {
-        titles.size <= 1 -> 0
-        //Breakfast from 12AM-11PM
-        currentHour in 0..11 -> 0
-        // Lunch from 12PM-5PM
-        currentHour in 12..17 -> 1
-        // dinner from 5-8
-        currentHour in 17..19 -> 2
-        // Late night from 8-11 if available, dinner archive otherwise
-        currentHour in 20..23 && (menuArray[3].isNotEmpty()) -> 3
-        currentHour in 20..23 && (menuArray[3].isEmpty()) -> 2
-        // if all else fails (even though it never should), default to breakfast
-        else -> 0
+    val initState: Int
+    if (currentDay == DayOfWeek.SATURDAY || currentDay == DayOfWeek.SUNDAY) {
+        // weekend hours
+        initState = when {
+            titles.size <= 1 -> 0
+            //Breakfast from 12AM-11AM
+            (currentHour in 0..11) -> 0
+            // Brunch from 10AM-5PM
+            currentHour in 10..17 -> 1
+            // dinner from 5PM-8PM
+            currentHour in 17..19 -> 2
+            // Late night from 8PM-11PM if available, dinner archive otherwise
+            currentHour in 20..23 && (menuArray[3].isNotEmpty()) -> 3
+            currentHour in 20..23 && (menuArray[3].isEmpty()) -> 2
+            // if all else fails (even though it never should), default to breakfast
+            else -> 0
+        }
+    } else {
+        //normal hours
+        initState = when {
+            titles.size <= 1 -> 0
+            //Breakfast from 12AM-11:30AM
+            (currentHour in 0..11) || (currentHour == 11 && currentMinute < 30) -> 0
+            // Lunch from 11:30AM-5PM
+            (currentHour == 11 && currentMinute > 30) || (currentHour in 12..17) -> 1
+            // dinner from 5PM-8PM
+            currentHour in 17..19 -> 2
+            // Late night from 8PM-11PM if available, dinner archive otherwise
+            currentHour in 20..23 && (menuArray[3].isNotEmpty()) -> 3
+            currentHour in 20..23 && (menuArray[3].isEmpty()) -> 2
+            // if all else fails (even though it never should), default to breakfast
+            else -> 0
+        }
     }
 //    Log.d("TAG","initstate: "+initState)
 
