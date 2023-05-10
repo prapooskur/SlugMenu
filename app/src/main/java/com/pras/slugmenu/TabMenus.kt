@@ -93,7 +93,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavCont
             //Breakfast from 12AM-11:30AM
             (currentHour in 0..11) || (currentHour == 11 && currentMinute < 30) -> 0
             // Lunch from 11:30AM-5PM
-            (currentHour == 11 && currentMinute > 30) || (currentHour in 12..17) -> 1
+            (currentHour == 11 && currentMinute >= 30) || (currentHour in 12..17) -> 1
             // dinner from 5PM-8PM
             currentHour in 17..19 -> 2
             // Late night from 8PM-11PM if available, dinner archive otherwise
