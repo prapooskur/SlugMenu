@@ -16,7 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -91,7 +90,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavCont
         initState = when {
             titles.size <= 1 -> 0
             //Breakfast from 12AM-11:30AM
-            (currentHour in 0..11) || (currentHour == 11 && currentMinute < 30) -> 0
+            (currentHour in 0..10) || (currentHour == 11 && currentMinute < 30) -> 0
             // Lunch from 11:30AM-5PM
             (currentHour == 11 && currentMinute >= 30) || (currentHour in 12..17) -> 1
             // dinner from 5PM-8PM
@@ -126,6 +125,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavCont
                     }
                 ) {
                     titles.forEachIndexed { index, title ->
+                        // create a tab for each element in titles
                         Tab(
                             selected = state == index,
                             onClick = { state = index; scope.launch{pagerState.scrollToPage(index)} },

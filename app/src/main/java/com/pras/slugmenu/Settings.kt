@@ -1,7 +1,6 @@
 package com.pras.slugmenu
 
 import android.content.Context
-import android.preference.PreferenceManager.getDefaultSharedPreferences
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding

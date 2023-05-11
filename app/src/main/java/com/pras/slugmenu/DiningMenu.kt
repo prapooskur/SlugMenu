@@ -93,7 +93,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
 @Composable
 fun ShortToast(text: String) {
-    Toast.makeText(LocalContext.current, text, Toast.LENGTH_SHORT).show();
+    Toast.makeText(LocalContext.current, text, Toast.LENGTH_SHORT).show()
 }
 
 //replaced with diningmenuroom
