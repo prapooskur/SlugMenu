@@ -40,8 +40,6 @@ class MainActivity : ComponentActivity() {
 
         userSettings = PreferencesDatastore(dataStore)
 
-
-
         setContent {
             SlugMenuTheme(userSettings = userSettings) {
                 MenuBarColor(color = MaterialTheme.colorScheme.primary)

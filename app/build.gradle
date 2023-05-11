@@ -115,7 +115,7 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-websockets:$ktor_version")
 
-    //Android navigation and Material 3
+    // Android navigation and Material 3
     def nav_version = "2.5.3"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.compose.material3:material3:1.0.1")
@@ -126,23 +126,23 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 
 
-    //GSON (for saving menus as a string)
-    //TODO - replace with moshi or room?
+    // GSON (for saving menus as a string)
+    // TODO - replace with moshi?
     implementation("com.google.code.gson:gson:2.10.1")
-    //moshi
+    // moshi
     implementation("com.squareup.moshi:moshi:1.14.0")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
 
-    //Collapsing top bar?
+    // Collapsing top bar?
 //    implementation("me.onebone:toolbar-compose:2.3.5")
 
-    //Save settings?
+    // Save settings?
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    //Colored Splash Screen
+    // Colored Splash Screen
     implementation "androidx.core:core-splashscreen:1.0.1"
 
-    //Room (alternate caching implementation)
+    // Room (caching implementation)
     def room_version = "2.5.1"
 
     implementation "androidx.room:room-runtime:$room_version"
@@ -151,10 +151,11 @@ dependencies {
     // To use Kotlin Symbol Processing (KSP)
     ksp "androidx.room:room-compiler:$room_version"
 
-    //for animations
+    // for animations
     implementation "com.google.accompanist:accompanist-navigation-animation:0.30.1"
 
-
+    // for predictive back gesture
+//    implementation "androidx.activity:activity:1.6.0-alpha05"
 
 
 }
