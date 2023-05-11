@@ -236,204 +236,207 @@ fun Init(startDestination: String) {
                 "25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1",
                 menuDb
             )
-
-            composable(
-                "perkcoffee",
-                enterTransition = {
-                    when (initialState.destination.route) {
-                        "home" ->
-                            slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                },
-                exitTransition = {
-                    when (targetState.destination.route) {
-                        "home" ->
-                            slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                }
-            ) {
-                NonDiningMenuRoom(
-                    navController,
-                    "Perk Coffee Bars",
-                    "22&locationName=Perk+Coffee+Bars&naFlag=1",
-                    menuDb
-                )
-            }
-            composable(
-                "terrafresca",
-                enterTransition = {
-                    when (initialState.destination.route) {
-                        "home" ->
-                            slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                },
-                exitTransition = {
-                    when (targetState.destination.route) {
-                        "home" ->
-                            slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                }
-            ) {
-                NonDiningMenuRoom(
-                    navController,
-                    "Terra Fresca",
-                    "45&locationName=UCen+Coffee+Bar&naFlag=1",
-                    menuDb
-                )
-            }
-            composable(
-                "portermarket",
-                enterTransition = {
-                    when (initialState.destination.route) {
-                        "home" ->
-                            slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                },
-                exitTransition = {
-                    when (targetState.destination.route) {
-                        "home" ->
-                            slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                }
-            ) {
-                NonDiningMenuRoom(
-                    navController,
-                    "Porter Market",
-                    "50&locationName=Porter+Market&naFlag=1",
-                    menuDb
-                )
-            }
-            composable(
-                "stevcoffee",
-                enterTransition = {
-                    when (initialState.destination.route) {
-                        "home" ->
-                            slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                },
-                exitTransition = {
-                    when (targetState.destination.route) {
-                        "home" ->
-                            slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                }
-            ) {
-                NonDiningMenuRoom(
-                    navController,
-                    "Stevenson Coffee House",
-                    "26&locationName=Stevenson+Coffee+House&naFlag=1",
-                    menuDb
-                )
-            }
-            composable(
-                "globalvillage",
-                enterTransition = {
-                    when (initialState.destination.route) {
-                        "home" ->
-                            slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                },
-                exitTransition = {
-                    when (targetState.destination.route) {
-                        "home" ->
-                            slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                }
-            ) {
-                NonDiningMenuRoom(
-                    navController,
-                    "Global Village Cafe",
-                    "46&locationName=Global+Village+Cafe&naFlag=1",
-                    menuDb
-                )
-            }
-
-            composable(
-                "oakescafe",
-                enterTransition = {
-                    when (initialState.destination.route) {
-                        "home" ->
-                            slideIntoContainer(
-                                AnimatedContentScope.SlideDirection.Left,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                },
-                exitTransition = {
-                    when (targetState.destination.route) {
-                        "home" ->
-                            slideOutOfContainer(
-                                AnimatedContentScope.SlideDirection.Right,
-                                animationSpec = tween(tweenAmount)
-                            )
-
-                        else -> null
-                    }
-                }
-            ) {
-                OakesCafeMenuRoom(
-                    navController,
-                    "Oakes Cafe",
-                    "23&locationName=Oakes+Cafe&naFlag=1",
-                    menuDb
-                )
-            }
-
         }
+        // dining halls end here
+
+        composable(
+            "perkcoffee",
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "home" ->
+                        slideIntoContainer(
+                            AnimatedContentScope.SlideDirection.Left,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "home" ->
+                        slideOutOfContainer(
+                            AnimatedContentScope.SlideDirection.Right,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            }
+        ) {
+            NonDiningMenuRoom(
+                navController,
+                "Perk Coffee Bars",
+                "22&locationName=Perk+Coffee+Bars&naFlag=1",
+                menuDb
+            )
+        }
+        composable(
+            "terrafresca",
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "home" ->
+                        slideIntoContainer(
+                            AnimatedContentScope.SlideDirection.Left,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "home" ->
+                        slideOutOfContainer(
+                            AnimatedContentScope.SlideDirection.Right,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            }
+        ) {
+            NonDiningMenuRoom(
+                navController,
+                "Terra Fresca",
+                "45&locationName=UCen+Coffee+Bar&naFlag=1",
+                menuDb
+            )
+        }
+        composable(
+            "portermarket",
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "home" ->
+                        slideIntoContainer(
+                            AnimatedContentScope.SlideDirection.Left,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "home" ->
+                        slideOutOfContainer(
+                            AnimatedContentScope.SlideDirection.Right,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            }
+        ) {
+            NonDiningMenuRoom(
+                navController,
+                "Porter Market",
+                "50&locationName=Porter+Market&naFlag=1",
+                menuDb
+            )
+        }
+        composable(
+            "stevcoffee",
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "home" ->
+                        slideIntoContainer(
+                            AnimatedContentScope.SlideDirection.Left,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "home" ->
+                        slideOutOfContainer(
+                            AnimatedContentScope.SlideDirection.Right,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            }
+        ) {
+            NonDiningMenuRoom(
+                navController,
+                "Stevenson Coffee House",
+                "26&locationName=Stevenson+Coffee+House&naFlag=1",
+                menuDb
+            )
+        }
+        composable(
+            "globalvillage",
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "home" ->
+                        slideIntoContainer(
+                            AnimatedContentScope.SlideDirection.Left,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "home" ->
+                        slideOutOfContainer(
+                            AnimatedContentScope.SlideDirection.Right,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            }
+        ) {
+            NonDiningMenuRoom(
+                navController,
+                "Global Village Cafe",
+                "46&locationName=Global+Village+Cafe&naFlag=1",
+                menuDb
+            )
+        }
+        // nondiningmenus end here
+
+        composable(
+            "oakescafe",
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "home" ->
+                        slideIntoContainer(
+                            AnimatedContentScope.SlideDirection.Left,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "home" ->
+                        slideOutOfContainer(
+                            AnimatedContentScope.SlideDirection.Right,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            }
+        ) {
+            OakesCafeMenuRoom(
+                navController,
+                "Oakes Cafe",
+                "23&locationName=Oakes+Cafe&naFlag=1",
+                menuDb
+            )
+        }
+
     }
 }
+
 
 /*
 fun NavGraphBuilder.addScreens(navController: NavHostController, context: Context) {
