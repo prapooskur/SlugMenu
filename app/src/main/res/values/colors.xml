@@ -10,4 +10,6 @@
 
     <color name="ucblue">#FF003C6C</color>
     <color name="ucgold">#FFFDC700</color>
+
+    <color name="splash">#FF508491</color>
 </resources>
