@@ -31,7 +31,7 @@ fun SettingsScreen(navController: NavController) {
         },
         content = {innerPadding ->
             ListItem(
-                headlineText = { Text(text = "test menu please ignore",Modifier.padding(innerPadding)) }
+                headlineContent = { Text(text = "test menu please ignore",Modifier.padding(innerPadding)) }
             )
 
         }

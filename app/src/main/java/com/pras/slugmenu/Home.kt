@@ -53,7 +53,7 @@ fun HomeScreen(navController: NavController) {
                         }
                     },
                      */
-                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                 )
 
             }
@@ -103,7 +103,7 @@ fun TopBarHome(titleText: String, navController: NavController, color: Color = M
 
             }
         },
-        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = color),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = color),
         /*
         backgroundColor = color,
         elevation = 8.dp

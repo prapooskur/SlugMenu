@@ -211,7 +211,7 @@ fun PrintMenu(itemList: MutableList<String>) {
                 }
                 ListItem(
                     modifier = Modifier.fillMaxWidth(),
-                    headlineText = {
+                    headlineContent = {
                         Text(
                             itemList[item],
                             fontWeight = boldness,
@@ -227,13 +227,6 @@ fun PrintMenu(itemList: MutableList<String>) {
                 }
             }
         }
-    } else {
-        ListItem(
-            modifier = Modifier.fillMaxWidth(),
-            headlineText = {
-
-            }
-        )
     }
 }
 
@@ -252,7 +245,7 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
                     )
 
                     ListItem(
-                        headlineText = {
+                        headlineContent = {
                             Text(
                                 itemList[item],
                                 fontWeight = FontWeight.ExtraBold,
@@ -268,12 +261,12 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
 
                 if (itemval.contains("$") && !itemList[item+1].contains("$") ) {
                     ListItem(
-                        headlineText = {
+                        headlineContent = {
                             Text(
                                 itemList[item+1],
                             )
                         },
-                        supportingText = {
+                        supportingContent = {
                             Text(
                                 itemList[item],
                                 fontWeight = FontWeight.Bold,
@@ -333,7 +326,7 @@ fun PrintOakesMenu(itemList: MutableList<String>) {
                     )
 
                     ListItem(
-                        headlineText = {
+                        headlineContent = {
                             Text(
                                 itemList[item],
                                 fontWeight = FontWeight.ExtraBold,
@@ -349,12 +342,12 @@ fun PrintOakesMenu(itemList: MutableList<String>) {
 
                 if (itemval.contains("$") && !itemList[item+1].contains("$") ) {
                     ListItem(
-                        headlineText = {
+                        headlineContent = {
                             Text(
                                 itemList[item+1],
                             )
                         },
-                        supportingText = {
+                        supportingContent = {
                             Text(
                                 itemList[item],
                                 fontWeight = FontWeight.Bold,
@@ -368,7 +361,7 @@ fun PrintOakesMenu(itemList: MutableList<String>) {
     } else {
         ListItem(
             modifier = Modifier.fillMaxWidth(),
-            headlineText = {
+            headlineContent = {
             }
         )
     }
