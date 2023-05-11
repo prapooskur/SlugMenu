@@ -260,6 +260,13 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
                     )
                 }
 
+                //swap double and single to stop them being printed out of order
+                // without the equality check, caramel latte was being swapped with cappuccino
+                if (item < itemList.size-1 && itemList[item+1].contains("Double") && itemList[item+3].contains("Single") && itemList[item+1].substringBefore(",") == itemList[item+3].substringBefore(",")) {
+                    Collections.swap(itemList,item,item+2)
+                    Collections.swap(itemList,item+1,item+3)
+                }
+
                 if (itemval.contains("$") && !itemList[item+1].contains("$") ) {
                     ListItem(
                         headlineContent = {
@@ -348,6 +355,7 @@ fun PrintOakesMenu(itemList: MutableList<String>) {
                     Collections.swap(itemList,item,item+2)
                     Collections.swap(itemList,item+1,item+3)
                 }
+
                 if (itemval.contains("$") && !itemList[item+1].contains("$") ) {
                     ListItem(
                         headlineContent = {
