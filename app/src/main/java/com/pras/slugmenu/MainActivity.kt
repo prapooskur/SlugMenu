@@ -4,6 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -20,6 +23,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -84,25 +90,363 @@ fun MenuBarColor(color: Color) {
 }
 
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Init(startDestination: String) {
-    val navController = rememberNavController()
+    val oldNavController = rememberNavController()
+    val navController = rememberAnimatedNavController()
     val context = LocalContext.current
 
+    val menuDb = MenuDatabase.getInstance(context)
+    
+    val tweenAmount = 350
+
+    /*
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
         addScreens(navController, context)
     }
+     */
+    AnimatedNavHost(navController = navController, startDestination = startDestination) {
+        composable(
+            "home",
+            enterTransition = { null }
+        ) { HomeScreen(navController = navController) }
+        composable(
+            "ninelewis",
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "home" ->
+                        slideIntoContainer(
+                            AnimatedContentScope.SlideDirection.Left,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "home" ->
+                        slideOutOfContainer(
+                            AnimatedContentScope.SlideDirection.Right,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            }
+        ) {
+            DiningMenuRoom(
+                navController,
+                "Nine/Lewis",
+                "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1",
+                menuDb
+            )
+        }
+        composable(
+            "cowellstev",
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "home" ->
+                        slideIntoContainer(
+                            AnimatedContentScope.SlideDirection.Left,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "home" ->
+                        slideOutOfContainer(
+                            AnimatedContentScope.SlideDirection.Right,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            }
+        ) {
+            DiningMenuRoom(
+                navController,
+                "Cowell/Stevenson",
+                "05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1",
+                menuDb
+            )
+        }
+        composable(
+            "crownmerrill",
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "home" ->
+                        slideIntoContainer(
+                            AnimatedContentScope.SlideDirection.Left,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "home" ->
+                        slideOutOfContainer(
+                            AnimatedContentScope.SlideDirection.Right,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            }
+        ) {
+            DiningMenuRoom(
+                navController,
+                "Crown/Merrill",
+                "20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1",
+                menuDb
+            )
+        }
+        composable(
+            "porterkresge",
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "home" ->
+                        slideIntoContainer(
+                            AnimatedContentScope.SlideDirection.Left,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "home" ->
+                        slideOutOfContainer(
+                            AnimatedContentScope.SlideDirection.Right,
+                            animationSpec = tween(tweenAmount)
+                        )
+
+                    else -> null
+                }
+            }
+        ) {
+            DiningMenuRoom(
+                navController,
+                "Porter/Kresge",
+                "25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1",
+                menuDb
+            )
+
+            composable(
+                "perkcoffee",
+                enterTransition = {
+                    when (initialState.destination.route) {
+                        "home" ->
+                            slideIntoContainer(
+                                AnimatedContentScope.SlideDirection.Left,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                },
+                exitTransition = {
+                    when (targetState.destination.route) {
+                        "home" ->
+                            slideOutOfContainer(
+                                AnimatedContentScope.SlideDirection.Right,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                }
+            ) {
+                NonDiningMenuRoom(
+                    navController,
+                    "Perk Coffee Bars",
+                    "22&locationName=Perk+Coffee+Bars&naFlag=1",
+                    menuDb
+                )
+            }
+            composable(
+                "terrafresca",
+                enterTransition = {
+                    when (initialState.destination.route) {
+                        "home" ->
+                            slideIntoContainer(
+                                AnimatedContentScope.SlideDirection.Left,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                },
+                exitTransition = {
+                    when (targetState.destination.route) {
+                        "home" ->
+                            slideOutOfContainer(
+                                AnimatedContentScope.SlideDirection.Right,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                }
+            ) {
+                NonDiningMenuRoom(
+                    navController,
+                    "Terra Fresca",
+                    "45&locationName=UCen+Coffee+Bar&naFlag=1",
+                    menuDb
+                )
+            }
+            composable(
+                "portermarket",
+                enterTransition = {
+                    when (initialState.destination.route) {
+                        "home" ->
+                            slideIntoContainer(
+                                AnimatedContentScope.SlideDirection.Left,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                },
+                exitTransition = {
+                    when (targetState.destination.route) {
+                        "home" ->
+                            slideOutOfContainer(
+                                AnimatedContentScope.SlideDirection.Left,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                }
+            ) {
+                NonDiningMenuRoom(
+                    navController,
+                    "Porter Market",
+                    "50&locationName=Porter+Market&naFlag=1",
+                    menuDb
+                )
+            }
+            composable(
+                "stevcoffee",
+                enterTransition = {
+                    when (initialState.destination.route) {
+                        "home" ->
+                            slideIntoContainer(
+                                AnimatedContentScope.SlideDirection.Left,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                },
+                exitTransition = {
+                    when (targetState.destination.route) {
+                        "home" ->
+                            slideOutOfContainer(
+                                AnimatedContentScope.SlideDirection.Right,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                }
+            ) {
+                NonDiningMenuRoom(
+                    navController,
+                    "Stevenson Coffee House",
+                    "26&locationName=Stevenson+Coffee+House&naFlag=1",
+                    menuDb
+                )
+            }
+            composable(
+                "globalvillage",
+                enterTransition = {
+                    when (initialState.destination.route) {
+                        "home" ->
+                            slideIntoContainer(
+                                AnimatedContentScope.SlideDirection.Left,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                },
+                exitTransition = {
+                    when (targetState.destination.route) {
+                        "home" ->
+                            slideOutOfContainer(
+                                AnimatedContentScope.SlideDirection.Right,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                }
+            ) {
+                NonDiningMenuRoom(
+                    navController,
+                    "Global Village Cafe",
+                    "46&locationName=Global+Village+Cafe&naFlag=1",
+                    menuDb
+                )
+            }
+
+            composable(
+                "oakescafe",
+                enterTransition = {
+                    when (initialState.destination.route) {
+                        "home" ->
+                            slideIntoContainer(
+                                AnimatedContentScope.SlideDirection.Left,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                },
+                exitTransition = {
+                    when (targetState.destination.route) {
+                        "home" ->
+                            slideOutOfContainer(
+                                AnimatedContentScope.SlideDirection.Right,
+                                animationSpec = tween(tweenAmount)
+                            )
+
+                        else -> null
+                    }
+                }
+            ) {
+                OakesCafeMenuRoom(
+                    navController,
+                    "Oakes Cafe",
+                    "23&locationName=Oakes+Cafe&naFlag=1",
+                    menuDb
+                )
+            }
+
+        }
+    }
 }
 
+/*
 fun NavGraphBuilder.addScreens(navController: NavHostController, context: Context) {
 
     val menuDb = MenuDatabase.getInstance(context)
 
-    composable("home") {
-        HomeScreen(navController)
+    composable("home",) {
+        HomeScreen(navController),
     }
     composable("settings") {
         SettingsScreen(navController)
@@ -138,10 +482,20 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
     }
 
     composable("oakescafe") {
-        OakesCafeMenuRoom(navController, "Oakes Cafe","23&locationName=Oakes+Cafe&naFlag=1",menuDb)
+            OakesCafeMenuRoom(navController, "Oakes Cafe","23&locationName=Oakes+Cafe&naFlag=1",menuDb)
     }
 }
 
+ */
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun CreateNavAnimations() {
+    val navController = rememberAnimatedNavController()
+    AnimatedNavHost(navController = navController, startDestination = "home") {
+
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
