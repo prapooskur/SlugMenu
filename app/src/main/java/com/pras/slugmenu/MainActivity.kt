@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
     lateinit var userSettings: PreferencesDatastore
     override fun onCreate(savedInstanceState: Bundle?) {
-        
+
 
         super.onCreate(savedInstanceState)
 
