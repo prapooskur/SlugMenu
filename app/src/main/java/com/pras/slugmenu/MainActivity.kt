@@ -18,11 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -93,7 +88,7 @@ fun MenuBarColor(color: Color) {
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Init(startDestination: String) {
-    val oldNavController = rememberNavController()
+//    val oldNavController = rememberNavController()
     val navController = rememberAnimatedNavController()
     val context = LocalContext.current
 
@@ -488,16 +483,7 @@ fun NavGraphBuilder.addScreens(navController: NavHostController, context: Contex
 
  */
 
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-fun CreateNavAnimations() {
-    val navController = rememberAnimatedNavController()
-    AnimatedNavHost(navController = navController, startDestination = "home") {
-
-    }
-}
-
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun DefaultPreview() {
     Init("home")
