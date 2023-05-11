@@ -77,6 +77,8 @@ suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
                 if (items.length > 42 && items !in listItems) {
                     var cleanItem = items.substring(29, items.length - 13)
                     cleanItem = cleanItem.replace("&amp;", "&")
+                    cleanItem = cleanItem.replace("Iced Match ", "Iced Matcha ")
+
                     if (!listItems.contains(cleanItem)) {
                         Log.d("TAG", "clean item: $cleanItem")
                         listItems.add(cleanItem)
