@@ -144,11 +144,9 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>) {
             checked = checked,
 
             onCheckedChange = {
-                /*
                 useMaterialYou.value = it
                 checked = it
 
-                 */
             }
         )
         Text(
