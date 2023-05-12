@@ -43,13 +43,19 @@ jobs:
       - name: "Deleting keystore file"
         run: rm $GITHUB_WORKSPACE/signing-key.jks
 
-      
+  upload-artifact:
+    runs-on: ubuntu-latest
+    needs: build-app
+    steps:
       - name: Upload apk as artifact
         uses: actions/upload-artifact@v3
         with:
           name: app-build
           path: app/build/outputs/apk/release/app-release.apk
-      
+  upload-release:
+    runs-on: ubuntu-latest
+    needs: build-app
+    steps:
       - name: Upload apk to releases
         uses: softprops/action-gh-release@v1
         with:
