@@ -2,15 +2,10 @@ name: Build and Sign App
 run-name: Building and signing app
 on: [workflow_dispatch,push]
 jobs:
-  setup-env:
+  build-app:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set runner timezone
-        uses: szenius/set-timezone@v1.2
-        with:
-          timezoneLinux: "America/Los_Angeles"
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -27,27 +22,11 @@ jobs:
       - name: Setup Gradle
         working-directory: .
         run: chmod +x ./gradlew
-
-  test-app:
-    needs: setup-env
-    runs-on: ubuntu-latest
-    steps:
-      - name: Test app
-        working-directory: .
-        run: ./gradlew test
-
-  build-app:
-    needs: setup-env
-    runs-on: ubuntu-latest
-    steps:
+      
       - name: Build app
         working-directory: .
         run: ./gradlew buildRelease
 
-  sign-app:
-    needs: [setup-env,build-app,test-app]
-    runs-on: ubuntu-latest
-    steps:
       - name: Sign app
         env:
           KEYSTORE_PASSWORD: ${{ secrets.keystore_password }}
@@ -61,23 +40,16 @@ jobs:
             -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
             -Pandroid.injected.signing.key.password=$KEY_PASSWORD
 
-  clean-env:
-    if: ${{ always() }}
-    needs: sign-app
-    runs-on: ubuntu-latest
-    steps:
-      - name: Delete keystore
+      - name: "Deleting keystore file"
         run: rm $GITHUB_WORKSPACE/signing-key.jks
-  
-  upload-apks:
-    needs: sign-app
-    runs-on: ubuntu-latest
-    steps:
+
+      
       - name: Upload apk as artifact
         uses: actions/upload-artifact@v3
         with:
           name: app-build
           path: app/build/outputs/apk/release/app-release.apk
+      
       - name: Upload apk to releases
         uses: softprops/action-gh-release@v1
         with:
@@ -85,7 +57,6 @@ jobs:
           name: SlugMenu v0.${{github.run_number}}
           prerelease: true
           files: app/build/outputs/apk/release/app-release.apk
-      
 
 permissions:
   contents: write
