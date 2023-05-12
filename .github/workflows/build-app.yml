@@ -47,6 +47,7 @@ jobs:
   upload-artifact:
     #runs-on: ubuntu-latest
     runs-on: self-hosted
+    needs: build-app
     steps:
       - name: Upload apk as artifact
         uses: actions/upload-artifact@v3
@@ -56,6 +57,7 @@ jobs:
   upload-release:
     #runs-on: ubuntu-latest
     runs-on: self-hosted
+    needs: build-app
     steps:
       - name: Upload apk to releases
         uses: softprops/action-gh-release@v1
