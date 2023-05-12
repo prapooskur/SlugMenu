@@ -3,8 +3,8 @@ run-name: Building and signing app
 on: [workflow_dispatch,push]
 jobs:
   build-app:
-    #runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    #runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
 
@@ -43,29 +43,29 @@ jobs:
 
       - name: "Deleting keystore file"
         run: rm $GITHUB_WORKSPACE/signing-key.jks
-
-  upload-artifact:
-    #runs-on: ubuntu-latest
-    runs-on: self-hosted
-    needs: build-app
-    steps:
+        
       - name: Upload apk as artifact
         uses: actions/upload-artifact@v3
         with:
           name: app-build
           path: app/build/outputs/apk/release/app-release.apk
   upload-release:
-    #runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    #runs-on: self-hosted
     needs: build-app
     steps:
+      - name: download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: app-build
+      
       - name: Upload apk to releases
         uses: softprops/action-gh-release@v1
         with:
           tag_name: 0.${{github.run_number}}
           name: SlugMenu v0.${{github.run_number}}
           prerelease: true
-          files: app/build/outputs/apk/release/app-release.apk
+          files: app-release.apk
 
 permissions:
   contents: write
