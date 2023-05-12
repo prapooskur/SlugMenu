@@ -130,7 +130,7 @@ dependencies {
     // GSON (for saving menus as a string)
     // TODO - replace with moshi?
     implementation("com.google.code.gson:gson:2.10.1")
-    // moshi
+    // Moshi (supposed to be faster)
     implementation("com.squareup.moshi:moshi:1.14.0")
     implementation ("com.squareup.moshi:moshi-kotlin:1.14.0")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
