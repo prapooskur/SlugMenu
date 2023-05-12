@@ -118,9 +118,13 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.0")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.0")
 
+    // Accompanist (unofficial official Google libraries)
+    // swipable tabs
     implementation("com.google.accompanist:accompanist-pager-indicators:0.30.1")
-
+    // changing status bar color
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+    // animations
+    implementation "com.google.accompanist:accompanist-navigation-animation:0.30.1"
 
 
     // GSON (for saving menus as a string)
@@ -146,6 +150,5 @@ dependencies {
     // To use Kotlin Symbol Processing (KSP)
     ksp "androidx.room:room-compiler:$room_version"
 
-    // for animations
-    implementation "com.google.accompanist:accompanist-navigation-animation:0.30.1"
+
 }
