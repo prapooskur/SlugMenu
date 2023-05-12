@@ -4,6 +4,10 @@ plugins {
 
     //KSP for room
     id 'com.google.devtools.ksp'
+
+    //Serialization
+    id 'org.jetbrains.kotlin.plugin.serialization'
+
 }
 
 android {
@@ -134,6 +138,8 @@ dependencies {
     implementation("com.squareup.moshi:moshi:1.14.0")
     implementation ("com.squareup.moshi:moshi-kotlin:1.14.0")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
+    //kotlinx serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
     // Save settings?
     implementation("androidx.datastore:datastore-preferences:1.0.0")
