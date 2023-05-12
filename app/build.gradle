@@ -104,7 +104,7 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 
     // jsoup HTML parser library @ https://jsoup.org/
-    implementation ("org.jsoup:jsoup:1.15.4")
+    implementation ("org.jsoup:jsoup:1.16.1")
 
     // ktor for http requests
     def ktor_version="2.3.0"
