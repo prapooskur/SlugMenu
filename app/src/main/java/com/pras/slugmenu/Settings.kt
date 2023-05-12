@@ -57,13 +57,9 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
         content = { innerPadding ->
             Column(Modifier.padding(innerPadding)) {
                 Text("App Theme:")
-                ListItem(
-                    headlineContent = { ThemeSwitcher() }
-                )
+                ThemeSwitcher()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    ListItem(
-                        headlineContent = { MaterialYouSwitcher(useMaterialYou = useMaterialYou) }
-                    )
+                    MaterialYouSwitcher(useMaterialYou = useMaterialYou)
                 }
                 ListItem(
                     headlineContent = { Text("Clear Menu Cache") },
@@ -133,14 +129,26 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>) {
     Row(
         Modifier
             .fillMaxWidth()
+            .clickable(
+                onClick = {
+                    checked = !checked
+                    useMaterialYou.value = checked
+                    Log.d("TAG", "myoutog")
+                },
+                role = Role.RadioButton
+            )
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Switch(
             checked = checked,
+
             onCheckedChange = {
+                /*
                 useMaterialYou.value = it
                 checked = it
+
+                 */
             }
         )
         Text(
