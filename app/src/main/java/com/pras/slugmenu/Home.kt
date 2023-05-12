@@ -41,7 +41,7 @@ fun HomeScreen(navController: NavController) {
                         )
                     },
                     //currently nonfunctional
-                    /*
+
                     actions = {
                         IconButton(onClick = { navController.navigate("settings") }) {
                             Icon(
@@ -52,7 +52,7 @@ fun HomeScreen(navController: NavController) {
 
                         }
                     },
-                     */
+
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
                 )
 
