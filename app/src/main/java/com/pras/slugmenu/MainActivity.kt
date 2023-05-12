@@ -442,7 +442,8 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>) {
         composable("settings") {
             SettingsScreen(
                 navController,
-                useMaterialYou
+                useMaterialYou,
+                menuDb
             )
         }
 

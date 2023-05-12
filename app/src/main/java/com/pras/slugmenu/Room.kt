@@ -13,8 +13,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -32,6 +30,9 @@ interface MenuDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMenu(menu: Menu)
+
+    @Query("DELETE FROM menu")
+    fun dropMenus()
 }
 
 class MenuTypeConverters {
