@@ -77,6 +77,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         }
                     }
                 )
+                LayoutSwitcher(preferencesDataStore = preferencesDataStore)
             }
         }
     )
@@ -122,6 +123,83 @@ fun ThemeSwitcher() {
 }
 
 @Composable
+fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
+    val themeOptions = listOf("Grid", "List")
+    val currentChoice = remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        val userChoice = withContext(Dispatchers.IO) {
+            preferencesDataStore.getListPreference.first()
+        }
+        currentChoice.value = userChoice
+    }
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(themeOptions[0]) }
+    val coroutineScope = rememberCoroutineScope()
+// Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
+    Column(Modifier.selectableGroup()) {
+        themeOptions.forEach { text ->
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .selectable(
+                        selected = (
+                            if (text == "Grid") {
+                                currentChoice.value
+                            } else {
+                                !currentChoice.value
+                            }
+                        ),
+                        onClick = {
+//                            onOptionSelected(text)
+                            coroutineScope.launch {
+                                if (text == "Grid") {
+                                    preferencesDataStore.setListPreference(true)
+                                    currentChoice.value = true
+                                } else {
+                                    preferencesDataStore.setListPreference(false)
+                                    currentChoice.value = false
+                                }
+                            }
+                            Log.d("TAG", "layout switched")
+                        },
+                        role = Role.RadioButton
+                    )
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = (
+                        if (text == "Grid") {
+                            currentChoice.value
+                        } else {
+                            !currentChoice.value
+                        }
+                    ),
+                    onClick = {
+//                        onOptionSelected(text)
+                        coroutineScope.launch {
+                            if (text == "Grid") {
+                                preferencesDataStore.setListPreference(true)
+                                currentChoice.value = true
+                            } else {
+                                preferencesDataStore.setListPreference(false)
+                                currentChoice.value = false
+                            }
+                        }
+                        Log.d("TAG", "layout switched")
+                    }// null recommended for accessibility with screen readers
+                )
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
     var checked by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
@@ -150,8 +228,12 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
             checked = checked,
 
             onCheckedChange = {
-                useMaterialYou.value = it
-                checked = it
+                checked = !checked
+                useMaterialYou.value = checked
+                coroutineScope.launch {
+                    preferencesDataStore.setMaterialYouPreference(checked)
+                }
+                Log.d("TAG", "material you toggled")
             }
         )
         Text(

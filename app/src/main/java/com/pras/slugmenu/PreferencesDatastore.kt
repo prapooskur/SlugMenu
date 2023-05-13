@@ -1,15 +1,12 @@
 package com.pras.slugmenu
 
-import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -20,13 +17,13 @@ data class UserPreferences(val GridView: Boolean)
 class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
 
     private companion object {
-        val USE_LIST_UI = booleanPreferencesKey("use_list_ui")
+        val USE_GRID_UI = booleanPreferencesKey("use_grid_ui")
         val THEME_PREF = intPreferencesKey("theme_pref")
         val USE_MATERIAL_YOU = booleanPreferencesKey("use_material_you")
         const val TAG = "UserPreferencesRepo"
     }
 
-    val isGridLayout: Flow<Boolean> = dataStore.data
+    val getListPreference: Flow<Boolean> = dataStore.data
         .catch {
             if (it is IOException) {
                 Log.e(TAG, "Error reading preferences.", it)
@@ -36,12 +33,12 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
             }
         }
         .map {preferences ->
-            preferences[USE_LIST_UI] ?: false
+            preferences[USE_GRID_UI] ?: true
         }
 
     suspend fun setListPreference(isGrid: Boolean) {
         dataStore.edit {preferences ->
-            preferences[USE_LIST_UI] = isGrid
+            preferences[USE_GRID_UI] = isGrid
         }
     }
 
@@ -71,7 +68,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
     val getMaterialYouPreference: Flow<Boolean> = dataStore.data
         .catch {
             if (it is IOException) {
-                Log.e(TAG, "Error reading preferences.", it)
+                Log.e(TAG, "Error reading material you preferences.", it)
                 emit(emptyPreferences())
             } else {
                 throw it
