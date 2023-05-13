@@ -33,13 +33,14 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, menuDb: MenuDatabase) {
     val context = LocalContext.current
@@ -104,7 +105,7 @@ fun ThemeSwitcher() {
             ) {
                 RadioButton(
                     selected = (text == selectedOption),
-                    onClick = null // null recommended for accessibility with screenreaders
+                    onClick = null // null recommended for accessibility with screen readers
                 )
                 Text(
                     text = text,
@@ -117,15 +118,9 @@ fun ThemeSwitcher() {
 
 }
 
-enum class ThemeOption {
-    SYSTEM,
-    LIGHT,
-    DARK
-}
-
 @Composable
-fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>) {
-    var checked by remember { mutableStateOf(true) }
+fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>/*, preferencesDataStore: PreferencesDatastore*/) {
+    var checked by remember { mutableStateOf(useMaterialYou.value) }
     Row(
         Modifier
             .fillMaxWidth()
@@ -133,7 +128,7 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>) {
                 onClick = {
                     checked = !checked
                     useMaterialYou.value = checked
-                    Log.d("TAG", "myoutog")
+                    Log.d("TAG", "material you toggled")
                 },
                 role = Role.RadioButton
             )
@@ -146,7 +141,6 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>) {
             onCheckedChange = {
                 useMaterialYou.value = it
                 checked = it
-
             }
         )
         Text(

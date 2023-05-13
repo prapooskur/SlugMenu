@@ -22,6 +22,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
     private companion object {
         val USE_LIST_UI = booleanPreferencesKey("use_list_ui")
         val THEME_PREF = intPreferencesKey("theme_pref")
+        val USE_MATERIAL_YOU = booleanPreferencesKey("use_material_you")
         const val TAG = "UserPreferencesRepo"
     }
 
@@ -59,13 +60,30 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
 
     suspend fun setThemePreference(themePref: Int) {
         if (themePref > 2 || themePref < 0) {
-            dataStore.edit {preferences ->
-                preferences[THEME_PREF] = 0
-            }
+            Log.e(TAG, "Error setting themepref to $themePref.")
         } else {
             dataStore.edit { preferences ->
                 preferences[THEME_PREF] = themePref
             }
+        }
+    }
+
+    val getMaterialYouPreference: Flow<Boolean> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map {preferences ->
+            preferences[USE_MATERIAL_YOU] ?: true
+        }
+
+    suspend fun setMaterialYouPreference(isGrid: Boolean) {
+        dataStore.edit {preferences ->
+            preferences[USE_MATERIAL_YOU] = isGrid
         }
     }
 }
