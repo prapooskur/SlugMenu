@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,6 +54,11 @@ class MainActivity : ComponentActivity() {
                 useMaterialYou.value = materialYouEnabled
                 val themeChosen = userSettings.getThemePreference.first()
                 themeChoice.value = themeChosen
+            }
+            LaunchedEffect(key1 = Unit) {
+                userSettings.getThemePreference.collect {
+                    themeChoice.value = it
+                }
             }
 
             SlugMenuTheme(darkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, userSettings = userSettings, dynamicColor = useMaterialYou.value) {

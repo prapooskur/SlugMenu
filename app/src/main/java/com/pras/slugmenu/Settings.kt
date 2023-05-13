@@ -71,7 +71,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         )
                     }
                 )
-                ThemeSwitcher(preferencesDataStore = preferencesDataStore)
+                ThemeSwitcher(preferencesDataStore = preferencesDataStore, themeChoice = themeChoice)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     MaterialYouSwitcher(useMaterialYou = useMaterialYou, preferencesDataStore = preferencesDataStore)
                 }
@@ -95,22 +95,28 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
 
 
 @Composable
-fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore) {
+fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: MutableState<Int>) {
     val themeOptions = listOf("System Default", "Light", "Dark")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(themeOptions[0]) }
     val coroutineScope = rememberCoroutineScope()
-// Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
+
     Column(Modifier.selectableGroup()) {
         themeOptions.forEach { text ->
             Row(
                 Modifier
                     .selectable(
-                        selected = (text == selectedOption),
+                        selected = (text == themeOptions[themeChoice.value]),
                         onClick = {
-                            onOptionSelected(text)
-                            Log.d("TAG", "tesr")
-                        },
-                        role = Role.RadioButton
+                            val themeChoice = when (text) {
+                                themeOptions[0] -> 0
+                                themeOptions[1] -> 1
+                                themeOptions[2] -> 2
+                                else -> 0
+                            }
+                            coroutineScope.launch {
+                                preferencesDataStore.setThemePreference(themeChoice)
+                            }
+                        }
                     ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -124,7 +130,7 @@ fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore) {
                     },
                     trailingContent = {
                         RadioButton(
-                            selected = (text == selectedOption),
+                            selected = (text == themeOptions[themeChoice.value]),
                             onClick = {
                                 val themeChoice = when (text) {
                                     themeOptions[0] -> 0
@@ -135,7 +141,7 @@ fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore) {
                                 coroutineScope.launch {
                                     preferencesDataStore.setThemePreference(themeChoice)
                                 }
-                            } // null recommended for accessibility with screen readers
+                            },
                         )
                     },
                 )
@@ -186,6 +192,11 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
             }
         )
     }
+}
+
+@Composable
+fun AmoledSwitcher(preferencesDataStore: PreferencesDatastore) {
+
 }
 
 @Composable
