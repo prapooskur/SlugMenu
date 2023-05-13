@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,7 +29,8 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 
 private const val SETTINGS_NAME = "user_settings"
@@ -45,6 +47,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             var useMaterialYou = remember { mutableStateOf(true) }
+            runBlocking {
+                val materialYouEnabled = userSettings.getMaterialYouPreference.first()
+                useMaterialYou.value = materialYouEnabled
+            }
+
             SlugMenuTheme(userSettings = userSettings, dynamicColor = useMaterialYou.value) {
                 MenuBarColor(color = MaterialTheme.colorScheme.primary)
                 // A surface container using the 'background' color from the theme

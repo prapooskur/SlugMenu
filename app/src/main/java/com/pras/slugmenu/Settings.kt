@@ -25,6 +25,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,8 +39,10 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jsoup.internal.StringUtil.padding
 
 @Composable
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
@@ -120,7 +123,12 @@ fun ThemeSwitcher() {
 
 @Composable
 fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
-    var checked by remember { mutableStateOf(useMaterialYou.value) }
+    var checked by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        val materialYouEnabled = preferencesDataStore.getMaterialYouPreference.first()
+        checked = materialYouEnabled
+    }
+    val coroutineScope = rememberCoroutineScope()
     Row(
         Modifier
             .fillMaxWidth()
@@ -128,6 +136,9 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
                 onClick = {
                     checked = !checked
                     useMaterialYou.value = checked
+                    coroutineScope.launch {
+                        preferencesDataStore.setMaterialYouPreference(checked)
+                    }
                     Log.d("TAG", "material you toggled")
                 },
                 role = Role.RadioButton
