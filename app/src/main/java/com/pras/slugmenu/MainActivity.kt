@@ -2,6 +2,7 @@ package com.pras.slugmenu
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentScope
@@ -53,19 +54,15 @@ class MainActivity : ComponentActivity() {
                 val themeChosen = userSettings.getThemePreference.first()
                 themeChoice.value = themeChosen
             }
-            val useDarkTheme = when (themeChoice.value) {
-                1 -> true
-                2 -> false
-                else -> isSystemInDarkTheme()
-            }
-            SlugMenuTheme(darkTheme = useDarkTheme, userSettings = userSettings, dynamicColor = useMaterialYou.value) {
+
+            SlugMenuTheme(darkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, userSettings = userSettings, dynamicColor = useMaterialYou.value) {
                 MenuBarColor(color = MaterialTheme.colorScheme.primary)
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Init("home", useMaterialYou, userSettings)
+                    Init("home", useMaterialYou, themeChoice, userSettings)
                 }
             }
         }
@@ -104,7 +101,7 @@ fun MenuBarColor(color: Color) {
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, userSettings: PreferencesDatastore) {
+fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, userSettings: PreferencesDatastore) {
 //    val oldNavController = rememberNavController()
     val navController = rememberAnimatedNavController()
     val context = LocalContext.current
@@ -456,6 +453,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, userSe
             SettingsScreen(
                 navController,
                 useMaterialYou,
+                themeChoice,
                 menuDb,
                 userSettings
             )

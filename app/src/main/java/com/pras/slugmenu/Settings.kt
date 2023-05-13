@@ -47,7 +47,7 @@ import kotlinx.coroutines.withContext
 import org.jsoup.internal.StringUtil.padding
 
 @Composable
-fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
+fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
     val context = LocalContext.current
     Log.d("TAG","test $useMaterialYou")
     Scaffold(
@@ -71,7 +71,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         )
                     }
                 )
-                ThemeSwitcher()
+                ThemeSwitcher(preferencesDataStore = preferencesDataStore)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     MaterialYouSwitcher(useMaterialYou = useMaterialYou, preferencesDataStore = preferencesDataStore)
                 }
@@ -95,9 +95,10 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
 
 
 @Composable
-fun ThemeSwitcher() {
+fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore) {
     val themeOptions = listOf("System Default", "Light", "Dark")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(themeOptions[0]) }
+    val coroutineScope = rememberCoroutineScope()
 // Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
     Column(Modifier.selectableGroup()) {
         themeOptions.forEach { text ->
@@ -124,7 +125,17 @@ fun ThemeSwitcher() {
                     trailingContent = {
                         RadioButton(
                             selected = (text == selectedOption),
-                            onClick = null // null recommended for accessibility with screen readers
+                            onClick = {
+                                val themeChoice = when (text) {
+                                    themeOptions[0] -> 0
+                                    themeOptions[1] -> 1
+                                    themeOptions[2] -> 2
+                                    else -> 0
+                                }
+                                coroutineScope.launch {
+                                    preferencesDataStore.setThemePreference(themeChoice)
+                                }
+                            } // null recommended for accessibility with screen readers
                         )
                     },
                 )
