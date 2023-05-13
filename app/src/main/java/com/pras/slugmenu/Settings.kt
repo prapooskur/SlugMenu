@@ -62,16 +62,31 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
         },
         content = { innerPadding ->
             Column(Modifier.padding(innerPadding)) {
-                Text("App Theme:")
+                Divider()
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "App Theme:",
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
+                )
                 ThemeSwitcher()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     MaterialYouSwitcher(useMaterialYou = useMaterialYou, preferencesDataStore = preferencesDataStore)
                 }
                 Divider()
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "App Layout:",
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
+                )
                 LayoutSwitcher(preferencesDataStore = preferencesDataStore)
                 Divider()
                 ClearCache(menuDb = menuDb, context = LocalContext.current)
-
             }
         }
     )
@@ -88,8 +103,6 @@ fun ThemeSwitcher() {
         themeOptions.forEach { text ->
             Row(
                 Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
                     .selectable(
                         selected = (text == selectedOption),
                         onClick = {
@@ -97,18 +110,23 @@ fun ThemeSwitcher() {
                             Log.d("TAG", "tesr")
                         },
                         role = Role.RadioButton
-                    )
-                    .padding(horizontal = 16.dp),
+                    ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                RadioButton(
-                    selected = (text == selectedOption),
-                    onClick = null // null recommended for accessibility with screen readers
-                )
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(start = 16.dp)
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = text,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    },
+                    trailingContent = {
+                        RadioButton(
+                            selected = (text == selectedOption),
+                            onClick = null // null recommended for accessibility with screen readers
+                        )
+                    },
                 )
             }
         }
@@ -123,39 +141,38 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
         checked = materialYouEnabled
     }
     val coroutineScope = rememberCoroutineScope()
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .clickable(
-                onClick = {
-                    checked = !checked
-                    useMaterialYou.value = checked
-                    coroutineScope.launch {
-                        preferencesDataStore.setMaterialYouPreference(checked)
-                    }
-                    Log.d("TAG", "material you toggled")
-                },
-                role = Role.RadioButton
-            )
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Switch(
-            checked = checked,
-
-            onCheckedChange = {
+    Row(modifier = Modifier.clickable(
+            onClick = {
                 checked = !checked
                 useMaterialYou.value = checked
                 coroutineScope.launch {
                     preferencesDataStore.setMaterialYouPreference(checked)
                 }
                 Log.d("TAG", "material you toggled")
+            },
+    )) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = "Enable Material You Theming",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            },
+            trailingContent = {
+                Switch(
+                    checked = checked,
+
+                    onCheckedChange = {
+                        checked = !checked
+                        useMaterialYou.value = checked
+                        coroutineScope.launch {
+                            preferencesDataStore.setMaterialYouPreference(checked)
+                        }
+                        Log.d("TAG", "material you toggled")
+                    }
+                )
             }
-        )
-        Text(
-            text = "Enable Material You Theming",
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(start = 16.dp)
         )
     }
 }
@@ -170,11 +187,70 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
         }
         currentChoice.value = userChoice
     }
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(themeOptions[0]) }
     val coroutineScope = rememberCoroutineScope()
-// Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
     Column(Modifier.selectableGroup()) {
         themeOptions.forEach { text ->
+            Row(
+                Modifier
+                    .selectable(
+                        selected = (
+                                if (text == "Grid") {
+                                    currentChoice.value
+                                } else {
+                                    !currentChoice.value
+                                }
+                                ),
+                        onClick = {
+                            coroutineScope.launch {
+                                if (text == "Grid") {
+                                    preferencesDataStore.setListPreference(true)
+                                    currentChoice.value = true
+                                } else {
+                                    preferencesDataStore.setListPreference(false)
+                                    currentChoice.value = false
+                                }
+                            }
+                            Log.d("TAG", "layout switched")
+                        },
+                        role = Role.RadioButton
+                    ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = text,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    },
+                    trailingContent = {
+                        RadioButton(
+                            selected = (
+                                    if (text == "Grid") {
+                                        currentChoice.value
+                                    } else {
+                                        !currentChoice.value
+                                    }
+                                    ),
+                            onClick = {
+                                coroutineScope.launch {
+                                    if (text == "Grid") {
+                                        preferencesDataStore.setListPreference(true)
+                                        currentChoice.value = true
+                                    } else {
+                                        preferencesDataStore.setListPreference(false)
+                                        currentChoice.value = false
+                                    }
+                                }
+                                Log.d("TAG", "layout switched")
+                            }
+                        )
+                    }
+                )
+            }
+        }
+            /*
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -188,7 +264,6 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
                                 }
                                 ),
                         onClick = {
-//                            onOptionSelected(text)
                             coroutineScope.launch {
                                 if (text == "Grid") {
                                     preferencesDataStore.setListPreference(true)
@@ -214,7 +289,6 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
                             }
                             ),
                     onClick = {
-//                        onOptionSelected(text)
                         coroutineScope.launch {
                             if (text == "Grid") {
                                 preferencesDataStore.setListPreference(true)
@@ -225,7 +299,7 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
                             }
                         }
                         Log.d("TAG", "layout switched")
-                    }// null recommended for accessibility with screen readers
+                    }
                 )
                 Text(
                     text = text,
@@ -234,6 +308,8 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
                 )
             }
         }
+
+             */
     }
 }
 
