@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Init("home", useMaterialYou)
+                    Init("home", useMaterialYou, userSettings)
                 }
             }
         }
@@ -91,7 +91,7 @@ fun MenuBarColor(color: Color) {
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>) {
+fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, userSettings: PreferencesDatastore) {
 //    val oldNavController = rememberNavController()
     val navController = rememberAnimatedNavController()
     val context = LocalContext.current
@@ -443,7 +443,8 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>) {
             SettingsScreen(
                 navController,
                 useMaterialYou,
-                menuDb
+                menuDb,
+                userSettings
             )
         }
 

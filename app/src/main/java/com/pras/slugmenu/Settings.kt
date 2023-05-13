@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, menuDb: MenuDatabase) {
+fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
     val context = LocalContext.current
     Log.d("TAG","test $useMaterialYou")
     Scaffold(
@@ -60,7 +60,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                 Text("App Theme:")
                 ThemeSwitcher()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    MaterialYouSwitcher(useMaterialYou = useMaterialYou)
+                    MaterialYouSwitcher(useMaterialYou = useMaterialYou, preferencesDataStore = preferencesDataStore)
                 }
                 ListItem(
                     headlineContent = { Text("Clear Menu Cache") },
@@ -119,7 +119,7 @@ fun ThemeSwitcher() {
 }
 
 @Composable
-fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>/*, preferencesDataStore: PreferencesDatastore*/) {
+fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
     var checked by remember { mutableStateOf(useMaterialYou.value) }
     Row(
         Modifier
