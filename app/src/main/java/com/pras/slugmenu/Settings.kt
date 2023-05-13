@@ -195,8 +195,48 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
 }
 
 @Composable
-fun AmoledSwitcher(preferencesDataStore: PreferencesDatastore) {
-
+fun AmoledSwitcher(useAmoledBlack: MutableState<Boolean>,preferencesDataStore: PreferencesDatastore) {
+    var checked by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        val amoledBlackEnabled = preferencesDataStore.getAmoledPreference.first()
+        checked = amoledBlackEnabled
+    }
+    LaunchedEffect(Unit) {
+        val amoledEnabled = preferencesDataStore.getAmoledPreference.first()
+        checked = amoledEnabled
+    }
+    val coroutineScope = rememberCoroutineScope()
+    Row(modifier = Modifier.clickable(
+            onClick = {
+                checked = !checked
+                coroutineScope.launch {
+                    preferencesDataStore.setAmoledPreference(checked)
+                }
+                Log.d("TAG", "amoled toggled")
+            },
+    )) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = "Enable AMOLED Theme",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            },
+            trailingContent = {
+                Switch(
+                    checked = checked,
+                    onCheckedChange = {
+                        checked = !checked
+                        coroutineScope.launch {
+                            preferencesDataStore.setAmoledPreference(checked)
+                        }
+                        Log.d("TAG", "amoled toggled")
+                    }
+                )
+            }
+        )
+    }
 }
 
 @Composable

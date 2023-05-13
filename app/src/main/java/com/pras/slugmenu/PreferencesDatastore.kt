@@ -20,6 +20,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         val USE_GRID_UI = booleanPreferencesKey("use_grid_ui")
         val THEME_PREF = intPreferencesKey("theme_pref")
         val USE_MATERIAL_YOU = booleanPreferencesKey("use_material_you")
+        val USE_AMOLED_BLACK = booleanPreferencesKey("use_amoled_black")
         const val TAG = "UserPreferencesRepo"
     }
 
@@ -36,9 +37,9 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
             preferences[USE_GRID_UI] ?: true
         }
 
-    suspend fun setListPreference(isGrid: Boolean) {
+    suspend fun setListPreference(userChoice: Boolean) {
         dataStore.edit {preferences ->
-            preferences[USE_GRID_UI] = isGrid
+            preferences[USE_GRID_UI] = userChoice
         }
     }
 
@@ -78,9 +79,28 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
             preferences[USE_MATERIAL_YOU] ?: true
         }
 
-    suspend fun setMaterialYouPreference(isGrid: Boolean) {
+    suspend fun setMaterialYouPreference(userChoice: Boolean) {
         dataStore.edit {preferences ->
-            preferences[USE_MATERIAL_YOU] = isGrid
+            preferences[USE_MATERIAL_YOU] = userChoice
+        }
+    }
+
+    val getAmoledPreference: Flow<Boolean> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading material you preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map {preferences ->
+            preferences[USE_AMOLED_BLACK] ?: false
+        }
+
+    suspend fun setAmoledPreference(userChoice: Boolean) {
+        dataStore.edit {preferences ->
+            preferences[USE_AMOLED_BLACK] = userChoice
         }
     }
 }
