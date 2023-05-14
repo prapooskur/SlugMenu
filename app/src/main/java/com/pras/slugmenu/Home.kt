@@ -22,7 +22,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -90,11 +89,8 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
 
 }
 
-// this is how tonal elevation is done, hardcode it in for primarycolor somehow?
+
 /*
-    val alpha = ((4.5f * ln(elevation.value + 1)) + 2f) / 100f
-    return surfaceTint.copy(alpha = alpha).compositeOver(surface)
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarHome(titleText: String, navController: NavController, color: Color = MaterialTheme.colorScheme.primary) {
@@ -124,6 +120,7 @@ fun TopBarHome(titleText: String, navController: NavController, color: Color = M
          */
     )
 }
+ */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

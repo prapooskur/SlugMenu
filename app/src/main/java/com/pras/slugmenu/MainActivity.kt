@@ -2,7 +2,6 @@ package com.pras.slugmenu
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentScope
@@ -38,7 +37,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
 )
 
 class MainActivity : ComponentActivity() {
-    lateinit var userSettings: PreferencesDatastore
+    private lateinit var userSettings: PreferencesDatastore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
