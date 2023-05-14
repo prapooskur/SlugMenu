@@ -7,13 +7,10 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -33,22 +30,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jsoup.internal.StringUtil.padding
 
 @Composable
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
-    val context = LocalContext.current
     Log.d("TAG","test $useMaterialYou")
     Scaffold(
         topBar = {
@@ -97,7 +88,6 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
 @Composable
 fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: MutableState<Int>) {
     val themeOptions = listOf("System Default", "Light", "Dark")
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(themeOptions[0]) }
     val coroutineScope = rememberCoroutineScope()
 
     Column(Modifier.selectableGroup()) {
@@ -107,14 +97,15 @@ fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: Mutab
                     .selectable(
                         selected = (text == themeOptions[themeChoice.value]),
                         onClick = {
-                            val themeChoice = when (text) {
-                                themeOptions[0] -> 0
-                                themeOptions[1] -> 1
-                                themeOptions[2] -> 2
-                                else -> 0
-                            }
                             coroutineScope.launch {
-                                preferencesDataStore.setThemePreference(themeChoice)
+                                preferencesDataStore.setThemePreference(
+                                    when (text) {
+                                        themeOptions[0] -> 0
+                                        themeOptions[1] -> 1
+                                        themeOptions[2] -> 2
+                                        else -> 0
+                                    }
+                                )
                             }
                         }
                     ),
@@ -132,14 +123,15 @@ fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: Mutab
                         RadioButton(
                             selected = (text == themeOptions[themeChoice.value]),
                             onClick = {
-                                val themeChoice = when (text) {
-                                    themeOptions[0] -> 0
-                                    themeOptions[1] -> 1
-                                    themeOptions[2] -> 2
-                                    else -> 0
-                                }
                                 coroutineScope.launch {
-                                    preferencesDataStore.setThemePreference(themeChoice)
+                                    preferencesDataStore.setThemePreference(
+                                        when (text) {
+                                            themeOptions[0] -> 0
+                                            themeOptions[1] -> 1
+                                            themeOptions[2] -> 2
+                                            else -> 0
+                                        }
+                                    )
                                 }
                             },
                         )

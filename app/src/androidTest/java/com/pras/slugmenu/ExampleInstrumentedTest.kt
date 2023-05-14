@@ -22,3 +22,7 @@ class ExampleInstrumentedTest {
         assertEquals("com.example.slugmenu", appContext.packageName)
     }
 }
+
+// Instrumented test for menu app
+// Path: app/src/androidTest/java/com/pras/slugmenu/ExampleInstrumentedTest.kt
+
