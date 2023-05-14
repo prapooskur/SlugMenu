@@ -39,15 +39,12 @@ class MenuTypeConverters {
     @TypeConverter
     fun fromString(value: String): Array<MutableList<String>> {
         Log.d("TAG","from string value: $value")
-//        val listType = object : TypeToken<Array<MutableList<String>>>() {}.type
-//        return Gson().fromJson(value, listType)
         return(Json.decodeFromString<Array<MutableList<String>>>(value))
     }
 
     @TypeConverter
     fun fromList(value: Array<MutableList<String>>): String {
         Log.d("TAG","from list value: $value")
-//        return Gson().toJson(value)
         return(Json.encodeToString(value))
     }
 }

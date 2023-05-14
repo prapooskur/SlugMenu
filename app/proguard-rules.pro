@@ -22,6 +22,12 @@
 
 # needed for ktor - see https://youtrack.jetbrains.com/issue/KTOR-5528
 -dontwarn org.slf4j.impl.StaticLoggerBinder
+
+# needed to ignore jsr 305 warnings
+-dontwarn javax.annotation.Nullable
+-dontwarn javax.annotation.ParametersAreNonnullByDefault
+
+# required for gson, no longer needed
 # Retain generic signatures of TypeToken and its subclasses with R8 version 3.0 and higher.
 #-keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
 #-keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
