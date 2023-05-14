@@ -48,7 +48,6 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
                             fontSize = 20.sp
                         )
                     },
-                    //currently nonfunctional
 
                     actions = {
                         IconButton(onClick = { navController.navigate("settings") }) {
