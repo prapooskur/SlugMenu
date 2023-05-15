@@ -11,5 +11,9 @@
 
     <color name="ucblue">#FF003C6C</color>
     <color name="ucgold">#FFFDC700</color>
+
+    SLUG YELLOW: F2B622
     -->
+
+    <color name="slugicon_background">#508491</color>
 </resources>
