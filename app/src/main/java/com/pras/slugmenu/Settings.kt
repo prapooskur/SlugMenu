@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -41,46 +42,57 @@ import kotlinx.coroutines.withContext
 @Composable
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
     Log.d("TAG","test $useMaterialYou")
-    Scaffold(
-        topBar = {
-            Surface(shadowElevation = 4.dp) {
-                TopBar(
-                    titleText = "Settings",
-                    color = MaterialTheme.colorScheme.primary,
-                    navController = navController
-                )
-            }
-        },
-        content = { innerPadding ->
-            Column(Modifier.padding(innerPadding)) {
-                Divider()
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = "App Theme:",
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                    }
-                )
-                ThemeSwitcher(preferencesDataStore = preferencesDataStore, themeChoice = themeChoice)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    MaterialYouSwitcher(useMaterialYou = useMaterialYou, preferencesDataStore = preferencesDataStore)
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Scaffold(
+            topBar = {
+                Surface(shadowElevation = 4.dp) {
+                    TopBar(
+                        titleText = "Settings",
+                        color = MaterialTheme.colorScheme.primary,
+                        navController = navController
+                    )
                 }
-                Divider()
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = "App Layout:",
-                            style = MaterialTheme.typography.titleMedium,
+            },
+            content = { innerPadding ->
+                Column(Modifier.padding(innerPadding)) {
+                    Divider()
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = "App Theme:",
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                        }
+                    )
+                    ThemeSwitcher(
+                        preferencesDataStore = preferencesDataStore,
+                        themeChoice = themeChoice
+                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        MaterialYouSwitcher(
+                            useMaterialYou = useMaterialYou,
+                            preferencesDataStore = preferencesDataStore
                         )
                     }
-                )
-                LayoutSwitcher(preferencesDataStore = preferencesDataStore)
-                Divider()
-                ClearCache(menuDb = menuDb, context = LocalContext.current)
+                    Divider()
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = "App Layout:",
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                        }
+                    )
+                    LayoutSwitcher(preferencesDataStore = preferencesDataStore)
+                    Divider()
+                    ClearCache(menuDb = menuDb, context = LocalContext.current)
+                }
             }
-        }
-    )
+        )
+    }
 }
 
 
