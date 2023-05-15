@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -124,9 +125,9 @@ fun TopBarHome(titleText: String, navController: NavController, color: Color = M
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
-    val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+//    val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
-//    val locations2line = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+    val locations = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
@@ -161,8 +162,9 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
                 ) {
                     Text(
                         text = locations[index],
+                        textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onPrimary,
-//                        fontSize = 16.sp
+                        fontSize = 18.sp
                     )
                 }
             }
@@ -173,8 +175,10 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardList(navController: NavController, innerPadding: PaddingValues) {
-    val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+//    val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
+    val locations = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+
     LazyColumn(
         /*
         columns = GridCells.Adaptive(minSize = 128.dp),
@@ -210,7 +214,12 @@ fun CardList(navController: NavController, innerPadding: PaddingValues) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = locations[index], color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        text = locations[index],
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        fontSize = 18.sp
+                    )
                 }
             }
         }
