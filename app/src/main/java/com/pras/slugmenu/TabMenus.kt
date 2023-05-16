@@ -3,6 +3,7 @@ package com.pras.slugmenu
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -196,7 +197,9 @@ fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, 
 @Composable
 fun PrintMenu(itemList: MutableList<String>) {
     if (itemList.size > 0) {
-        LazyColumn {
+        LazyColumn (
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+        ) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
                 var boldness = FontWeight.Normal
