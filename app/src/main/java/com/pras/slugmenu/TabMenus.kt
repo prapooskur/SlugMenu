@@ -39,9 +39,6 @@ import androidx.navigation.NavController
 import java.time.LocalDateTime
 //Swipable tabs
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -50,7 +47,7 @@ import java.util.Collections
 
 //Swipable tab bar
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavController, collegeName: String = "default college") {
     val currentHour: Int = LocalDateTime.now().hour
@@ -193,7 +190,6 @@ fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, 
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrintMenu(itemList: MutableList<String>) {
     if (itemList.size > 0) {
@@ -235,7 +231,6 @@ fun PrintMenu(itemList: MutableList<String>) {
 }
 
 //Menus with prices - Coffee Bars, Cafes, Markets
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrintPriceMenu(itemList: MutableList<String>) {
     if (itemList.size > 0) {
@@ -323,7 +318,6 @@ fun PrintPriceMenu(itemList: MutableList<String>) {
 }
 
 //Menus with multiple lists of prices - Oakes
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PrintOakesMenu(itemList: MutableList<String>) {
     if (itemList.size > 0) {
