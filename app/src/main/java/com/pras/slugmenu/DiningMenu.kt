@@ -139,12 +139,17 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                                 val date = LocalDateTime.ofInstant(instant, ZoneId.of("GMT"));
                                 Log.d("DATE","date picked: "+ dateFormat.format(date))
                                 val dateUrl = date.toString().replace("-", "%2f")
+
+                                // this breaks the world
+                                /*
                                 DiningMenuCustomDate(
                                     navController = navController,
                                     locationUrl = locationUrl,
                                     dateUrl = dateUrl,
                                     locationName = "${locationName.substringBefore(" ")} ${date.toString()}",
                                 )
+                                 */
+
                                 showDatePicker = false
                             },
                             enabled = confirmEnabled.value
