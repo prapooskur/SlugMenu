@@ -32,14 +32,11 @@ import kotlinx.coroutines.withContext
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.channels.UnresolvedAddressException
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,9 +56,8 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     var noInternet by remember { mutableStateOf(false) }
 
     var showDatePicker by remember { mutableStateOf(false) }
-    val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy");
+    val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy")
     val encodedDate = currentDate.format(dateFormat).replace("-", "%2f")
-    val currentDateTimestamp = remember { mutableStateOf(encodedDate) }
     Log.d("TAG", "current date: $encodedDate")
 
     LaunchedEffect(Unit) {
@@ -136,9 +132,9 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                                         Instant.ofEpochMilli(
                                             it
                                         )
-                                    };
+                                    }
                                 val date = dateFormat.format(LocalDateTime.ofInstant(instant, ZoneId.of("GMT")))
-                                Log.d("DATE","date picked: "+ date)
+                                Log.d("DATE", "date picked: $date")
                                 val dateUrl = date.toString().replace("-", "%2f")
 
                                 Log.d("TAG", "date url: $dateUrl")
@@ -244,7 +240,7 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
     Log.d("TAG","full url: $fullUrl")
 
     var showDatePicker by remember { mutableStateOf(false) }
-    val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy");
+    val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy")
 
     val dataLoadedState = remember { mutableStateOf(false) }
     var noInternet by remember { mutableStateOf(false) }
@@ -306,9 +302,9 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
                                         Instant.ofEpochMilli(
                                             it
                                         )
-                                    };
+                                    }
                                 val date = dateFormat.format(LocalDateTime.ofInstant(instant, ZoneId.of("GMT")))
-                                Log.d("DATE","date picked: "+ date)
+                                Log.d("DATE", "date picked: $date")
                                 val dateUrl = date.toString().replace("-", "%2f")
 
                                 Log.d("TAG", "date url: $dateUrl")
