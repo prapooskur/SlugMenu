@@ -233,6 +233,7 @@ fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>
 fun DiningMenuCustomDate(navController: NavController, locationUrl: String, dateUrl: String, locationName: String) {
 
     val locationName = URLDecoder.decode(locationName, "UTF-8")
+    val locationUrl = locationUrl.replace("/", "%2f")
 
 
     Log.d("TAG", "Manually choosing date! $locationUrl $dateUrl")
