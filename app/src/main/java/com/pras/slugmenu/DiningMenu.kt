@@ -104,7 +104,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                     TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
                 },
                 content = {padding ->
-                    SwipableTabBar(menuArray = menuList, navController = navController, collegeName = locationName, padding = padding)
+                    SwipableTabBar(menuArray = menuList, padding = padding)
                 },
                 //floating action button, currently does nothing
                 floatingActionButton = {
@@ -259,7 +259,7 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
                     TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
                 },
                 content = {padding ->
-                    SwipableTabBar(menuArray = menuList, navController = navController, collegeName = locationName, padding = padding)
+                    SwipableTabBar(menuArray = menuList, padding = padding)
                 },
                 //floating action button, currently does nothing
                 floatingActionButton = {

@@ -49,7 +49,7 @@ import java.util.Collections
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavController, collegeName: String = "default college", padding: PaddingValues) {
+fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues) {
     val currentHour: Int = LocalDateTime.now().hour
     val currentMinute: Int = LocalDateTime.now().minute
     val currentDay: DayOfWeek = LocalDateTime.now().dayOfWeek
