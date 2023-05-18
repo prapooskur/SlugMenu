@@ -47,7 +47,7 @@ import java.util.Collections
 
 //Swipable tab bar
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues) {
     val currentHour: Int = LocalDateTime.now().hour

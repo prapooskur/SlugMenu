@@ -305,7 +305,7 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
                                     }
                                 val date = dateFormat.format(LocalDateTime.ofInstant(instant, ZoneId.of("GMT")))
                                 Log.d("DATE", "date picked: $date")
-                                val dateUrl = date.toString().replace("-", "%2f")
+                                val newDateUrl = date.toString().replace("-", "%2f")
 
                                 Log.d("TAG", "date url: $dateUrl")
 
@@ -324,7 +324,7 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
                                 val encodedLocationName = URLEncoder.encode(locationDateName, "UTF-8")
                                 val strippedLocationUrl = locationUrl.substringBefore("&WeeksMenus=UCSC+-+This+Week's+Menus&myaction=read&dtdate=")
 
-                                navController.navigate("customdiningdate/$strippedLocationUrl/$dateUrl/$encodedLocationName")
+                                navController.navigate("customdiningdate/$strippedLocationUrl/$newDateUrl/$encodedLocationName")
 
                                 showDatePicker = false
                             },
