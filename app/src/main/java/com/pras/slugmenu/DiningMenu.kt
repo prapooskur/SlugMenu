@@ -6,9 +6,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +33,7 @@ import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiningMenuRoom(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
     Log.d("TAG", "Hello, World from room!")
@@ -35,6 +48,8 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     // Define a state to hold a flag indicating whether the data has been loaded from the cache
     val dataLoadedState = remember { mutableStateOf(false) }
     var noInternet by remember { mutableStateOf(false) }
+
+    var showDatePicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
@@ -71,7 +86,59 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     Column {
         if (dataLoadedState.value) {
             // If the data has been loaded from the cache, display the menu
-            SwipableTabBar(menuList, navController, locationName)
+            Scaffold(
+                topBar = {
+                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
+                },
+                content = {padding ->
+                    SwipableTabBar(menuArray = menuList, navController = navController, collegeName = locationName, padding = padding)
+                },
+                //floating action button, currently does nothing
+                floatingActionButton = {
+                    FloatingActionButton(
+                        onClick = { showDatePicker = !showDatePicker }
+                    ) {
+                        Icon(Icons.Filled.DateRange,"Calendar")
+                    }
+                },
+                floatingActionButtonPosition = FabPosition.End
+            )
+
+            if (showDatePicker) {
+                val datePickerState = rememberDatePickerState()
+                val confirmEnabled = remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
+                DatePickerDialog(
+                    onDismissRequest = {
+                        // Dismiss the dialog when the user clicks outside the dialog or on the back
+                        // button. If you want to disable that functionality, simply use an empty
+                        // onDismissRequest.
+                        showDatePicker = false
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                showDatePicker = false
+                            },
+                            enabled = confirmEnabled.value
+                        ) {
+                            Text("OK")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                showDatePicker = false
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+
+                ) {
+                    DatePicker(state = datePickerState)
+                }
+            }
+
         } else {
             // Otherwise, display a loading indicator
             Surface {
@@ -89,6 +156,8 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             }
         }
     }
+
+
 }
 
 @Composable

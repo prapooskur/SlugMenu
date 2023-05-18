@@ -3,6 +3,7 @@ package com.pras.slugmenu
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,7 +40,6 @@ import androidx.navigation.NavController
 import java.time.LocalDateTime
 //Swipable tabs
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.material3.Scaffold
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.util.Collections
@@ -47,15 +47,14 @@ import java.util.Collections
 
 //Swipable tab bar
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavController, collegeName: String = "default college") {
+fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavController, collegeName: String = "default college", padding: PaddingValues) {
     val currentHour: Int = LocalDateTime.now().hour
     val currentMinute: Int = LocalDateTime.now().minute
     val currentDay: DayOfWeek = LocalDateTime.now().dayOfWeek
     Log.d("TAG", "day: $currentDay")
 //    Log.d("TAG","hour: "+currentHour)
-
 
     val titles: List<String> = if (menuArray.isEmpty()) {
         listOf("Null")
@@ -106,65 +105,47 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, navController: NavCont
     var state by remember { mutableStateOf(initState) }
     val pagerState = androidx.compose.foundation.pager.rememberPagerState(initState)
     val scope = rememberCoroutineScope()
-    Scaffold(
-        topBar = {
-            TopBar(titleText = collegeName, color = MaterialTheme.colorScheme.primary, navController = navController)
-        },
-        content = {padding ->
-            Column(modifier = Modifier.padding(padding)) {
-                TabRow(
-                    selectedTabIndex = state,
-                    indicator = { tabPositions -> // 3.
-                        TabRowDefaults.Indicator(
-                            Modifier.pagerTabIndicatorOffset(
-                                pagerState,
-                                tabPositions
-                            )
-                        )
-                    }
-                ) {
-                    titles.forEachIndexed { index, title ->
-                        // create a tab for each element in titles
-                        Tab(
-                            selected = state == index,
-                            onClick = { state = index; scope.launch{pagerState.scrollToPage(index)} },
-                            text = {
-                                Text(
-                                    text = title,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.ExtraBold,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentWidth(Alignment.CenterHorizontally),
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        )
-                    }
-                }
-                HorizontalPager(
-                    pageCount = titles.size,
-                    state = pagerState
-                ) {state ->
-                    PrintMenu(itemList = menuArray[state])
-                }
-            }
-        },
-        //floating action button, currently does nothing
-        /*
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /* do something */ }
-            ) {
-                Icon(Icons.Filled.DateRange,"Calendar")
-            }
-        },
-        floatingActionButtonPosition = FabPosition.End
 
-         */
-    )
+    Column(modifier = Modifier.padding(padding)) {
+        TabRow(
+            selectedTabIndex = state,
+            indicator = { tabPositions -> // 3.
+                TabRowDefaults.Indicator(
+                    Modifier.pagerTabIndicatorOffset(
+                        pagerState,
+                        tabPositions
+                    )
+                )
+            }
+        ) {
+            titles.forEachIndexed { index, title ->
+                // create a tab for each element in titles
+                Tab(
+                    selected = state == index,
+                    onClick = { state = index; scope.launch { pagerState.scrollToPage(index) } },
+                    text = {
+                        Text(
+                            text = title,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally),
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                )
+            }
+        }
+        HorizontalPager(
+            pageCount = titles.size,
+            state = pagerState
+        ) { state ->
+            PrintMenu(itemList = menuArray[state])
+        }
+    }
 }
 
 @Composable
@@ -194,7 +175,9 @@ fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, 
 fun PrintMenu(itemList: MutableList<String>) {
     if (itemList.size > 0) {
         LazyColumn (
-            modifier = Modifier.fillMaxWidth().fillMaxHeight()
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
         ) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
