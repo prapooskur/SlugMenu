@@ -57,7 +57,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
 //    Log.d("TAG","hour: "+currentHour)
 
     val titles: List<String> = if (menuArray.isEmpty()) {
-        listOf("Null")
+        listOf("No menu available")
     } else if (menuArray[0].isEmpty() && menuArray[1].isEmpty() && menuArray[2].isEmpty() && menuArray[3].isEmpty()) {
         listOf("Closed")
     } else if (menuArray[3].isEmpty()) {
@@ -143,7 +143,11 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
             pageCount = titles.size,
             state = pagerState
         ) { state ->
-            PrintMenu(itemList = menuArray[state])
+            if (titles[0] != "No menu available") {
+                PrintMenu(itemList = menuArray[state])
+            } else {
+                ShortToast(text = "No menu available")
+            }
         }
     }
 }

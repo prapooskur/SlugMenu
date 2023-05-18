@@ -98,7 +98,11 @@ suspend fun getDiningMenu(inputUrl: String): Array<MutableList<String>> {
     return withContext(Dispatchers.IO) {
         val menus = getWebData(inputUrl)
 //        Log.d("TAG", "array: $menus")
-        arrayOf(menus[0], menus[1], menus[2], menus[3])
+        if (menus.size > 0) {
+            arrayOf(menus[0], menus[1], menus[2], menus[3])
+        } else {
+            arrayOf()
+        }
     }
 }
 suspend fun getDiningMenuAsync(locationId: String): Array<MutableList<String>> = withContext(Dispatchers.IO) {
