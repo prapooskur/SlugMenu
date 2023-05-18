@@ -324,6 +324,7 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
                                 val encodedLocationName = URLEncoder.encode(locationDateName, "UTF-8")
                                 val strippedLocationUrl = locationUrl.substringBefore("&WeeksMenus=UCSC+-+This+Week's+Menus&myaction=read&dtdate=")
 
+                                navController.navigateUp()
                                 navController.navigate("customdiningdate/$strippedLocationUrl/$newDateUrl/$encodedLocationName")
 
                                 showDatePicker = false
