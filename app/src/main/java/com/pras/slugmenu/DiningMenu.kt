@@ -29,8 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.net.URLEncoder
 import java.nio.channels.UnresolvedAddressException
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +54,10 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     var noInternet by remember { mutableStateOf(false) }
 
     var showDatePicker by remember { mutableStateOf(false) }
+    val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy");
+    val encodedDate = LocalDate.now().format(dateFormat).replace("-", "%2f")
+    val currentDateState = remember { mutableStateOf(encodedDate) }
+    Log.d("TAG", "current date: $encodedDate")
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
@@ -86,6 +94,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     Column {
         if (dataLoadedState.value) {
             // If the data has been loaded from the cache, display the menu
+            Log.d("TAG", (System.currentTimeMillis() / 1000L).toString())
             Scaffold(
                 topBar = {
                     TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
@@ -117,6 +126,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                     confirmButton = {
                         TextButton(
                             onClick = {
+                                Log.d("DATE","date picked: "+(datePickerState.selectedDateMillis?.div(1000L)).toString())
                                 showDatePicker = false
                             },
                             enabled = confirmEnabled.value
@@ -163,6 +173,11 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 @Composable
 fun ShortToast(text: String) {
     Toast.makeText(LocalContext.current, text, Toast.LENGTH_SHORT).show()
+}
+
+fun TimestampDate(timestamp: Long): String {
+    val date = LocalDate.ofEpochDay(timestamp)
+    return date.toString()
 }
 
 //replaced with diningmenuroom
