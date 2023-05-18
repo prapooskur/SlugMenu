@@ -32,8 +32,12 @@ import kotlinx.coroutines.withContext
 import java.net.URLEncoder
 import java.nio.channels.UnresolvedAddressException
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 
 
@@ -43,7 +47,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     Log.d("TAG", "Hello, World from room!")
 //    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
 
-    val currentDate = LocalDate.now().toString()
+    val currentDate = LocalDate.now()
     val menuDao = menuDatabase.menuDao()
 
     // Define a state to hold the retrieved Menu object
@@ -55,8 +59,8 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
     var showDatePicker by remember { mutableStateOf(false) }
     val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy");
-    val encodedDate = LocalDate.now().format(dateFormat).replace("-", "%2f")
-    val currentDateState = remember { mutableStateOf(encodedDate) }
+    val encodedDate = currentDate.format(dateFormat).replace("-", "%2f")
+    val currentDateTimestamp = remember { mutableStateOf(encodedDate) }
     Log.d("TAG", "current date: $encodedDate")
 
     LaunchedEffect(Unit) {
@@ -64,7 +68,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
         withContext(Dispatchers.IO) {
             val menu = menuDao.getMenu(locationName)
             //return cached menu if it was cached today, get new data if it wasn't
-            if (menu != null && menu.cacheDate == currentDate) {
+            if (menu != null && menu.cacheDate == currentDate.toString()) {
                 menuList = MenuTypeConverters().fromString(menu.menus)
                 dataLoadedState.value = true
             } else {
@@ -74,7 +78,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                         Menu(
                             locationName,
                             MenuTypeConverters().fromList(menuList),
-                            currentDate
+                            currentDate.toString()
                         )
                     )
                 } catch (e: UnresolvedAddressException) {
@@ -94,6 +98,156 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     Column {
         if (dataLoadedState.value) {
             // If the data has been loaded from the cache, display the menu
+            Log.d("TAG", (System.currentTimeMillis() / 1000L).toString())
+            Scaffold(
+                topBar = {
+                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
+                },
+                content = {padding ->
+                    SwipableTabBar(menuArray = menuList, navController = navController, collegeName = locationName, padding = padding)
+                },
+                //floating action button, currently does nothing
+                floatingActionButton = {
+                    FloatingActionButton(
+                        onClick = { showDatePicker = !showDatePicker }
+                    ) {
+                        Icon(Icons.Filled.DateRange,"Calendar")
+                    }
+                },
+                floatingActionButtonPosition = FabPosition.End
+            )
+
+            if (showDatePicker) {
+                val datePickerState = rememberDatePickerState()
+                val confirmEnabled = remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
+                DatePickerDialog(
+                    onDismissRequest = {
+                        // Dismiss the dialog when the user clicks outside the dialog or on the back
+                        // button. If you want to disable that functionality, simply use an empty
+                        // onDismissRequest.
+                        showDatePicker = false
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                val instant =
+                                    datePickerState.selectedDateMillis?.let {
+                                        Instant.ofEpochMilli(
+                                            it
+                                        )
+                                    };
+                                val date = LocalDateTime.ofInstant(instant, ZoneId.of("GMT"));
+                                Log.d("DATE","date picked: "+ dateFormat.format(date))
+                                val dateUrl = date.toString().replace("-", "%2f")
+                                DiningMenuCustomDate(
+                                    navController = navController,
+                                    locationUrl = locationUrl,
+                                    dateUrl = dateUrl,
+                                    locationName = "${locationName.substringBefore(" ")} ${date.toString()}",
+                                )
+                                showDatePicker = false
+                            },
+                            enabled = confirmEnabled.value
+                        ) {
+                            Text("OK")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                showDatePicker = false
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+
+                ) {
+                    DatePicker(state = datePickerState)
+                }
+            }
+
+        } else {
+            // Otherwise, display a loading indicator
+            Surface {
+                Column {
+                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 16.dp),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+    }
+
+
+}
+
+@Composable
+fun ShortToast(text: String) {
+    Toast.makeText(LocalContext.current, text, Toast.LENGTH_SHORT).show()
+}
+
+
+//replaced with diningmenuroom
+/*
+@Composable
+fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>>, collegeName: String) {
+    Log.d("TAG", "Hello, World!")
+//    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
+
+
+    Column {
+        SwipableTabBar(menuList, navController, collegeName)
+//        TabBar(menuList[0],menuList[1],menuList[2],menuList[3], navController, collegeName)
+//        tabsWithSwiping()
+//        DisplayMenu(inputUrl = nl, time = Time.DINNER)
+    }
+
+}
+ */
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DiningMenuCustomDate(navController: NavController, locationUrl: String, dateUrl: String, locationName: String) {
+    Log.d("TAG", "Manually choosing date!")
+//    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
+
+    val fullUrl = "$locationUrl&WeeksMenus=UCSC+-+This+Week's+Menus&myaction=read&dtdate=$dateUrl"
+
+    Log.d("TAG","full url: $fullUrl")
+
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    val dataLoadedState = remember { mutableStateOf(false) }
+    var noInternet by remember { mutableStateOf(false) }
+
+    var menuList: Array<MutableList<String>> by remember { mutableStateOf(arrayOf(mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf())) }
+
+    LaunchedEffect(Unit) {
+        // Launch a coroutine to retrieve the menu from the database
+        withContext(Dispatchers.IO) {
+            try {
+                menuList = getDiningMenuAsync(fullUrl)
+            } catch (e: UnresolvedAddressException) {
+                noInternet = true
+            }
+            dataLoadedState.value = true
+        }
+    }
+    if (noInternet) {
+        ShortToast("No internet connection")
+    }
+
+    Column {
+        if (dataLoadedState.value) {
+            // If the data has been loaded from the internet, display the menu
             Log.d("TAG", (System.currentTimeMillis() / 1000L).toString())
             Scaffold(
                 topBar = {
@@ -167,35 +321,4 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
         }
     }
 
-
 }
-
-@Composable
-fun ShortToast(text: String) {
-    Toast.makeText(LocalContext.current, text, Toast.LENGTH_SHORT).show()
-}
-
-fun TimestampDate(timestamp: Long): String {
-    val date = LocalDate.ofEpochDay(timestamp)
-    return date.toString()
-}
-
-//replaced with diningmenuroom
-/*
-@Composable
-fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>>, collegeName: String) {
-    Log.d("TAG", "Hello, World!")
-//    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
-
-
-    Column {
-        SwipableTabBar(menuList, navController, collegeName)
-//        TabBar(menuList[0],menuList[1],menuList[2],menuList[3], navController, collegeName)
-//        tabsWithSwiping()
-//        DisplayMenu(inputUrl = nl, time = Time.DINNER)
-    }
-
-}
- */
-
-
