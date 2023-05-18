@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.channels.UnresolvedAddressException
 import java.text.SimpleDateFormat
@@ -136,9 +137,11 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                                             it
                                         )
                                     };
-                                val date = LocalDateTime.ofInstant(instant, ZoneId.of("GMT"));
-                                Log.d("DATE","date picked: "+ dateFormat.format(date))
+                                val date = dateFormat.format(LocalDateTime.ofInstant(instant, ZoneId.of("GMT")))
+                                Log.d("DATE","date picked: "+ date)
                                 val dateUrl = date.toString().replace("-", "%2f")
+
+                                Log.d("TAG", "date url: $dateUrl")
 
                                 // this breaks the world
                                 /*
@@ -149,6 +152,12 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                                     locationName = "${locationName.substringBefore(" ")} ${date.toString()}",
                                 )
                                  */
+
+                                val locationDateName = "${locationName.substringBefore(" ")} $date"
+                                Log.d("TAG", "location date name: $locationDateName")
+                                val encodedLocationName = URLEncoder.encode(locationDateName, "UTF-8")
+
+                                navController.navigate("customdiningdate/$locationUrl/$dateUrl/$encodedLocationName")
 
                                 showDatePicker = false
                             },
@@ -221,7 +230,11 @@ fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiningMenuCustomDate(navController: NavController, locationUrl: String, dateUrl: String, locationName: String) {
-    Log.d("TAG", "Manually choosing date!")
+
+    val locationName = URLDecoder.decode(locationName, "UTF-8")
+
+
+    Log.d("TAG", "Manually choosing date! $locationUrl $dateUrl")
 //    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
 
     val fullUrl = "$locationUrl&WeeksMenus=UCSC+-+This+Week's+Menus&myaction=read&dtdate=$dateUrl"

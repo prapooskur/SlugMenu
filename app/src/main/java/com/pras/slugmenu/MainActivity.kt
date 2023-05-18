@@ -22,6 +22,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -461,6 +463,17 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                 themeChoice,
                 menuDb,
                 userSettings
+            )
+        }
+
+        //custom date dining menu
+        composable("customdiningdate/{locationUrl}/{dateUrl}/{locationName}", arguments = listOf(navArgument("locationUrl") { type = NavType.StringType },navArgument("dateUrl") { type = NavType.StringType },navArgument("locationName") { type = NavType.StringType }))
+        { backStackEntry ->
+            DiningMenuCustomDate(
+                navController,
+                locationUrl = backStackEntry.arguments?.getString("locationUrl") ?: "example.com",
+                dateUrl = backStackEntry.arguments?.getString("dateUrl") ?: "5-18-22",
+                locationName = backStackEntry.arguments?.getString("locationName") ?: "Null - this should never happen."
             )
         }
 
