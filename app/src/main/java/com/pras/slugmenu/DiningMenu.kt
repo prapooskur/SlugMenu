@@ -142,7 +142,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
                                 val titleDate = titleDateFormat.format(LocalDateTime.ofInstant(instant, ZoneId.of("GMT")))
 
-                                val locationDateName = "${locationName.substringBefore(" ")} $titleDate"
+                                val locationDateName = "${locationName.substringBefore(" ").replace("Cowell/Stevenson","Cowell/Stev")} $titleDate"
                                 Log.d("TAG", "location date name: $locationDateName")
                                 val encodedLocationName = URLEncoder.encode(locationDateName, "UTF-8")
 
@@ -314,7 +314,7 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
                                 )
                                  */
 
-                                val locationDateName = "${locationName.substringBefore(" ")} $titleDate"
+                                val locationDateName = "${locationName.substringBefore(" ").replace("Cowell/Stevenson","Cowell/Stev")} $titleDate"
                                 Log.d("TAG", "location date name: $locationDateName")
                                 val encodedLocationName = URLEncoder.encode(locationDateName, "UTF-8")
                                 val strippedLocationUrl = locationUrl.substringBefore("&WeeksMenus=UCSC+-+This+Week's+Menus&myaction=read&dtdate=")

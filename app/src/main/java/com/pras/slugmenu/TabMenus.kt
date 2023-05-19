@@ -2,8 +2,10 @@ package com.pras.slugmenu
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,6 +42,15 @@ import androidx.navigation.NavController
 import java.time.LocalDateTime
 //Swipable tabs
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Button
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SheetState
+import androidx.compose.runtime.MutableState
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.util.Collections
@@ -166,6 +177,13 @@ fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, 
             IconButton(onClick = {navController.navigateUp()}) {
                 Icon(
                     Icons.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    Icons.Outlined.Info, contentDescription = "Hours",tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         },
@@ -364,5 +382,51 @@ fun PrintOakesMenu(itemList: MutableList<String>) {
             headlineContent = {
             }
         )
+    }
+}
+
+@Composable
+fun HoursDialog() {
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState) {
+    val scope = rememberCoroutineScope()
+    ModalBottomSheet(
+        onDismissRequest = { openBottomSheet.value = false },
+        sheetState = bottomSheetState,
+    ) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Button(
+                // Note: If you provide logic outside of onDismissRequest to remove the sheet,
+                // you must additionally handle intended state cleanup, if any.
+                onClick = {
+                    scope.launch { bottomSheetState.hide() }.invokeOnCompletion {
+                        if (!bottomSheetState.isVisible) {
+                            openBottomSheet.value = false
+                        }
+                    }
+                }
+            ) {
+                Text("Hide Bottom Sheet")
+            }
+        }
+        var text by remember { mutableStateOf("") }
+        OutlinedTextField(value = text, onValueChange = { text = it })
+        LazyColumn {
+            items(50) {
+                ListItem(
+                    headlineContent = { Text("Item $it") },
+                    leadingContent = {
+                        Icon(
+                            Icons.Default.Favorite,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                )
+            }
+        }
     }
 }
