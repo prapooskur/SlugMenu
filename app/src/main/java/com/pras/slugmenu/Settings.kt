@@ -58,7 +58,6 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
             },
             content = { innerPadding ->
                 Column(Modifier.padding(innerPadding)) {
-                    Divider()
                     ListItem(
                         headlineContent = {
                             Text(
