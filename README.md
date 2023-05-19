@@ -3,6 +3,7 @@
 A WIP UCSC menu app for Android.
 
 **CI Status**
+
 ![build and sign app](https://github.com/prapooskur/SlugMenu/actions/workflows/build-app.yml/badge.svg)
 
 Currently supports:
