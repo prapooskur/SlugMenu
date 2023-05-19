@@ -45,7 +45,7 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
                     title = {
                         Text(
                             text = "Slug Menu",
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontSize = 20.sp
                         )
                     },
@@ -55,13 +55,13 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
                             Icon(
                                 imageVector = Icons.Outlined.Settings,
                                 contentDescription = "Settings",
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
                             )
 
                         }
                     },
 
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 )
 
             }
@@ -150,7 +150,7 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
                 shape = MaterialTheme.shapes.small,
                 modifier = Modifier
                     .aspectRatio(1f),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
 
             ) {
                 Column(
@@ -163,7 +163,7 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
                     Text(
                         text = locations[index],
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontSize = 18.sp
                     )
                 }
@@ -205,7 +205,7 @@ fun CardList(navController: NavController, innerPadding: PaddingValues) {
                 shape = MaterialTheme.shapes.small,
                 modifier = Modifier
                     .aspectRatio(3f),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
 
             ) {
                 Column(
@@ -217,7 +217,7 @@ fun CardList(navController: NavController, innerPadding: PaddingValues) {
                     Text(
                         text = locations[index],
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontSize = 18.sp
                     )
                 }

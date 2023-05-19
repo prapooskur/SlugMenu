@@ -158,18 +158,18 @@ fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, 
         title = {
             Text(
                 text = titleText,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontSize = 20.sp
             )
         },
         navigationIcon = {
             IconButton(onClick = {navController.navigateUp()}) {
                 Icon(
-                    Icons.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimary
+                    Icons.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         },
-        backgroundColor = color
+        backgroundColor = MaterialTheme.colorScheme.primaryContainer
 //        elevation = 8.dp
     )
 }
