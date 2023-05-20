@@ -273,7 +273,7 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
             // If the data has been loaded from the internet, display the menu
             Scaffold(
                 topBar = {
-                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
+                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController, showBottomSheet = showBottomSheet)
                 },
                 content = {padding ->
                     SwipableTabBar(menuArray = menuList, padding = padding)
@@ -372,4 +372,6 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
             }
         }
     }
+
+    HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
 }

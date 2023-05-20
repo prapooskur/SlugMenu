@@ -36,8 +36,6 @@ fun HoursDialog(openDialog: MutableState<Boolean>) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {
-    val scope = rememberCoroutineScope()
-
     val nineTenHours =  arrayOf(
         "Monday - Friday",
         "Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM","Late Night: 8–11 PM",
@@ -103,8 +101,6 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Open: 9 AM - 7 PM"
     )
 
-    val hoursArray = arrayOf(nineTenHours,cowellStevHours,crownMerrillHours,porterKresgeHours,perkHours,terraFrescaHours,porterMarketHours,stevCoffeeHours,globalVillageHours,oakesCafeHours)
-
     val hoursDictionary = mapOf(
         "Nine/Lewis" to nineTenHours,
         "Cowell/Stevenson" to cowellStevHours,
@@ -127,14 +123,14 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
             ListItem(
                 headlineContent = {
                     Text(
-                        text = "Hours for $locationName",
+                        text = "Hours for ${locationName.substringBefore(" ")}",
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 18.sp
                     )
                 }
             )
             LazyColumn {
-                items(hoursDictionary.getOrDefault(locationName, arrayOf()).size) { item ->
+                items(hoursDictionary.getOrDefault(locationName.substringBefore(" "), arrayOf()).size) { item ->
                     val element = hoursDictionary.getOrDefault(locationName, arrayOf())[item]
                     val isTitle = !element.contains(":")
                     if (isTitle && item != 0) {
