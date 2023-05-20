@@ -181,7 +181,12 @@ fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, 
             }
         },
         actions = {
-            IconButton(onClick = { showBottomSheet.value = !showBottomSheet.value }) {
+            IconButton(
+                onClick = {
+                    showBottomSheet.value = !showBottomSheet.value
+                    Log.d("TAG",showBottomSheet.value.toString())
+                }
+            ) {
                 Icon(
                     Icons.Outlined.Info, contentDescription = "Hours",tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )

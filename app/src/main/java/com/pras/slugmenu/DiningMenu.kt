@@ -21,6 +21,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,7 +62,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     val encodedDate = currentDate.format(dateFormat).replace("-", "%2f")
     Log.d("TAG", "current date: $encodedDate")
 
-    var showBottomSheet = remember { mutableStateOf(false) }
+    val showBottomSheet = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
@@ -173,9 +174,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                 }
             }
 
-            if (showBottomSheet.value) {
-
-            }
+            HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), chosen = 0)
 
         } else {
             // Otherwise, display a loading indicator
@@ -244,6 +243,9 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
 
     val dataLoadedState = remember { mutableStateOf(false) }
     var noInternet by remember { mutableStateOf(false) }
+
+    val showBottomSheet = remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState()
 
     var menuList: Array<MutableList<String>> by remember { mutableStateOf(arrayOf(mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf())) }
 
