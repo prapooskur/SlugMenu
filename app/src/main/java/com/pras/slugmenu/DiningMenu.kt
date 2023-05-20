@@ -174,7 +174,9 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                 }
             }
 
-            HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), chosen = 0)
+
+            HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), chosen = 0, locationName = locationName)
+
 
         } else {
             // Otherwise, display a loading indicator
@@ -267,7 +269,6 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
     Column {
         if (dataLoadedState.value) {
             // If the data has been loaded from the internet, display the menu
-            Log.d("TAG", (System.currentTimeMillis() / 1000L).toString())
             Scaffold(
                 topBar = {
                     TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)

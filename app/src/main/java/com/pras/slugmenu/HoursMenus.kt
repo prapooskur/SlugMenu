@@ -35,7 +35,7 @@ fun HoursDialog(openDialog: MutableState<Boolean>) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, chosen: Int) {
+fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, chosen: Int, locationName: String = "Dining Hall") {
     val scope = rememberCoroutineScope()
 
     val nineTenHours =  arrayOf(
@@ -105,34 +105,52 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
 
     val hoursArray = arrayOf(nineTenHours,cowellStevHours,crownMerrillHours,porterKresgeHours,perkHours,terraFrescaHours,porterMarketHours,stevCoffeeHours,globalVillageHours,oakesCafeHours)
 
-    ModalBottomSheet(
-        onDismissRequest = { openBottomSheet.value = false },
-        sheetState = bottomSheetState,
-    ) {
-        ListItem (
-            headlineContent = {
-                Text(text = "Hours for Dining Hall", fontWeight = FontWeight.ExtraBold, fontSize = 18.sp)
-            }
-        )
-        LazyColumn {
-            items(hoursArray[chosen].size) { item ->
-                val element = hoursArray[chosen][item]
-                val isTitle = !element.contains(":")
-                if (isTitle && item != 0) {
-                    Divider()
+    if (openBottomSheet.value) {
+        ModalBottomSheet(
+            onDismissRequest = { openBottomSheet.value = false },
+            sheetState = bottomSheetState,
+        ) {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = "Hours for $locationName",
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 18.sp
+                    )
                 }
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = element,
-                            fontWeight = if (isTitle) { FontWeight.ExtraBold } else { FontWeight.Normal },
-                            fontSize = if (isTitle) { 16.sp } else { 14.sp },
-                            textAlign = if (isTitle) { TextAlign.Center } else { TextAlign.Left },
-                        )
+            )
+            LazyColumn {
+                items(hoursArray[chosen].size) { item ->
+                    val element = hoursArray[chosen][item]
+                    val isTitle = !element.contains(":")
+                    if (isTitle && item != 0) {
+                        Divider()
                     }
-                )
-                if (isTitle) {
-                    Divider()
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = element,
+                                fontWeight = if (isTitle) {
+                                    FontWeight.ExtraBold
+                                } else {
+                                    FontWeight.Normal
+                                },
+                                fontSize = if (isTitle) {
+                                    16.sp
+                                } else {
+                                    14.sp
+                                },
+                                textAlign = if (isTitle) {
+                                    TextAlign.Center
+                                } else {
+                                    TextAlign.Left
+                                },
+                            )
+                        }
+                    )
+                    if (isTitle) {
+                        Divider()
+                    }
                 }
             }
         }

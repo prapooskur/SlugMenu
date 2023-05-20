@@ -32,6 +32,7 @@ suspend fun GetWaitzData(): Array<WaitzResponse> {
     val jsonResponse = ScrapeWaitzData()
     val parser = Json { ignoreUnknownKeys = true }
     val locations = parser.decodeFromString<Array<WaitzResponse>>(jsonResponse)
+    return locations
 }
 
 suspend fun GetWaitzDataAsync(): Array<WaitzResponse> = withContext(Dispatchers.IO) {
