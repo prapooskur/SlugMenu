@@ -34,6 +34,6 @@ suspend fun GetWaitzData(): Array<WaitzResponse> {
     val locations = parser.decodeFromString<Array<WaitzResponse>>(jsonResponse)
 }
 
-suspend fun GetWaitzDataAsync: Array<WaitzResponse> = withContext(Dispatchers.IO) {
+suspend fun GetWaitzDataAsync(): Array<WaitzResponse> = withContext(Dispatchers.IO) {
     GetWaitzData()
 }
