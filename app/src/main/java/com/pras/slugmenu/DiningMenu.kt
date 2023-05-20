@@ -61,6 +61,8 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     val encodedDate = currentDate.format(dateFormat).replace("-", "%2f")
     Log.d("TAG", "current date: $encodedDate")
 
+    var showBottomSheet = remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
         withContext(Dispatchers.IO) {
@@ -99,7 +101,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             Log.d("TAG", (System.currentTimeMillis() / 1000L).toString())
             Scaffold(
                 topBar = {
-                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
+                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController, showBottomSheet = showBottomSheet)
                 },
                 content = {padding ->
                     SwipableTabBar(menuArray = menuList, padding = padding)
@@ -169,6 +171,10 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                 ) {
                     DatePicker(state = datePickerState)
                 }
+            }
+
+            if (showBottomSheet.value) {
+
             }
 
         } else {
