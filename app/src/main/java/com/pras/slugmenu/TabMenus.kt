@@ -487,7 +487,10 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
             items(hoursArray[chosen].size) { item ->
                 ListItem(
                     headlineContent = {
-                        Text(hoursArray[chosen][item].toString())
+                        Text(
+                            text = hoursArray[chosen][item].toString(),
+                            fontWeight = if (hoursArray[chosen][item].toString().contains(":")) { FontWeight.Normal } else { FontWeight.ExtraBold },
+                        )
                     },
                 )
             }
