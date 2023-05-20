@@ -392,8 +392,76 @@ fun HoursDialog() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState) {
+fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, chosen: Int) {
     val scope = rememberCoroutineScope()
+
+    val nineTenHours =  arrayOf(
+        "Monday - Friday",
+        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30AM","Lunch: 11:30AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11PM"),
+        "Saturday/Sunday",
+        arrayOf("Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11PM")
+    )
+    val cowellStevHours = arrayOf(
+        "Monday - Thursday",
+        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM","Late Night: 8–11 PM"),
+        "Friday",
+        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM"),
+        "Saturday",
+        arrayOf("Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM"),
+        "Sunday",
+        arrayOf("Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11PM"))
+    val crownMerrillHours = arrayOf(
+        "Monday - Friday",
+        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30AM","Lunch: 11:30AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM")
+    )
+    val porterKresgeHours = arrayOf(
+        "Monday - Thursday",
+        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30AM","Lunch: 11:30AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11PM"),
+        "Friday",
+        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30AM","Lunch: 11:30AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–7PM"),
+        "Saturday",
+        arrayOf("Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–7PM"),
+        "Sunday",
+        arrayOf("Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11PM")
+    )
+
+    val perkHours = arrayOf(
+        "Monday - Friday",
+        arrayOf("Open: 8 AM - 5 PM")
+    )
+    val terraFrescaHours = arrayOf(
+        "Monday - Thursday",
+        arrayOf("Open: 8 AM - 5 PM"),
+        "Friday",
+        arrayOf("Open: 8 AM - 4 PM")
+    )
+    val porterMarketHours = arrayOf(
+        "Monday - Friday",
+        arrayOf("Open: 8 AM - 6:30 PM"),
+        "Saturday",
+        arrayOf("Open: 10 AM - 5 PM"),
+
+    )
+    val stevCoffeeHours = arrayOf(
+        "Monday - Friday",
+        arrayOf("Open: 8 AM - 5 PM"),
+    )
+    val globalVillageHours = arrayOf(
+        "Monday - Thursday",
+        arrayOf("Open: 8 AM - 8:30 PM"),
+        "Friday",
+        arrayOf("Open: 8 AM - 5 PM")
+    )
+
+    val oakesCafeHours = arrayOf(
+        "Monday - Thursday",
+        arrayOf("Open: 8 AM - 8 PM"),
+        "Friday",
+        arrayOf("Open: 9 AM - 7 PM")
+    )
+
+    val hoursArray = arrayOf(nineTenHours,cowellStevHours,crownMerrillHours,porterKresgeHours,perkHours,terraFrescaHours,porterMarketHours,stevCoffeeHours,globalVillageHours,oakesCafeHours)
+
     ModalBottomSheet(
         onDismissRequest = { openBottomSheet.value = false },
         sheetState = bottomSheetState,
@@ -416,15 +484,11 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         var text by remember { mutableStateOf("") }
         OutlinedTextField(value = text, onValueChange = { text = it })
         LazyColumn {
-            items(50) {
+            items(hoursArray[chosen].size) { item ->
                 ListItem(
-                    headlineContent = { Text("Item $it") },
-                    leadingContent = {
-                        Icon(
-                            Icons.Default.Favorite,
-                            contentDescription = "Localized description"
-                        )
-                    }
+                    headlineContent = {
+                        Text(hoursArray[chosen][item].toString())
+                    },
                 )
             }
         }
