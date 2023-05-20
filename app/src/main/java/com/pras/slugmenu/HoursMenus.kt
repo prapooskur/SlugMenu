@@ -35,7 +35,7 @@ fun HoursDialog(openDialog: MutableState<Boolean>) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, chosen: Int, locationName: String = "Dining Hall") {
+fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {
     val scope = rememberCoroutineScope()
 
     val nineTenHours =  arrayOf(
@@ -105,6 +105,20 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
 
     val hoursArray = arrayOf(nineTenHours,cowellStevHours,crownMerrillHours,porterKresgeHours,perkHours,terraFrescaHours,porterMarketHours,stevCoffeeHours,globalVillageHours,oakesCafeHours)
 
+    val hoursDictionary = mapOf(
+        "Nine/Lewis" to nineTenHours,
+        "Cowell/Stevenson" to cowellStevHours,
+        "Cowell/Stev" to cowellStevHours,
+        "Crown/Merrill" to crownMerrillHours,
+        "Porter/Kresge" to porterKresgeHours,
+        "Perks" to perkHours,
+        "Terra Fresca" to terraFrescaHours,
+        "Porter Market" to porterMarketHours,
+        "Stevenson Coffee House" to stevCoffeeHours,
+        "Global Village Cafe" to globalVillageHours,
+        "Oakes Cafe" to oakesCafeHours
+    )
+
     if (openBottomSheet.value) {
         ModalBottomSheet(
             onDismissRequest = { openBottomSheet.value = false },
@@ -120,8 +134,8 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                 }
             )
             LazyColumn {
-                items(hoursArray[chosen].size) { item ->
-                    val element = hoursArray[chosen][item]
+                items(hoursDictionary.getOrDefault(locationName, arrayOf()).size) { item ->
+                    val element = hoursDictionary.getOrDefault(locationName, arrayOf())[item]
                     val isTitle = !element.contains(":")
                     if (isTitle && item != 0) {
                         Divider()

@@ -177,7 +177,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             }
 
 
-            HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), chosen = 0, locationName = locationName)
+            HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
 
 
         } else {
