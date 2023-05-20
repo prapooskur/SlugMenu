@@ -397,22 +397,22 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
 
     val nineTenHours =  arrayOf(
         "Monday - Friday",
-        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30AM","Lunch: 11:30AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11PM"),
+        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM","Late Night: 8–11 PM"),
         "Saturday/Sunday",
-        arrayOf("Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11PM")
+        arrayOf("Breakfast: 7–10 AM","Brunch: 10 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM","Late Night: 8–11 PM")
     )
     val cowellStevHours = arrayOf(
         "Monday - Thursday",
         arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM","Late Night: 8–11 PM"),
         "Friday",
-        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM"),
+        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM"),
         "Saturday",
-        arrayOf("Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM"),
+        arrayOf("Breakfast: 7–10 AM","Brunch: 10 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM"),
         "Sunday",
-        arrayOf("Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11PM"))
+        arrayOf("Breakfast: 7–10 AM","Brunch: 10 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM","Late Night: 8–11 PM"))
     val crownMerrillHours = arrayOf(
         "Monday - Friday",
-        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30AM","Lunch: 11:30AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM")
+        arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM")
     )
     val porterKresgeHours = arrayOf(
         "Monday - Thursday",
@@ -420,9 +420,9 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Friday",
         arrayOf("Breakfast: 7-11 AM","Continuous Dining: 11–11:30AM","Lunch: 11:30AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–7PM"),
         "Saturday",
-        arrayOf("Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–7PM"),
+        arrayOf("Breakfast: 7–10 AM","Brunch: 10 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–7 PM"),
         "Sunday",
-        arrayOf("Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11PM")
+        arrayOf("Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11 PM")
     )
 
     val perkHours = arrayOf(
@@ -481,18 +481,31 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                 Text("Hide Bottom Sheet")
             }
         }
-        var text by remember { mutableStateOf("") }
-        OutlinedTextField(value = text, onValueChange = { text = it })
+        val choice = hoursArray[chosen]
         LazyColumn {
             items(hoursArray[chosen].size) { item ->
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = hoursArray[chosen][item].toString(),
-                            fontWeight = if (hoursArray[chosen][item].toString().contains(":")) { FontWeight.Normal } else { FontWeight.ExtraBold },
+                if (choice[item] is Array<*>) {
+                    choice.forEachIndexed { index, element ->
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = element.toString(),
+                                    fontWeight = FontWeight.Normal
+                                )
+                            }
                         )
-                    },
-                )
+                    }
+                } else {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = choice[item].toString(),
+                                fontWeight = FontWeight.ExtraBold,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    )
+                }
             }
         }
     }
