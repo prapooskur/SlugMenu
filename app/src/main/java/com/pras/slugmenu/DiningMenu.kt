@@ -373,5 +373,5 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
         }
     }
 
-    HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
+    HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
 }

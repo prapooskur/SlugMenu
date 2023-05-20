@@ -107,7 +107,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Cowell/Stev" to cowellStevHours,
         "Crown/Merrill" to crownMerrillHours,
         "Porter/Kresge" to porterKresgeHours,
-        "Perks" to perkHours,
+        "Perk Coffee Bars" to perkHours,
         "Terra Fresca" to terraFrescaHours,
         "Porter Market" to porterMarketHours,
         "Stevenson Coffee House" to stevCoffeeHours,
@@ -123,14 +123,14 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
             ListItem(
                 headlineContent = {
                     Text(
-                        text = "Hours for ${locationName.substringBefore(" ")}",
+                        text = "Hours for $locationName",
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 18.sp
                     )
                 }
             )
             LazyColumn {
-                items(hoursDictionary.getOrDefault(locationName.substringBefore(" "), arrayOf()).size) { item ->
+                items(hoursDictionary.getOrDefault(locationName, arrayOf()).size) { item ->
                     val element = hoursDictionary.getOrDefault(locationName, arrayOf())[item]
                     val isTitle = !element.contains(":")
                     if (isTitle && item != 0) {
