@@ -197,6 +197,28 @@ fun TopBar(titleText: String, color: Color = MaterialTheme.colorScheme.primary, 
     )
 }
 
+@Composable
+fun TopBarClean(titleText: String, navController: NavController) {
+    TopAppBar(
+        title = {
+            Text(
+                text = titleText,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                fontSize = 20.sp
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = {navController.navigateUp()}) {
+                Icon(
+                    Icons.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        },
+        backgroundColor = MaterialTheme.colorScheme.primaryContainer
+//        elevation = 8.dp
+    )
+}
+
 
 @Composable
 fun PrintMenu(itemList: MutableList<String>) {

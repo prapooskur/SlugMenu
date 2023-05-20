@@ -49,9 +49,8 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
         Scaffold(
             topBar = {
                 Surface(shadowElevation = 4.dp) {
-                    TopBar(
+                    TopBarClean(
                         titleText = "Settings",
-                        color = MaterialTheme.colorScheme.primary,
                         navController = navController
                     )
                 }

@@ -2,6 +2,8 @@ package com.pras.slugmenu
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -224,7 +226,7 @@ fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>
  */
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DiningMenuCustomDate(navController: NavController, locationUrl: String, dateUrl: String, locationName: String) {
 
@@ -279,7 +281,7 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
                 //floating action button, currently does nothing
                 floatingActionButton = {
                     FloatingActionButton(
-                        onClick = { showDatePicker = !showDatePicker }
+                        onClick = { showDatePicker = !showDatePicker },
                     ) {
                         Icon(Icons.Filled.DateRange,"Calendar")
                     }
@@ -370,5 +372,4 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
             }
         }
     }
-
 }
