@@ -30,6 +30,8 @@ import java.time.LocalDateTime
 //Swipable tabs
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +40,7 @@ import kotlinx.coroutines.withContext
 import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OakesCafeMenuRoom(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
     Log.d("TAG", "Opening OakesCafeMenu with room!")
@@ -48,6 +51,8 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
     var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf(),mutableListOf())) }
     val dataLoadedState = remember { mutableStateOf(false) }
     var noInternet by remember { mutableStateOf(false) }
+
+    val showBottomSheet = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
@@ -80,7 +85,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
     }
 
     Column {
-        TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
+        TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController, showBottomSheet = showBottomSheet)
         if (dataLoadedState.value) {
             if (menuList.isNotEmpty()) {
                 PriceTabBar(menuList)
@@ -100,6 +105,8 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
             }
         }
     }
+
+    HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
 
 }
 

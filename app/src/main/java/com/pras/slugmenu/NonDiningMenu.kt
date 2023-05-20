@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,6 +24,7 @@ import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NonDiningMenuRoom(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
     Log.d("TAG", "Opening NonDiningMenu with room!")
@@ -62,8 +65,10 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
         ShortToast("No internet connection")
     }
 
+    val showBottomSheet = remember { mutableStateOf(false) }
+
     Column {
-        TopBar(titleText = locationName, navController = navController)
+        TopBar(titleText = locationName, navController = navController, showBottomSheet = showBottomSheet)
         if (dataLoadedState.value) {
             if (menuList.isNotEmpty()) {
                 PrintPriceMenu(itemList = menuList[0])
@@ -81,6 +86,8 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
             }
         }
     }
+
+    HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
 
 }
 
