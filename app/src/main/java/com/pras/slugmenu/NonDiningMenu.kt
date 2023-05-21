@@ -65,7 +65,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
         ShortToast("No internet connection")
     }
 
-    val showBottomSheet = remember { mutableStateOf(false) }
+        val showBottomSheet = remember { mutableStateOf(false) }
 
     Column {
         TopBar(titleText = locationName, navController = navController, showBottomSheet = showBottomSheet)

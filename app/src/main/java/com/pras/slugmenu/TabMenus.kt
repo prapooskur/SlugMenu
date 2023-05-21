@@ -219,6 +219,40 @@ fun TopBarClean(titleText: String, navController: NavController) {
     )
 }
 
+@Composable
+fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog: MutableState<Boolean> = mutableStateOf(false)) {
+    TopAppBar(
+        title = {
+            Text(
+                text = titleText,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                fontSize = 20.sp
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = {navController.navigateUp()}) {
+                Icon(
+                    Icons.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        },
+        actions = {
+            IconButton(
+                onClick = {
+                    showWaitzDialog.value = !showWaitzDialog.value
+                    Log.d("TAG",showWaitzDialog.value.toString())
+                }
+            ) {
+                Icon(
+                    Icons.Outlined.Info, contentDescription = "Busyness",tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        },
+        backgroundColor = MaterialTheme.colorScheme.primaryContainer
+//        elevation = 8.dp
+    )
+}
+
 
 @Composable
 fun PrintMenu(itemList: MutableList<String>) {
