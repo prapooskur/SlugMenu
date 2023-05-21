@@ -298,9 +298,9 @@ fun PrintMenu(itemList: MutableList<String>) {
 
 //Menus with prices - Coffee Bars, Cafes, Markets
 @Composable
-fun PrintPriceMenu(itemList: MutableList<String>) {
+fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
     if (itemList.size > 0) {
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(padding)) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
 

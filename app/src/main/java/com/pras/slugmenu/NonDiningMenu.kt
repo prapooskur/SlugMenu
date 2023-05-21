@@ -5,8 +5,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -65,8 +72,31 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
         ShortToast("No internet connection")
     }
 
-        val showBottomSheet = remember { mutableStateOf(false) }
+    val showBottomSheet = remember { mutableStateOf(false) }
 
+    Scaffold(
+        topBar = {
+            TopBarClean(titleText = locationName, navController = navController)
+        },
+        content = {padding ->
+            if (menuList.isNotEmpty()) {
+                PrintPriceMenu(itemList = menuList[0], padding)
+            } else {
+                PrintPriceMenu(itemList = mutableListOf(), padding)
+            }
+        },
+        //floating action button - shows hours bottom sheet
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { showBottomSheet.value = !showBottomSheet.value }
+            ) {
+                Icon(Icons.Outlined.Info,"Info")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
+    )
+
+    /*
     Column {
         TopBar(titleText = locationName, navController = navController, showBottomSheet = showBottomSheet)
         if (dataLoadedState.value) {
@@ -86,6 +116,8 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
             }
         }
     }
+
+     */
 
     HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
 
