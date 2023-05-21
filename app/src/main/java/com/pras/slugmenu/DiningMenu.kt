@@ -66,6 +66,8 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
     val showBottomSheet = remember { mutableStateOf(false) }
 
+    val showWaitzDialog = remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
         withContext(Dispatchers.IO) {
@@ -104,7 +106,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             Log.d("TAG", (System.currentTimeMillis() / 1000L).toString())
             Scaffold(
                 topBar = {
-                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController, showBottomSheet = showBottomSheet)
+                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController, showBottomSheet = showWaitzDialog)
                 },
                 content = {padding ->
                     SwipableTabBar(menuArray = menuList, padding = padding)
@@ -178,6 +180,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
 
             HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
+            WaitzDialog(showDialog = showWaitzDialog, waitzData = arrayOf(mutableListOf(),mutableListOf()), locationName = locationName)
 
 
         } else {
@@ -251,6 +254,8 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
     val showBottomSheet = remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState()
 
+    val showWaitzDialog = remember { mutableStateOf(false) }
+
     var menuList: Array<MutableList<String>> by remember { mutableStateOf(arrayOf(mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf())) }
 
     LaunchedEffect(Unit) {
@@ -278,7 +283,7 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
                 content = {padding ->
                     SwipableTabBar(menuArray = menuList, padding = padding)
                 },
-                //floating action button, currently does nothing
+                //floating action button, currently shows date picker on short press, TODO: show bottom sheet on long press
                 floatingActionButton = {
                     FloatingActionButton(
                         onClick = { showDatePicker = !showDatePicker },
@@ -374,4 +379,5 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
     }
 
     HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
+    WaitzDialog(showDialog = showWaitzDialog, waitzData = arrayOf(mutableListOf(),mutableListOf()), locationName = locationName)
 }

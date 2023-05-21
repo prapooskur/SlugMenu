@@ -74,7 +74,12 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, waitzData: Array<MutableList<
                 Text(text = "Waitz Availability")
             },
             text = {
-                Text(text = "Krill yourself")
+                if (locationData.isEmpty() || compareData.isEmpty()) {
+                    Text(
+                        text = "No data available.\nHope this helps!",
+                        fontSize = 16.sp
+                    )
+                }
             },
             confirmButton = {
                 TextButton(
