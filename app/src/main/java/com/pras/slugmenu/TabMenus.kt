@@ -299,7 +299,7 @@ fun PrintMenu(itemList: MutableList<String>) {
 //Menus with prices - Coffee Bars, Cafes, Markets
 @Composable
 fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
-    if (itemList.size > 0) {
+    if (itemList.isNotEmpty()) {
         LazyColumn(modifier = Modifier.padding(padding)) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
@@ -352,15 +352,6 @@ fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
     } else {
         TabRow(
             selectedTabIndex = 0
-            /*
-            selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
-                )
-            }
-
-             */
         ) {
             Tab(
                 selected = true,

@@ -118,6 +118,17 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
                 floatingActionButtonPosition = FabPosition.End
             )
         }
+        else {
+            TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 16.dp),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                CircularProgressIndicator()
+            }
+        }
     }
 
     /*

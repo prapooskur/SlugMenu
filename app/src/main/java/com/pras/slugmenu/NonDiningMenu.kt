@@ -74,27 +74,41 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
 
     val showBottomSheet = remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
+    Column {
+        if (dataLoadedState.value) {
+            Scaffold(
+                topBar = {
+                    TopBarClean(titleText = locationName, navController = navController)
+                },
+                content = { padding ->
+                    if (menuList.isNotEmpty()) {
+                        PrintPriceMenu(itemList = menuList[0], padding)
+                    } else {
+                        PrintPriceMenu(itemList = mutableListOf(), padding)
+                    }
+                },
+                //floating action button - shows hours bottom sheet
+                floatingActionButton = {
+                    FloatingActionButton(
+                        onClick = { showBottomSheet.value = !showBottomSheet.value }
+                    ) {
+                        Icon(Icons.Outlined.Info, "Info")
+                    }
+                },
+                floatingActionButtonPosition = FabPosition.End
+            )
+        } else {
             TopBarClean(titleText = locationName, navController = navController)
-        },
-        content = {padding ->
-            if (menuList.isNotEmpty()) {
-                PrintPriceMenu(itemList = menuList[0], padding)
-            } else {
-                PrintPriceMenu(itemList = mutableListOf(), padding)
-            }
-        },
-        //floating action button - shows hours bottom sheet
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { showBottomSheet.value = !showBottomSheet.value }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 16.dp),
+                contentAlignment = Alignment.TopCenter
             ) {
-                Icon(Icons.Outlined.Info,"Info")
+                CircularProgressIndicator()
             }
-        },
-        floatingActionButtonPosition = FabPosition.End
-    )
+        }
+    }
 
     /*
     Column {
@@ -122,6 +136,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
     HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
 
 }
+
 
 
 //replaced with NonDiningMenuRoom
