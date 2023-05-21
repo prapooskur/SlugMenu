@@ -52,7 +52,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     val menuDao = menuDatabase.menuDao()
 
     // Define a state to hold the retrieved Menu object
-    var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf())) }
+    var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf(), mutableListOf())) }
 
     // Define a state to hold a flag indicating whether the data has been loaded from the cache
     val dataLoadedState = remember { mutableStateOf(false) }
@@ -180,7 +180,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
 
             HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
-            WaitzDialog(showDialog = showWaitzDialog, waitzData = arrayOf(mutableListOf(),mutableListOf()), locationName = locationName)
+            WaitzDialog(showDialog = showWaitzDialog, locationName = locationName)
 
 
         } else {
@@ -379,5 +379,5 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
     }
 
     HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
-    WaitzDialog(showDialog = showWaitzDialog, waitzData = arrayOf(mutableListOf(),mutableListOf()), locationName = locationName)
+    WaitzDialog(showDialog = showWaitzDialog, locationName = locationName)
 }

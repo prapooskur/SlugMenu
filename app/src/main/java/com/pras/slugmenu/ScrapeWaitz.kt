@@ -53,7 +53,7 @@ suspend fun ScrapeWaitzData(): Array<String> {
     return arrayOf(liveBody,compareBody)
 }
 
-suspend fun GetWaitzData(): Array<MutableList<out MutableList<out Any>>> {
+suspend fun GetWaitzData(): Array<MutableList<MutableList<String>>> {
     val jsonResponse = ScrapeWaitzData()
     val liveBody = jsonResponse[0]
     val compareBody = jsonResponse[1]
@@ -63,12 +63,12 @@ suspend fun GetWaitzData(): Array<MutableList<out MutableList<out Any>>> {
     val locationData: LocationData = json.decodeFromString(liveBody)
     val compareData: CompareData = json.decodeFromString(compareBody.replace("<strong>","").replace("</strong>",""))
 
-    val allLocations = mutableListOf<MutableList<Int>>(mutableListOf<Int>(),mutableListOf<Int>(),mutableListOf<Int>(),mutableListOf<Int>(),mutableListOf<Int>())
+    val allLocations = mutableListOf<MutableList<String>>(mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>())
     var index = 0
     locationData.data.forEach { location ->
-        allLocations[index].add(location.busyness)
-        allLocations[index].add(location.people)
-        allLocations[index].add(location.capacity)
+        allLocations[index].add(location.busyness.toString())
+        allLocations[index].add(location.people.toString())
+        allLocations[index].add(location.capacity.toString())
         index += 1
     }
 
@@ -86,6 +86,6 @@ suspend fun GetWaitzData(): Array<MutableList<out MutableList<out Any>>> {
     return arrayOf(allLocations,allCompares)
 }
 
-suspend fun GetWaitzDataAsync(): Array<MutableList<out MutableList<out Any>>> = withContext(Dispatchers.IO) {
+suspend fun GetWaitzDataAsync(): Array<MutableList<MutableList<String>>> = withContext(Dispatchers.IO) {
     GetWaitzData()
 }

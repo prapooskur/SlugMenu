@@ -23,7 +23,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,8 +36,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import java.nio.channels.UnresolvedAddressException
 
 /*
 @Composable
@@ -45,7 +52,7 @@ fun HoursDialog(openDialog: MutableState<Boolean>) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WaitzDialog(showDialog: MutableState<Boolean>, waitzData: Array<MutableList<out MutableList<out Any>>>, locationName: String) {
+fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
 
     val locIndex: Int = when (locationName) {
         "Nine/Lewis" -> 0
@@ -59,6 +66,26 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, waitzData: Array<MutableList<
         else -> 0
     }
 
+    val dataLoadedState = remember { mutableStateOf(false) }
+
+    val waitzData by remember { mutableStateOf<Array<MutableList<MutableList<String>>>>(arrayOf(mutableListOf(),mutableListOf())) }
+    var noInternet = false
+    LaunchedEffect(Unit) {
+        // Launch a coroutine to retrieve the menu from the database
+        withContext(Dispatchers.IO) {
+            try {
+                val waitzData = GetWaitzDataAsync()
+            } catch (e: UnresolvedAddressException) {
+                noInternet = true
+            }
+            dataLoadedState.value = true
+        }
+    }
+    if (noInternet) {
+        ShortToast("No internet connection")
+    }
+
+
     val locationData = waitzData[0]
     val compareData = waitzData[1]
 
@@ -71,14 +98,40 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, waitzData: Array<MutableList<
                 showDialog.value = false
             },
             title = {
-                Text(text = "Waitz Availability")
+                // todo: make it show a red/yellow/green emoji based on busyness?
+                if (locationData.isEmpty() || compareData.isEmpty() || locationData[locIndex].size < 3 || compareData[locIndex].size < 4) {
+                    Text(text = "⚫ Waitz: $locationName")
+                } else {
+                    Text(text = "Waitz: $locationName")
+                }
             },
             text = {
-                if (locationData.isEmpty() || compareData.isEmpty()) {
+                if (locationData.isEmpty() || compareData.isEmpty() || locationData[locIndex].size < 3 || compareData[locIndex].size < 4) {
                     Text(
-                        text = "No data available.\nHope this helps!",
+                        text = "No data available.",
                         fontSize = 16.sp
                     )
+                } else {
+                    if (compareData[locIndex][3] == "only one location") {
+                        Text(
+                            text = "Busyness: ${locationData[locIndex][0]}%\n" +
+                                    "People: ${locationData[locIndex][1]}/${locationData[locIndex][2]}\n" +
+                                    "Next hour: ${compareData[locIndex][0].toString().substring(18)}\n" +
+                                    "Today: ${compareData[locIndex][1].toString().substring(9)}\n" +
+                                    "Peak hours: ${compareData[locIndex][2].toString().substring(15)}",
+                            fontSize = 16.sp
+                        )
+                    } else {
+                        Text(
+                            text = "Busyness: ${locationData[locIndex][0]}%\n" +
+                                    "People: ${locationData[locIndex][1]}/${locationData[locIndex][2]}\n" +
+                                    "Next hour: ${compareData[locIndex][0].toString().substring(18)}\n" +
+                                    "Today: ${compareData[locIndex][1].toString().substring(9)}\n" +
+                                    "Peak hours: ${compareData[locIndex][2].toString().substring(15)}\n" +
+                                    "Best location: ${compareData[locIndex][3].toString().substringBefore(" is best right now")}",
+                            fontSize = 16.sp
+                        )
+                    }
                 }
             },
             confirmButton = {
@@ -89,6 +142,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, waitzData: Array<MutableList<
                 ) {
                     Text("Close")
                 }
+
             }
         )
 
