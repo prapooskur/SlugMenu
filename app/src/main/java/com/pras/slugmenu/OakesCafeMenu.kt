@@ -53,6 +53,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
     var noInternet by remember { mutableStateOf(false) }
 
     val showBottomSheet = remember { mutableStateOf(false) }
+    val showWaitzDialog = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
@@ -85,7 +86,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
     }
 
     Column {
-        TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController, showBottomSheet = showBottomSheet)
+        TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
         if (dataLoadedState.value) {
             if (menuList.isNotEmpty()) {
                 PriceTabBar(menuList)
@@ -107,6 +108,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
     }
 
     HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
+    WaitzDialog(showDialog = showWaitzDialog, locationName = locationName)
 
 }
 

@@ -106,12 +106,13 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             Log.d("TAG", (System.currentTimeMillis() / 1000L).toString())
             Scaffold(
                 topBar = {
-                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController, showBottomSheet = showWaitzDialog)
+                    TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
                 },
                 content = {padding ->
                     SwipableTabBar(menuArray = menuList, padding = padding)
                 },
-                //floating action button, currently does nothing
+                //floating action button
+                // todo: on long press, open dialog bottom sheet
                 floatingActionButton = {
                     FloatingActionButton(
                         onClick = { showDatePicker = !showDatePicker }
@@ -278,7 +279,7 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
             // If the data has been loaded from the internet, display the menu
             Scaffold(
                 topBar = {
-                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController, showBottomSheet = showBottomSheet)
+                    TopBarClean(titleText = locationName, navController = navController)
                 },
                 content = {padding ->
                     SwipableTabBar(menuArray = menuList, padding = padding)
@@ -379,5 +380,4 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
     }
 
     HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
-    WaitzDialog(showDialog = showWaitzDialog, locationName = locationName)
 }
