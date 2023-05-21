@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.Font
@@ -68,13 +69,13 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
 
     val dataLoadedState = remember { mutableStateOf(false) }
 
-    val waitzData by remember { mutableStateOf<Array<MutableList<MutableList<String>>>>(arrayOf(mutableListOf(),mutableListOf())) }
+    var waitzData by remember { mutableStateOf<Array<MutableList<MutableList<String>>>>(arrayOf(mutableListOf(),mutableListOf())) }
     var noInternet = false
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
         withContext(Dispatchers.IO) {
             try {
-                val waitzData = GetWaitzDataAsync()
+                waitzData = GetWaitzDataAsync()
             } catch (e: UnresolvedAddressException) {
                 noInternet = true
             }
@@ -89,7 +90,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
     val locationData = waitzData[0]
     val compareData = waitzData[1]
 
-    if (showDialog.value) {
+    if (showDialog.value && dataLoadedState.value) {
         AlertDialog(
             onDismissRequest = {
                 // Dismiss the dialog when the user clicks outside the dialog or on the back
