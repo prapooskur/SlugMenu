@@ -99,12 +99,11 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
                 showDialog.value = false
             },
             title = {
-                // todo: make it show a red/yellow/green emoji based on busyness? Replace colors with waitz calculation way?
                 if (locationData.isEmpty() || compareData.isEmpty() || locationData[locIndex].size < 3 || compareData[locIndex].size < 4) {
                     Text(text = "⚫ Waitz: $locationName")
-                } else if (locationData[locIndex][0].toInt() < 40){
+                } else if (locationData[locIndex][0].toInt() <= 45){
                     Text(text = "🟢 Waitz: $locationName")
-                } else if (locationData[locIndex][0].toInt() < 80){
+                } else if (locationData[locIndex][0].toInt() <= 80){
                     Text(text = "🟡 Waitz: $locationName")
                 } else {
                     Text(text = "🔴 Waitz: $locationName")
