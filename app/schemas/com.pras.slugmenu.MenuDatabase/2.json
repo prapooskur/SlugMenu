@@ -1,0 +1,78 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "49993b88426b8f433000735a4d7814eb",
+    "entities": [
+      {
+        "tableName": "menu",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`location` TEXT NOT NULL, `menus` TEXT NOT NULL, `cacheDate` TEXT NOT NULL, PRIMARY KEY(`location`))",
+        "fields": [
+          {
+            "fieldPath": "location",
+            "columnName": "location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "menus",
+            "columnName": "menus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cacheDate",
+            "columnName": "cacheDate",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "location"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "waitz",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cacheTime` TEXT NOT NULL, `live` TEXT NOT NULL, `compare` TEXT NOT NULL, PRIMARY KEY(`cacheTime`))",
+        "fields": [
+          {
+            "fieldPath": "cacheTime",
+            "columnName": "cacheTime",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "live",
+            "columnName": "live",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "compare",
+            "columnName": "compare",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "cacheTime"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '49993b88426b8f433000735a4d7814eb')"
+    ]
+  }
+}
