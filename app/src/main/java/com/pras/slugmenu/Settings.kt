@@ -380,11 +380,12 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
 @Composable
 fun ClearCache(menuDb: MenuDatabase, context: Context) {
     ListItem(
-        headlineContent = { Text("Clear Menu Cache") },
-        supportingContent = { Text("Clears the cache for all location menus.")},
+        headlineContent = { Text("Clear App Cache") },
+        supportingContent = { Text("Clears menu and busyness data for all locations.")},
         modifier = Modifier.clickable {
             CoroutineScope(Dispatchers.IO).launch {
                 menuDb.menuDao().dropMenus()
+                menuDb.waitzDao().dropWaitz()
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "Cache cleared.", Toast.LENGTH_SHORT).show()
                 }

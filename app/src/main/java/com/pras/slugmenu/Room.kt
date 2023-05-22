@@ -25,10 +25,9 @@ data class Menu(
 
 @Entity(tableName = "waitz")
 data class Waitz(
-    @PrimaryKey val location: String,
+    @PrimaryKey val cacheTime: String,
     val live: String,
     val compare: String,
-    val cacheTime: String,
 )
 
 @Dao
@@ -59,8 +58,8 @@ class MenuTypeConverters {
 
 @Dao
 interface WaitzDao {
-    @Query("SELECT * FROM waitz WHERE location = :location")
-    fun getData(location: String): Waitz?
+    @Query("SELECT * FROM waitz WHERE cacheTime = :cacheTime")
+    fun getData(cacheTime: String): Waitz?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertWaitz(waitz: Waitz)
@@ -71,25 +70,13 @@ interface WaitzDao {
 
 class WaitzTypeConverters {
     @TypeConverter
-    fun fromLiveString(value: String): Array<MutableList<String>> {
+    fun fromWaitzString(value: String): MutableList<MutableList<String>> {
         Log.d("TAG","from string value: $value")
-        return(Json.decodeFromString<Array<MutableList<String>>>(value))
+        return(Json.decodeFromString<MutableList<MutableList<String>>>(value))
     }
 
     @TypeConverter
-    fun fromLiveList(value: Array<MutableList<String>>): String {
-        Log.d("TAG","from list value: $value")
-        return(Json.encodeToString(value))
-    }
-
-    @TypeConverter
-    fun fromCompareString(value: String): Array<MutableList<String>> {
-        Log.d("TAG","from string value: $value")
-        return(Json.decodeFromString<Array<MutableList<String>>>(value))
-    }
-
-    @TypeConverter
-    fun fromCompareList(value: Array<MutableList<String>>): String {
+    fun fromWaitzList(value: MutableList<MutableList<String>>): String {
         Log.d("TAG","from list value: $value")
         return(Json.encodeToString(value))
     }
@@ -99,10 +86,11 @@ class WaitzTypeConverters {
 
 
 
-@Database(entities = [Menu::class], version = 1)
-@TypeConverters(MenuTypeConverters::class)
+@Database(entities = [Menu::class, Waitz::class], version = 1)
+@TypeConverters(MenuTypeConverters::class, WaitzTypeConverters::class)
 abstract class MenuDatabase : RoomDatabase() {
     abstract fun menuDao(): MenuDao
+    abstract fun waitzDao(): WaitzDao
 
     companion object {
         private var instance: MenuDatabase? = null
@@ -115,5 +103,7 @@ abstract class MenuDatabase : RoomDatabase() {
             }
             return instance as MenuDatabase
         }
+
+
     }
 }

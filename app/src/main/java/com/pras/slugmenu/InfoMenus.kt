@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.nio.channels.UnresolvedAddressException
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 /*
 @Composable
@@ -32,7 +34,7 @@ fun HoursDialog(openDialog: MutableState<Boolean>) {
  */
 
 @Composable
-fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
+fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDatabase: MenuDatabase) {
 
     val locIndex: Int = when (locationName) {
         "Nine/Lewis" -> 0
@@ -48,17 +50,36 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
 
     val dataLoadedState = remember { mutableStateOf(false) }
 
+    val waitzDao = menuDatabase.waitzDao()
     var waitzData by remember { mutableStateOf<Array<MutableList<MutableList<String>>>>(arrayOf(mutableListOf(),mutableListOf())) }
     var noInternet = false
+
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+    val currentTime = LocalDateTime.now().format(dateFormatter).toString()
+
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
         withContext(Dispatchers.IO) {
-            try {
-                waitzData = GetWaitzDataAsync()
-            } catch (e: UnresolvedAddressException) {
-                noInternet = true
+            val cachedWaitzData = waitzDao.getData(currentTime)
+            if (cachedWaitzData != null && cachedWaitzData.cacheTime == currentTime) {
+                waitzData = arrayOf(WaitzTypeConverters().fromWaitzString(cachedWaitzData.live),WaitzTypeConverters().fromWaitzString(cachedWaitzData.compare))
+                dataLoadedState.value = true
+            } else {
+                try {
+                    waitzData = GetWaitzDataAsync()
+                    waitzDao.insertWaitz(
+                        Waitz (
+                            currentTime,
+                            WaitzTypeConverters().fromWaitzList(waitzData[0]),
+                            WaitzTypeConverters().fromWaitzList(waitzData[1])
+                        )
+                    )
+                } catch (e: UnresolvedAddressException) {
+                    noInternet = true
+                }
+                dataLoadedState.value = true
             }
-            dataLoadedState.value = true
+
         }
     }
     if (noInternet) {
