@@ -70,6 +70,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
     val compareData = waitzData[1]
 
     if (showDialog.value && !dataLoadedState.value) {
+        showDialog.value = false
         ShortToast(text = "Data not loaded yet")
     } else if (showDialog.value && dataLoadedState.value) {
         AlertDialog(
