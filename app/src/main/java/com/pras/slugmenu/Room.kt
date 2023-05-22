@@ -23,6 +23,14 @@ data class Menu(
     val cacheDate: String,
 )
 
+@Entity(tableName = "waitz")
+data class Waitz(
+    @PrimaryKey val location: String,
+    val live: String,
+    val compare: String,
+    val cacheTime: String,
+)
+
 @Dao
 interface MenuDao {
     @Query("SELECT * FROM menu WHERE location = :location")
@@ -48,6 +56,47 @@ class MenuTypeConverters {
         return(Json.encodeToString(value))
     }
 }
+
+@Dao
+interface WaitzDao {
+    @Query("SELECT * FROM waitz WHERE location = :location")
+    fun getData(location: String): Waitz?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertWaitz(waitz: Waitz)
+
+    @Query("DELETE FROM waitz")
+    fun dropWaitz()
+}
+
+class WaitzTypeConverters {
+    @TypeConverter
+    fun fromLiveString(value: String): Array<MutableList<String>> {
+        Log.d("TAG","from string value: $value")
+        return(Json.decodeFromString<Array<MutableList<String>>>(value))
+    }
+
+    @TypeConverter
+    fun fromLiveList(value: Array<MutableList<String>>): String {
+        Log.d("TAG","from list value: $value")
+        return(Json.encodeToString(value))
+    }
+
+    @TypeConverter
+    fun fromCompareString(value: String): Array<MutableList<String>> {
+        Log.d("TAG","from string value: $value")
+        return(Json.decodeFromString<Array<MutableList<String>>>(value))
+    }
+
+    @TypeConverter
+    fun fromCompareList(value: Array<MutableList<String>>): String {
+        Log.d("TAG","from list value: $value")
+        return(Json.encodeToString(value))
+    }
+}
+
+
+
 
 
 @Database(entities = [Menu::class], version = 1)

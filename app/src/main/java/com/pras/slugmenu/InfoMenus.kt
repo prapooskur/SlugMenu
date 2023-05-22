@@ -31,7 +31,6 @@ fun HoursDialog(openDialog: MutableState<Boolean>) {
 
  */
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
 
@@ -100,19 +99,19 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
                         Text(
                             text = "Busyness: ${locationData[locIndex][0]}%\n" +
                                     "People: ${locationData[locIndex][1]}/${locationData[locIndex][2]}\n" +
-                                    "Next hour: ${compareData[locIndex][0].toString().substring(18)}\n" +
-                                    "Today: ${compareData[locIndex][1].toString().substring(9)}\n" +
-                                    "Peak hours: ${compareData[locIndex][2].toString().substring(15)}",
+                                    "Next hour: ${compareData[locIndex][0].substring(18)}\n" +
+                                    "Today: ${compareData[locIndex][1].substring(9)}\n" +
+                                    "Peak hours: ${compareData[locIndex][2].substring(15)}",
                             fontSize = 16.sp
                         )
                     } else {
                         Text(
                             text = "Busyness: ${locationData[locIndex][0]}%\n" +
                                     "People: ${locationData[locIndex][1]}/${locationData[locIndex][2]}\n" +
-                                    "Next hour: ${compareData[locIndex][0].toString().substring(18)}\n" +
-                                    "Today: ${compareData[locIndex][1].toString().substring(9)}\n" +
-                                    "Peak hours: ${compareData[locIndex][2].toString().substring(15)}\n" +
-                                    "Best location: ${compareData[locIndex][3].toString().substringBefore(" is best right now")}",
+                                    "Next hour: ${compareData[locIndex][0].substring(18)}\n" +
+                                    "Today: ${compareData[locIndex][1].substring(9)}\n" +
+                                    "Peak hours: ${compareData[locIndex][2].substring(15)}\n" +
+                                    "Best location: ${compareData[locIndex][3].substringBefore(" is best right now")}",
                             fontSize = 16.sp
                         )
                     }
