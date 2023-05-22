@@ -86,7 +86,7 @@ class WaitzTypeConverters {
 
 
 
-@Database(entities = [Menu::class, Waitz::class], version = 1)
+@Database(entities = [Menu::class, Waitz::class], version = 2)
 @TypeConverters(MenuTypeConverters::class, WaitzTypeConverters::class)
 abstract class MenuDatabase : RoomDatabase() {
     abstract fun menuDao(): MenuDao

@@ -66,6 +66,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
                 dataLoadedState.value = true
             } else {
                 try {
+                    waitzDao.dropWaitz()
                     waitzData = GetWaitzDataAsync()
                     waitzDao.insertWaitz(
                         Waitz (
