@@ -69,7 +69,9 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
     val locationData = waitzData[0]
     val compareData = waitzData[1]
 
-    if (showDialog.value && dataLoadedState.value) {
+    if (showDialog.value && !dataLoadedState.value) {
+        ShortToast(text = "Data not loaded yet")
+    } else if (showDialog.value && dataLoadedState.value) {
         AlertDialog(
             onDismissRequest = {
                 // Dismiss the dialog when the user clicks outside the dialog or on the back
