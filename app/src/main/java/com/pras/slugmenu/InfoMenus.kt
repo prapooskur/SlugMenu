@@ -40,9 +40,9 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
         "Nine/Lewis" -> 0
         "Cowell/Stevenson" -> 1
         "Cowell/Stev" -> 1
-        "Porter/Kresge" -> 2
-        "Crown/Merrill" -> 3
-        "Oakes Cafe" -> 4
+        "Crown/Merrill" -> 2
+        "Oakes Cafe" -> 3
+        "Porter/Kresge" -> 4
 
         // if this was somehow run with a different name, default to nine/ten
         else -> 0
