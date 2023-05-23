@@ -63,6 +63,8 @@ suspend fun GetWaitzData(): Array<MutableList<MutableList<String>>> {
     val locationData: LocationData = json.decodeFromString(liveBody)
     val compareData: CompareData = json.decodeFromString(compareBody.replace("<strong>","").replace("</strong>",""))
 
+    //TODO: Replace with a dictionary that uses college name instead of blindly assuming indices
+
     val allLocations = mutableListOf<MutableList<String>>(mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>())
     var index = 0
     locationData.data.forEach { location ->
