@@ -8,7 +8,6 @@ import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 
@@ -33,6 +32,7 @@ data class CompareData(
 
 @Serializable
 data class CompareList(
+    val name: String = "null",
     val comparison: List<Compare>?
 )
 
@@ -41,7 +41,7 @@ data class Compare(
     val string: String = "only one location"
 )
 
-suspend fun ScrapeWaitzData(): Array<String> {
+suspend fun scrapeWaitzData(): Array<String> {
     val client = HttpClient(CIO)
     val liveResponse: HttpResponse = client.get("https://waitz.io/live/ucsc")
     val liveBody: String = liveResponse.body()
@@ -53,8 +53,8 @@ suspend fun ScrapeWaitzData(): Array<String> {
     return arrayOf(liveBody,compareBody)
 }
 
-suspend fun GetWaitzData(): Array<MutableList<MutableList<String>>> {
-    val jsonResponse = ScrapeWaitzData()
+suspend fun getWaitzData(): Array<MutableMap<String, MutableList<String>>> {
+    val jsonResponse = scrapeWaitzData()
     val liveBody = jsonResponse[0]
     val compareBody = jsonResponse[1]
 
@@ -63,31 +63,33 @@ suspend fun GetWaitzData(): Array<MutableList<MutableList<String>>> {
     val locationData: LocationData = json.decodeFromString(liveBody)
     val compareData: CompareData = json.decodeFromString(compareBody.replace("<strong>","").replace("</strong>",""))
 
-    //TODO: Replace with a dictionary that uses college name instead of blindly assuming indices
-
-    val allLocations = mutableListOf<MutableList<String>>(mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>())
-    var index = 0
+    val allLocationDictionary = mutableMapOf<String, MutableList<String>>()
     locationData.data.forEach { location ->
-        allLocations[index].add(location.busyness.toString())
-        allLocations[index].add(location.people.toString())
-        allLocations[index].add(location.capacity.toString())
-        index += 1
+        val locationName = location.name.replace(" / ","/").replace("College 9","Nine").replace("John R Lewis","Lewis").replace(" Dining Hall","").replace("Cafe Main","Cafe")
+        val currentLocation = mutableListOf<String>()
+        currentLocation.add(location.busyness.toString())
+        currentLocation.add(location.people.toString())
+        currentLocation.add(location.capacity.toString())
+        allLocationDictionary[locationName] = currentLocation
     }
 
-    val allCompares = mutableListOf<MutableList<String>>(mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>(),mutableListOf<String>())
-    index = 0
+
+    val allCompareDictionary = mutableMapOf<String, MutableList<String>>()
     compareData.data.forEach { comparison ->
-        if (comparison.comparison != null) {
+        if (comparison.comparison != null && comparison.name != "null") {
+            val locationName = comparison.name.replace(" / ","/").replace("College 9","Nine").replace("John R Lewis","Lewis").replace(" Dining Hall","").replace("Cafe Main","Cafe")
+            val currentCompare = mutableListOf<String>()
             comparison.comparison.forEach { item ->
-                allCompares[index].add(item.string)
+                currentCompare.add(item.string)
             }
+            allCompareDictionary[locationName] = currentCompare
         }
-        index += 1
     }
 
-    return arrayOf(allLocations,allCompares)
+
+    return arrayOf(allLocationDictionary,allCompareDictionary)
 }
 
-suspend fun GetWaitzDataAsync(): Array<MutableList<MutableList<String>>> = withContext(Dispatchers.IO) {
-    GetWaitzData()
+suspend fun getWaitzDataAsync(): Array<MutableMap<String, MutableList<String>>> = withContext(Dispatchers.IO) {
+    getWaitzData()
 }

@@ -36,22 +36,12 @@ fun HoursDialog(openDialog: MutableState<Boolean>) {
 @Composable
 fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDatabase: MenuDatabase) {
 
-    val locIndex: Int = when (locationName) {
-        "Nine/Lewis" -> 0
-        "Cowell/Stevenson" -> 1
-        "Cowell/Stev" -> 1
-        "Crown/Merrill" -> 2
-        "Oakes Cafe" -> 3
-        "Porter/Kresge" -> 4
-
-        // if this was somehow run with a different name, default to nine/ten
-        else -> 0
-    }
+    val locIndex = if (locationName == "Cowell/Stev") { "Cowell/Stevenson" } else { locationName }
 
     val dataLoadedState = remember { mutableStateOf(false) }
 
     val waitzDao = menuDatabase.waitzDao()
-    var waitzData by remember { mutableStateOf<Array<MutableList<MutableList<String>>>>(arrayOf(mutableListOf(),mutableListOf())) }
+    var waitzData by remember { mutableStateOf<Array<MutableMap<String,MutableList<String>>>>(arrayOf(mutableMapOf(),mutableMapOf())) }
     var noInternet = false
 
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
@@ -67,7 +57,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
             } else {
                 try {
                     waitzDao.dropWaitz()
-                    waitzData = GetWaitzDataAsync()
+                    waitzData = getWaitzDataAsync()
                     waitzDao.insertWaitz(
                         Waitz (
                             currentTime,
@@ -88,8 +78,8 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
     }
 
 
-    val locationData = waitzData[0]
-    val compareData = waitzData[1]
+    val locationData = waitzData[0][locIndex]
+    val compareData = waitzData[1][locIndex]
 
     if (showDialog.value && !dataLoadedState.value) {
         showDialog.value = false
@@ -103,40 +93,40 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
                 showDialog.value = false
             },
             title = {
-                if (locationData.isEmpty() || compareData.isEmpty() || locationData[locIndex].size < 3 || compareData[locIndex].size < 4) {
+                if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 3 || compareData.size < 4) {
                     Text(text = "⚫ Waitz: $locationName")
-                } else if (locationData[locIndex][0].toInt() <= 45){
+                } else if (locationData[0].toInt() <= 45){
                     Text(text = "🟢 Waitz: $locationName")
-                } else if (locationData[locIndex][0].toInt() <= 80){
+                } else if (locationData[0].toInt() <= 80){
                     Text(text = "🟡 Waitz: $locationName")
                 } else {
                     Text(text = "🔴 Waitz: $locationName")
                 }
             },
             text = {
-                if (locationData.isEmpty() || compareData.isEmpty() || locationData[locIndex].size < 3 || compareData[locIndex].size < 4) {
+                if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 3 || compareData.size < 4) {
                     Text(
                         text = "No data available.",
                         fontSize = 16.sp
                     )
                 } else {
-                    if (compareData[locIndex][3] == "only one location") {
+                    if (compareData[3] == "only one location") {
                         Text(
-                            text = "Busyness: ${locationData[locIndex][0]}%\n" +
-                                    "People: ${locationData[locIndex][1]}/${locationData[locIndex][2]}\n" +
-                                    "Next hour: ${compareData[locIndex][0].substring(18)}\n" +
-                                    "Today: ${compareData[locIndex][1].substring(9)}\n" +
-                                    "Peak hours: ${compareData[locIndex][2].substring(15)}",
+                            text = "Busyness: ${locationData[0]}%\n" +
+                                    "People: ${locationData[1]}/${locationData[2]}\n" +
+                                    "Next hour: ${compareData[0].substring(18)}\n" +
+                                    "Today: ${compareData[1].substring(9)}\n" +
+                                    "Peak hours: ${compareData[2].substring(15)}",
                             fontSize = 16.sp
                         )
                     } else {
                         Text(
-                            text = "Busyness: ${locationData[locIndex][0]}%\n" +
-                                    "People: ${locationData[locIndex][1]}/${locationData[locIndex][2]}\n" +
-                                    "Next hour: ${compareData[locIndex][0].substring(18)}\n" +
-                                    "Today: ${compareData[locIndex][1].substring(9)}\n" +
-                                    "Peak hours: ${compareData[locIndex][2].substring(15)}\n" +
-                                    "Best location: ${compareData[locIndex][3].substringBefore(" is best right now")}",
+                            text = "Busyness: ${locationData[0]}%\n" +
+                                    "People: ${locationData[1]}/${locationData[2]}\n" +
+                                    "Next hour: ${compareData[0].substring(18)}\n" +
+                                    "Today: ${compareData[1].substring(9)}\n" +
+                                    "Peak hours: ${compareData[2].substring(15)}\n" +
+                                    "Best location: ${compareData[3].substringBefore(" is best right now")}",
                             fontSize = 16.sp
                         )
                     }
