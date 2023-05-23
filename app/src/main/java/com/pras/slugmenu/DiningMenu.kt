@@ -2,8 +2,6 @@ package com.pras.slugmenu
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -233,12 +231,12 @@ fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>
  */
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiningMenuCustomDate(navController: NavController, locationUrl: String, dateUrl: String, locationName: String) {
+fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String, dateUrl: String, inputLocationName: String) {
 
-    val locationName = URLDecoder.decode(locationName, "UTF-8")
-    val locationUrl = locationUrl.replace("/", "%2f")
+    val locationName = URLDecoder.decode(inputLocationName, "UTF-8")
+    val locationUrl = inputLocationUrl.replace("/", "%2f")
 
 
     Log.d("TAG", "Manually choosing date! $locationUrl $dateUrl")
@@ -256,9 +254,6 @@ fun DiningMenuCustomDate(navController: NavController, locationUrl: String, date
     var noInternet by remember { mutableStateOf(false) }
 
     val showBottomSheet = remember { mutableStateOf(false) }
-    val bottomSheetState = rememberModalBottomSheetState()
-
-    val showWaitzDialog = remember { mutableStateOf(false) }
 
     var menuList: Array<MutableList<String>> by remember { mutableStateOf(arrayOf(mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf())) }
 

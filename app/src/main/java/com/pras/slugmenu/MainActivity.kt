@@ -471,9 +471,9 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
         { backStackEntry ->
             DiningMenuCustomDate(
                 navController,
-                locationUrl = backStackEntry.arguments?.getString("locationUrl") ?: "example.com",
+                inputLocationUrl = backStackEntry.arguments?.getString("locationUrl") ?: "example.com",
                 dateUrl = backStackEntry.arguments?.getString("dateUrl") ?: "5-18-22",
-                locationName = backStackEntry.arguments?.getString("locationName") ?: "Null - this should never happen."
+                inputLocationName = backStackEntry.arguments?.getString("locationName") ?: "Null - this should never happen."
             )
         }
 
