@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
 
@@ -41,7 +42,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
 
     var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf())) }
     val dataLoadedState = remember { mutableStateOf(false) }
-    var noInternet by remember { mutableStateOf(false) }
+    var noInternet by remember { mutableStateOf<String>("No Exception") }
 
 
     LaunchedEffect(Unit) {
@@ -61,15 +62,15 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
                             currentDate
                         )
                     )
-                } catch (e: UnresolvedAddressException) {
-                    noInternet = true
+                } catch (e: Exception) {
+                    noInternet = e.toString()
                 }
                 dataLoadedState.value = true
             }
         }
     }
-    if (noInternet) {
-        ShortToast("No internet connection")
+    if (noInternet != "No Exception") {
+        ShortToast("Exception: $noInternet")
     }
 
     val showBottomSheet = remember { mutableStateOf(false) }

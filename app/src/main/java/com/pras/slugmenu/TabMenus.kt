@@ -69,7 +69,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
 
     val titles: List<String> = if (menuArray.isEmpty()) {
         listOf("No menu available")
-    } else if (menuArray[0].isEmpty() && menuArray[1].isEmpty() && menuArray[2].isEmpty() && menuArray[3].isEmpty()) {
+    } else if (menuArray.size < 3 || (menuArray[0].isEmpty() && menuArray[1].isEmpty() && menuArray[2].isEmpty() && menuArray[3].isEmpty())) {
         listOf("Closed")
     } else if (menuArray[3].isEmpty()) {
         listOf("Breakfast", "Lunch", "Dinner")

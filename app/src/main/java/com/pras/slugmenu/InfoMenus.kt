@@ -42,7 +42,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
 
     val waitzDao = menuDatabase.waitzDao()
     var waitzData by remember { mutableStateOf<Array<MutableMap<String,MutableList<String>>>>(arrayOf(mutableMapOf(),mutableMapOf())) }
-    var noInternet = false
+    var noInternet by remember { mutableStateOf<String>("No Exception") }
 
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
     val currentTime = LocalDateTime.now().format(dateFormatter).toString()
@@ -65,26 +65,32 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
                             WaitzTypeConverters().fromWaitzList(waitzData[1])
                         )
                     )
-                } catch (e: UnresolvedAddressException) {
-                    noInternet = true
+                } catch (e: Exception) {
+                    noInternet = e.toString()
                 }
                 dataLoadedState.value = true
             }
 
         }
     }
-    if (noInternet) {
-        ShortToast("No internet connection")
+    /*
+    if (noInternet != "No Exception") {
+        ShortToast(noInternet)
     }
 
+     */
 
-    val locationData = waitzData[0][locIndex]
-    val compareData = waitzData[1][locIndex]
 
-    if (showDialog.value && !dataLoadedState.value) {
+    if (showDialog.value && noInternet != "No Exception") {
+        showDialog.value = false
+        ShortToast(text = "Exception: $noInternet")
+    } else if (showDialog.value && !dataLoadedState.value) {
         showDialog.value = false
         ShortToast(text = "Data not loaded yet")
     } else if (showDialog.value && dataLoadedState.value) {
+        val locationData = waitzData[0][locIndex]
+        val compareData = waitzData[1][locIndex]
+
         AlertDialog(
             onDismissRequest = {
                 // Dismiss the dialog when the user clicks outside the dialog or on the back

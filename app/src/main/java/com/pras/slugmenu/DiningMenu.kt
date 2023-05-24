@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.channels.UnresolvedAddressException
@@ -55,7 +56,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
     // Define a state to hold a flag indicating whether the data has been loaded from the cache
     val dataLoadedState = remember { mutableStateOf(false) }
-    var noInternet by remember { mutableStateOf(false) }
+    var noInternet by remember { mutableStateOf<String>("No Exception") }
 
     var showDatePicker by remember { mutableStateOf(false) }
     val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy")
@@ -85,15 +86,15 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                             currentDate.toString()
                         )
                     )
-                } catch (e: UnresolvedAddressException) {
-                    noInternet = true
+                } catch (e: Exception) {
+                    noInternet = e.toString()
                 }
                 dataLoadedState.value = true
             }
         }
     }
-    if (noInternet) {
-        ShortToast("No internet connection")
+    if (noInternet != "No Exception") {
+        ShortToast("Exception: $noInternet")
     }
 
 
