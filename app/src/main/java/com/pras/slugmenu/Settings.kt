@@ -191,21 +191,13 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
 
 @Composable
 fun AmoledSwitcher(useAmoledBlack: MutableState<Boolean>,preferencesDataStore: PreferencesDatastore) {
-    var checked by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        val amoledBlackEnabled = preferencesDataStore.getAmoledPreference.first()
-        checked = amoledBlackEnabled
-    }
-    LaunchedEffect(Unit) {
-        val amoledEnabled = preferencesDataStore.getAmoledPreference.first()
-        checked = amoledEnabled
-    }
+    var checked by remember { mutableStateOf(useAmoledBlack.value) }
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier.clickable(
             onClick = {
-                checked = !checked
+                useAmoledBlack.value = !useAmoledBlack.value
                 coroutineScope.launch {
-                    preferencesDataStore.setAmoledPreference(checked)
+                    preferencesDataStore.setAmoledPreference(useAmoledBlack.value)
                 }
                 Log.d("TAG", "amoled toggled")
             },
@@ -220,11 +212,11 @@ fun AmoledSwitcher(useAmoledBlack: MutableState<Boolean>,preferencesDataStore: P
             },
             trailingContent = {
                 Switch(
-                    checked = checked,
+                    checked = useAmoledBlack.value,
                     onCheckedChange = {
-                        checked = !checked
+                        useAmoledBlack.value = !useAmoledBlack.value
                         coroutineScope.launch {
-                            preferencesDataStore.setAmoledPreference(checked)
+                            preferencesDataStore.setAmoledPreference(useAmoledBlack.value)
                         }
                         Log.d("TAG", "amoled toggled")
                     }
