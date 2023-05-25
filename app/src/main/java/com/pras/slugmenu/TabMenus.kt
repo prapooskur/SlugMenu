@@ -294,9 +294,11 @@ fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
                 val itemval = itemList[item]
 
                 if (itemval.contains("--")) {
-                    Divider(
-                        thickness = 2.dp
-                    )
+                    if (item != 0) {
+                        Divider(
+                            thickness = 2.dp
+                        )
+                    }
 
                     ListItem(
                         headlineContent = {
