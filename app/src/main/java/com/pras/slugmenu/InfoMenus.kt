@@ -21,9 +21,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
+import java.security.cert.CertificateException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import javax.net.ssl.SSLHandshakeException
 
 /*
 @Composable
@@ -65,8 +70,19 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
                             WaitzTypeConverters().fromWaitzList(waitzData[1])
                         )
                     )
+                //TODO: unify these into one catch block?
+                } catch (e: UnresolvedAddressException) {
+                    noInternet = "No Internet connection"
+                } catch (e: SocketTimeoutException) {
+                    noInternet = "Connection timed out"
+                } catch (e: UnknownHostException) {
+                    noInternet = "Failed to resolve URL"
+                } catch (e: CertificateException) {
+                    noInternet = "Website's SSL certificate is invalid"
+                } catch (e: SSLHandshakeException) {
+                    noInternet = "SSL handshake failed"
                 } catch (e: Exception) {
-                    noInternet = e.toString()
+                    noInternet = "Exception: $e"
                 }
                 dataLoadedState.value = true
             }
@@ -83,7 +99,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
 
     if (showDialog.value && noInternet != "No Exception") {
         showDialog.value = false
-        ShortToast(text = "Exception: $noInternet")
+        ShortToast(text = noInternet)
     } else if (showDialog.value && !dataLoadedState.value) {
         showDialog.value = false
         ShortToast(text = "Data not loaded yet")
