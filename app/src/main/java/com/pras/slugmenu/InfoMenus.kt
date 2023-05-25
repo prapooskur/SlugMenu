@@ -46,7 +46,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
 
     val waitzDao = menuDatabase.waitzDao()
     var waitzData by remember { mutableStateOf<Array<MutableMap<String,MutableList<String>>>>(arrayOf(mutableMapOf(),mutableMapOf())) }
-    var noInternet by remember { mutableStateOf("No Exception") }
+    var exceptionFound by remember { mutableStateOf("No Exception") }
 
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
     val currentTime = LocalDateTime.now().format(dateFormatter).toString()
@@ -71,17 +71,17 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
                     )
                 //TODO: unify these into one catch block?
                 } catch (e: UnresolvedAddressException) {
-                    noInternet = "No Internet connection"
+                    exceptionFound = "No Internet connection"
                 } catch (e: SocketTimeoutException) {
-                    noInternet = "Connection timed out"
+                    exceptionFound = "Connection timed out"
                 } catch (e: UnknownHostException) {
-                    noInternet = "Failed to resolve URL"
+                    exceptionFound = "Failed to resolve URL"
                 } catch (e: CertificateException) {
-                    noInternet = "Website's SSL certificate is invalid"
+                    exceptionFound = "Website's SSL certificate is invalid"
                 } catch (e: SSLHandshakeException) {
-                    noInternet = "SSL handshake failed"
+                    exceptionFound = "SSL handshake failed"
                 } catch (e: Exception) {
-                    noInternet = "Exception: $e"
+                    exceptionFound = "Exception: $e"
                 }
                 dataLoadedState.value = true
             }
@@ -96,9 +96,9 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
      */
 
 
-    if (showDialog.value && noInternet != "No Exception") {
+    if (showDialog.value && exceptionFound != "No Exception") {
         showDialog.value = false
-        ShortToast(text = noInternet)
+        ShortToast(text = exceptionFound)
     } else if (showDialog.value && !dataLoadedState.value) {
         showDialog.value = false
         ShortToast(text = "Data not loaded yet")
