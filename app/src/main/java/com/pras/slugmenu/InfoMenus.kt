@@ -1,5 +1,6 @@
 package com.pras.slugmenu
 
+import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
@@ -16,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -30,13 +32,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.net.ssl.SSLHandshakeException
 
-/*
 @Composable
-fun HoursDialog(openDialog: MutableState<Boolean>) {
-
+fun ShortToast(text: String) {
+    Toast.makeText(LocalContext.current, text, Toast.LENGTH_SHORT).show()
 }
-
- */
 
 @Composable
 fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDatabase: MenuDatabase) {
