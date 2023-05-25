@@ -115,7 +115,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
                 showDialog.value = false
             },
             title = {
-                if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 3 || compareData.size < 4) {
+                if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 4 || compareData.size < 4 || locationData[3] == "false") {
                     Text(text = "⚫ Waitz: $locationName")
                 } else if (locationData[0].toInt() <= 45){
                     Text(text = "🟢 Waitz: $locationName")
@@ -126,7 +126,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
                 }
             },
             text = {
-                if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 3 || compareData.size < 4) {
+                if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 4 || compareData.size < 4 || locationData[3] == "false") {
                     Text(
                         text = "No data available.",
                         fontSize = 16.sp

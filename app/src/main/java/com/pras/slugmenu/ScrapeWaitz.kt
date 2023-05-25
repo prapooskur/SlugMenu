@@ -70,6 +70,7 @@ suspend fun getWaitzData(): Array<MutableMap<String, MutableList<String>>> {
         currentLocation.add(location.busyness.toString())
         currentLocation.add(location.people.toString())
         currentLocation.add(location.capacity.toString())
+        currentLocation.add(location.isAvailable.toString())
         allLocationDictionary[locationName] = currentLocation
     }
 
