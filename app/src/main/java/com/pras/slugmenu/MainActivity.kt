@@ -7,6 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -128,7 +130,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
     AnimatedNavHost(navController = navController, startDestination = startDestination) {
         composable(
             "home",
-            enterTransition = { null }
+            enterTransition = {fadeIn(animationSpec = tween(0))},
         ) { HomeScreen(navController = navController, preferencesDataStore = userSettings) }
         composable(
             "ninelewis",
@@ -456,7 +458,12 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
         }
 
         //settings menu
-        composable("settings") {
+        composable(
+            "settings",
+            enterTransition = {fadeIn(animationSpec = tween(200))},
+            exitTransition = {fadeOut(animationSpec = tween(200))}
+
+        ) {
             SettingsScreen(
                 navController,
                 useMaterialYou,

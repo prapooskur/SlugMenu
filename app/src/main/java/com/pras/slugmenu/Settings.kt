@@ -154,18 +154,12 @@ fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: Mutab
 
 @Composable
 fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
-    var checked by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        val materialYouEnabled = preferencesDataStore.getMaterialYouPreference.first()
-        checked = materialYouEnabled
-    }
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier.clickable(
             onClick = {
-                checked = !checked
-                useMaterialYou.value = checked
+                useMaterialYou.value = !useMaterialYou.value
                 coroutineScope.launch {
-                    preferencesDataStore.setMaterialYouPreference(checked)
+                    preferencesDataStore.setMaterialYouPreference(useMaterialYou.value)
                 }
                 Log.d("TAG", "material you toggled")
             },
@@ -180,13 +174,12 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
             },
             trailingContent = {
                 Switch(
-                    checked = checked,
+                    checked = useMaterialYou.value,
 
                     onCheckedChange = {
-                        checked = !checked
-                        useMaterialYou.value = checked
+                        useMaterialYou.value = !useMaterialYou.value
                         coroutineScope.launch {
-                            preferencesDataStore.setMaterialYouPreference(checked)
+                            preferencesDataStore.setMaterialYouPreference(useMaterialYou.value)
                         }
                         Log.d("TAG", "material you toggled")
                     }
