@@ -16,7 +16,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -60,7 +58,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
     // Define a state to hold a flag indicating whether the data has been loaded from the cache
     val dataLoadedState = remember { mutableStateOf(false) }
-    var noInternet by remember { mutableStateOf<String>("No Exception") }
+    var noInternet by remember { mutableStateOf("No Exception") }
 
     var showDatePicker by remember { mutableStateOf(false) }
     val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy")
@@ -205,7 +203,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             // Otherwise, display a loading indicator
             Surface {
                 Column {
-                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
+                    TopBar(titleText = locationName, navController = navController)
                 }
             }
             Box(
@@ -390,7 +388,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
             // Otherwise, display a loading indicator
             Surface {
                 Column {
-                    TopBar(titleText = locationName, color = MaterialTheme.colorScheme.primary, navController = navController)
+                    TopBar(titleText = locationName, navController = navController)
                 }
             }
             Box(

@@ -47,7 +47,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
 
     val waitzDao = menuDatabase.waitzDao()
     var waitzData by remember { mutableStateOf<Array<MutableMap<String,MutableList<String>>>>(arrayOf(mutableMapOf(),mutableMapOf())) }
-    var noInternet by remember { mutableStateOf<String>("No Exception") }
+    var noInternet by remember { mutableStateOf("No Exception") }
 
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
     val currentTime = LocalDateTime.now().format(dateFormatter).toString()

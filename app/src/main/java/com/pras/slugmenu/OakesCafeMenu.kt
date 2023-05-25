@@ -62,7 +62,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
 
     var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf(),mutableListOf())) }
     val dataLoadedState = remember { mutableStateOf(false) }
-    var noInternet by remember { mutableStateOf<String>("No Exception") }
+    var noInternet by remember { mutableStateOf("No Exception") }
 
     val showBottomSheet = remember { mutableStateOf(false) }
     val showWaitzDialog = remember { mutableStateOf(false) }

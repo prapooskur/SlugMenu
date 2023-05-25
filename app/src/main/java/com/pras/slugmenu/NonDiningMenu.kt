@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.IOException
 import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -47,7 +46,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
 
     var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf())) }
     val dataLoadedState = remember { mutableStateOf(false) }
-    var noInternet by remember { mutableStateOf<String>("No Exception") }
+    var noInternet by remember { mutableStateOf("No Exception") }
 
 //    val knownExceptionList = mapOf<String,String>("UnresolvedAddressException" to "No Internet connection")
 
