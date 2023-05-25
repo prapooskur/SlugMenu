@@ -27,9 +27,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.lang.Exception
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
+import java.security.cert.CertificateException
 import java.time.LocalDate
+import javax.net.ssl.SSLHandshakeException
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,6 +48,8 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
     var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf())) }
     val dataLoadedState = remember { mutableStateOf(false) }
     var noInternet by remember { mutableStateOf<String>("No Exception") }
+
+    val knownExceptionList = mapOf<String,String>("UnresolvedAddressException" to "No Internet connection")
 
 
     LaunchedEffect(Unit) {
@@ -62,15 +69,26 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
                             currentDate
                         )
                     )
+                //TODO: unify these into one catch block?
+                } catch (e: UnresolvedAddressException) {
+                    noInternet = "No Internet connection"
+                } catch (e: SocketTimeoutException) {
+                    noInternet = "Connection timed out"
+                } catch (e: UnknownHostException) {
+                    noInternet = "Failed to resolve URL"
+                } catch (e: CertificateException) {
+                    noInternet = "Website's SSL certificate is invalid"
+                } catch (e: SSLHandshakeException) {
+                    noInternet = "SSL handshake failed"
                 } catch (e: Exception) {
-                    noInternet = e.toString()
+                    noInternet = "Exception: $e"
                 }
                 dataLoadedState.value = true
             }
         }
     }
     if (noInternet != "No Exception") {
-        ShortToast("Exception: $noInternet")
+        ShortToast(noInternet)
     }
 
     val showBottomSheet = remember { mutableStateOf(false) }
