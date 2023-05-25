@@ -88,13 +88,6 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
 
         }
     }
-    /*
-    if (noInternet != "No Exception") {
-        ShortToast(noInternet)
-    }
-
-     */
-
 
     if (showDialog.value && exceptionFound != "No Exception") {
         showDialog.value = false

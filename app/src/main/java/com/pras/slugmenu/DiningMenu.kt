@@ -1,7 +1,6 @@
 package com.pras.slugmenu
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,7 +24,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +56,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
     // Define a state to hold a flag indicating whether the data has been loaded from the cache
     val dataLoadedState = remember { mutableStateOf(false) }
-    var noInternet by remember { mutableStateOf("No Exception") }
+    var exceptionFound by remember { mutableStateOf("No Exception") }
 
     var showDatePicker by remember { mutableStateOf(false) }
     val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy")
@@ -89,25 +87,25 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                         )
                     )
                 } catch (e: UnresolvedAddressException) {
-                    noInternet = "No Internet connection"
+                    exceptionFound = "No Internet connection"
                 } catch (e: SocketTimeoutException) {
-                    noInternet = "Connection timed out"
+                    exceptionFound = "Connection timed out"
                 } catch (e: UnknownHostException) {
-                    noInternet = "Failed to resolve URL"
+                    exceptionFound = "Failed to resolve URL"
                 } catch (e: CertificateException) {
-                    noInternet = "Website's SSL certificate is invalid"
+                    exceptionFound = "Website's SSL certificate is invalid"
                 } catch (e: SSLHandshakeException) {
-                    noInternet = "SSL handshake failed"
+                    exceptionFound = "SSL handshake failed"
                 } catch (e: Exception) {
-                    noInternet = "Exception: $e"
+                    exceptionFound = "Exception: $e"
                 }
                 dataLoadedState.value = true
             }
         }
     }
 
-    if (noInternet != "No Exception") {
-        ShortToast(noInternet)
+    if (exceptionFound != "No Exception") {
+        ShortToast(exceptionFound)
     }
 
 
@@ -261,7 +259,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
     val titleDateFormat = DateTimeFormatter.ofPattern("M/dd/yy")
 
     val dataLoadedState = remember { mutableStateOf(false) }
-    var noInternet by remember { mutableStateOf("No Exception") }
+    var exceptionFound by remember { mutableStateOf("No Exception") }
 
     val showBottomSheet = remember { mutableStateOf(false) }
 
@@ -273,23 +271,23 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
             try {
                 menuList = getDiningMenuAsync(fullUrl)
             } catch (e: UnresolvedAddressException) {
-                noInternet = "No Internet connection"
+                exceptionFound = "No Internet connection"
             } catch (e: SocketTimeoutException) {
-                noInternet = "Connection timed out"
+                exceptionFound = "Connection timed out"
             } catch (e: UnknownHostException) {
-                noInternet = "Failed to resolve URL"
+                exceptionFound = "Failed to resolve URL"
             } catch (e: CertificateException) {
-                noInternet = "Website's SSL certificate is invalid"
+                exceptionFound = "Website's SSL certificate is invalid"
             } catch (e: SSLHandshakeException) {
-                noInternet = "SSL handshake failed"
+                exceptionFound = "SSL handshake failed"
             } catch (e: Exception) {
-                noInternet = "Exception: $e"
+                exceptionFound = "Exception: $e"
             }
             dataLoadedState.value = true
         }
     }
-    if (noInternet != "No Exception") {
-        ShortToast(noInternet)
+    if (exceptionFound != "No Exception") {
+        ShortToast(exceptionFound)
     }
 
 

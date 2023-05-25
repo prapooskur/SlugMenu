@@ -62,7 +62,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
 
     var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf(),mutableListOf())) }
     val dataLoadedState = remember { mutableStateOf(false) }
-    var noInternet by remember { mutableStateOf("No Exception") }
+    var exceptionFound by remember { mutableStateOf("No Exception") }
 
     val showBottomSheet = remember { mutableStateOf(false) }
     val showWaitzDialog = remember { mutableStateOf(false) }
@@ -87,24 +87,24 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
                         )
                     )
                 } catch (e: UnresolvedAddressException) {
-                    noInternet = "No Internet connection"
+                    exceptionFound = "No Internet connection"
                 } catch (e: SocketTimeoutException) {
-                    noInternet = "Connection timed out"
+                    exceptionFound = "Connection timed out"
                 } catch (e: UnknownHostException) {
-                    noInternet = "Failed to resolve URL"
+                    exceptionFound = "Failed to resolve URL"
                 } catch (e: CertificateException) {
-                    noInternet = "Website's SSL certificate is invalid"
+                    exceptionFound = "Website's SSL certificate is invalid"
                 } catch (e: SSLHandshakeException) {
-                    noInternet = "SSL handshake failed"
+                    exceptionFound = "SSL handshake failed"
                 } catch (e: Exception) {
-                    noInternet = "Exception: $e"
+                    exceptionFound = "Exception: $e"
                 }
                 dataLoadedState.value = true
             }
         }
     }
-    if (noInternet != "No Exception") {
-        ShortToast(noInternet)
+    if (exceptionFound != "No Exception") {
+        ShortToast(exceptionFound)
     }
 
     Column {
