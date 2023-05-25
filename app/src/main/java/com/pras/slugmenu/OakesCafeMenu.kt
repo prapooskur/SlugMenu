@@ -44,8 +44,13 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Exception
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
+import java.security.cert.CertificateException
 import java.time.LocalDate
+import javax.net.ssl.SSLHandshakeException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,7 +73,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
             val menu = menuDao.getMenu(locationName)
             if (menu != null && menu.cacheDate == currentDate) {
                 menuList = MenuTypeConverters().fromString(menu.menus)
-                Log.d("TAG","menu list: ${menuList.size}")
+                Log.d("TAG", "menu list: ${menuList.size}")
                 dataLoadedState.value = true
             } else {
                 try {
@@ -81,15 +86,25 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
                             currentDate
                         )
                     )
+                } catch (e: UnresolvedAddressException) {
+                    noInternet = "No Internet connection"
+                } catch (e: SocketTimeoutException) {
+                    noInternet = "Connection timed out"
+                } catch (e: UnknownHostException) {
+                    noInternet = "Failed to resolve URL"
+                } catch (e: CertificateException) {
+                    noInternet = "Website's SSL certificate is invalid"
+                } catch (e: SSLHandshakeException) {
+                    noInternet = "SSL handshake failed"
                 } catch (e: Exception) {
-                    noInternet = e.toString()
+                    noInternet = "Exception: $e"
                 }
                 dataLoadedState.value = true
             }
         }
     }
     if (noInternet != "No Exception") {
-        ShortToast("Exception: $noInternet")
+        ShortToast(noInternet)
     }
 
     Column {

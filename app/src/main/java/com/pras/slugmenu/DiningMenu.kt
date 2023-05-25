@@ -32,14 +32,18 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.Exception
+import java.net.SocketTimeoutException
 import java.net.URLDecoder
 import java.net.URLEncoder
+import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
+import java.security.cert.CertificateException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import javax.net.ssl.SSLHandshakeException
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,15 +90,26 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                             currentDate.toString()
                         )
                     )
+                } catch (e: UnresolvedAddressException) {
+                    noInternet = "No Internet connection"
+                } catch (e: SocketTimeoutException) {
+                    noInternet = "Connection timed out"
+                } catch (e: UnknownHostException) {
+                    noInternet = "Failed to resolve URL"
+                } catch (e: CertificateException) {
+                    noInternet = "Website's SSL certificate is invalid"
+                } catch (e: SSLHandshakeException) {
+                    noInternet = "SSL handshake failed"
                 } catch (e: Exception) {
-                    noInternet = e.toString()
+                    noInternet = "Exception: $e"
                 }
                 dataLoadedState.value = true
             }
         }
     }
+
     if (noInternet != "No Exception") {
-        ShortToast("Exception: $noInternet")
+        ShortToast(noInternet)
     }
 
 
@@ -252,7 +267,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
     val titleDateFormat = DateTimeFormatter.ofPattern("M/dd/yy")
 
     val dataLoadedState = remember { mutableStateOf(false) }
-    var noInternet by remember { mutableStateOf(false) }
+    var noInternet by remember { mutableStateOf("No Exception") }
 
     val showBottomSheet = remember { mutableStateOf(false) }
 
@@ -264,14 +279,25 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
             try {
                 menuList = getDiningMenuAsync(fullUrl)
             } catch (e: UnresolvedAddressException) {
-                noInternet = true
+                noInternet = "No Internet connection"
+            } catch (e: SocketTimeoutException) {
+                noInternet = "Connection timed out"
+            } catch (e: UnknownHostException) {
+                noInternet = "Failed to resolve URL"
+            } catch (e: CertificateException) {
+                noInternet = "Website's SSL certificate is invalid"
+            } catch (e: SSLHandshakeException) {
+                noInternet = "SSL handshake failed"
+            } catch (e: Exception) {
+                noInternet = "Exception: $e"
             }
             dataLoadedState.value = true
         }
     }
-    if (noInternet) {
-        ShortToast("No internet connection")
+    if (noInternet != "No Exception") {
+        ShortToast(noInternet)
     }
+
 
     Column {
         if (dataLoadedState.value) {

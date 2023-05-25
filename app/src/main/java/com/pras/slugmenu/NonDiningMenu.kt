@@ -49,7 +49,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
     val dataLoadedState = remember { mutableStateOf(false) }
     var noInternet by remember { mutableStateOf<String>("No Exception") }
 
-    val knownExceptionList = mapOf<String,String>("UnresolvedAddressException" to "No Internet connection")
+//    val knownExceptionList = mapOf<String,String>("UnresolvedAddressException" to "No Internet connection")
 
 
     LaunchedEffect(Unit) {
