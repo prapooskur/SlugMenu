@@ -156,7 +156,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 
     // Desugaring (allows minSdk below 26)
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
 
 }
