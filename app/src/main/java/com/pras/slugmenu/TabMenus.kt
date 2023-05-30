@@ -341,26 +341,28 @@ fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
             }
         }
     } else {
-        TabRow(
-            selectedTabIndex = 0
-        ) {
-            Tab(
-                selected = true,
-                onClick = { /*nothing*/ },
-                text = {
-                    Text(
-                        text = "Closed",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentWidth(Alignment.CenterHorizontally),
-                        textAlign = TextAlign.Center,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            )
+        Column(modifier = Modifier.padding(padding)) {
+            TabRow(
+                selectedTabIndex = 0
+            ) {
+                Tab(
+                    selected = true,
+                    onClick = { /*nothing*/ },
+                    text = {
+                        Text(
+                            text = "Closed",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally),
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                )
+            }
         }
     }
 }
