@@ -194,7 +194,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             Column(modifier = Modifier.fillMaxHeight()) {
                 HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
             }
-            WaitzDialog(showDialog = showWaitzDialog, locationName = locationName.replace("Stevenson","Stev"), menuDatabase = menuDatabase)
+            WaitzDialogRewrite(showDialog = showWaitzDialog, locationName = locationName.replace("Stevenson","Stev"), menuDatabase = menuDatabase)
 
 
         } else {
