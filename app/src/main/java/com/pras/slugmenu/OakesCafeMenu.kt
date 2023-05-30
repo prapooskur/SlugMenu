@@ -144,31 +144,6 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
         }
     }
 
-    /*
-    Column {
-        TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
-        if (dataLoadedState.value) {
-            if (menuList.isNotEmpty()) {
-                PriceTabBar(menuList)
-            } else {
-                PriceTabBar(
-                    arrayOf(mutableListOf(), mutableListOf()),
-                )
-            }
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 16.dp),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-    }
-
-     */
-
     Column(modifier = Modifier.fillMaxHeight()) {
         HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
     }
