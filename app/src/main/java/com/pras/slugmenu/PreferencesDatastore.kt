@@ -12,8 +12,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-data class UserPreferences(val GridView: Boolean)
-
 class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
 
     private companion object {
