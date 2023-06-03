@@ -72,60 +72,14 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
             } else {
                 CardList(navController = navController, innerPadding = innerPadding)
             }
-//            CardList(navController = navController)
-/*
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = innerPadding) // padding applied here
-            ) {
-//
-                TwoByTwoGrid(navController = navController)
-            }
-
- */
         }
     )
 
 }
 
-
-/*
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBarHome(titleText: String, navController: NavController, color: Color = MaterialTheme.colorScheme.primary) {
-    TopAppBar(
-        title = {
-            Text(
-                text = titleText,
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 20.sp
-            )
-        },
-        actions = {
-            IconButton(onClick = { navController.navigate("settings") }) {
-                Icon(
-                    imageVector = Icons.Outlined.Settings,
-                    contentDescription = "Settings",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = color),
-        /*
-        backgroundColor = color,
-        elevation = 8.dp
-
-         */
-    )
-}
- */
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
-//    val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
     val locations = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
 
@@ -175,17 +129,10 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardList(navController: NavController, innerPadding: PaddingValues) {
-//    val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
     val locations = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
 
     LazyColumn(
-        /*
-        columns = GridCells.Adaptive(minSize = 128.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-         */
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
         modifier = Modifier
             .fillMaxSize()
