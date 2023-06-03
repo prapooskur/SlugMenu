@@ -100,7 +100,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
                     TopBarClean(titleText = locationName, navController = navController)
                 },
                 content = { padding ->
-                    if (menuList[0].isNotEmpty()) {
+                    if (menuList.isNotEmpty() && menuList[0].isNotEmpty()) {
                         PrintPriceMenu(itemList = menuList[0], padding)
                     } else {
                         PrintPriceMenu(itemList = mutableListOf(), padding)
