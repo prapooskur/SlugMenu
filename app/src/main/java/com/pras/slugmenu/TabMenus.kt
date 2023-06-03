@@ -145,9 +145,14 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
         ) { state ->
             if (titles[0] != "No menu available") {
                 PrintMenu(itemList = menuArray[state])
-            } else {
+            }
+
+            // commented out for now, since some holidays trigger this state in the non-custom date menu
+            /*
+            else {
                 ShortToast(text = "No menu available")
             }
+             */
         }
     }
 }
