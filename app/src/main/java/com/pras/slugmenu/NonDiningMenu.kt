@@ -90,7 +90,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
         ShortToast(exceptionFound)
     }
 
-    val showBottomSheet = remember { mutableStateOf(false) }
+    val openBottomSheet = remember { mutableStateOf(false) }
 
     Column {
         if (dataLoadedState.value) {
@@ -108,7 +108,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
                 //floating action button - shows hours bottom sheet
                 floatingActionButton = {
                     FloatingActionButton(
-                        onClick = { showBottomSheet.value = !showBottomSheet.value }
+                        onClick = { openBottomSheet.value = !openBottomSheet.value }
                     ) {
                         Icon(Icons.Outlined.Info, "Info")
                     }
@@ -128,51 +128,8 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
         }
     }
 
-    /*
-    Column {
-        TopBar(titleText = locationName, navController = navController, showBottomSheet = showBottomSheet)
-        if (dataLoadedState.value) {
-            if (menuList.isNotEmpty()) {
-                PrintPriceMenu(itemList = menuList[0])
-            } else {
-                PrintPriceMenu(itemList = mutableListOf())
-            }
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 16.dp),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-    }
-
-     */
-
     Column(modifier = Modifier.fillMaxHeight()) {
-        HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
+        HoursBottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
     }
 
 }
-
-
-
-//replaced with NonDiningMenuRoom
-/*
-@Composable
-fun NonDiningMenu(navController: NavController, menu: Array<MutableList<String>>, name: String) {
-    Log.d("TAG", "Opening NonDiningMenu!")
-//    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
-    Column() {
-        TopBar(titleText = name, navController = navController)
-        if (menu.isNotEmpty()) {
-            PrintPriceMenu(itemList = menu[0])
-        } else {
-            PrintPriceMenu(itemList = mutableListOf<String>())
-        }
-    }
-
-}
-*/
