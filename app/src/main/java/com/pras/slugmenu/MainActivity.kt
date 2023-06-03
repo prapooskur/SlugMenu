@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            SlugMenuTheme(darkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, userSettings = userSettings, dynamicColor = useMaterialYou.value) {
+            SlugMenuTheme(darkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value) {
                 MenuBarColor(color = MaterialTheme.colorScheme.primary)
                 // A surface container using the 'background' color from the theme
                 Surface(

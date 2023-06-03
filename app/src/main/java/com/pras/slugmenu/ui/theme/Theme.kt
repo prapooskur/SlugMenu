@@ -88,18 +88,8 @@ fun SlugMenuTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
-    userSettings: PreferencesDatastore,
     content: @Composable () -> Unit
 ) {
-
-
-
-
-    val themeChoice = userSettings.getThemePreference
-    Log.d("THEME","theme choice: $themeChoice")
-    if (themeChoice.equals(0)) {
-        Log.d("THEME","theme choice: zero")
-    }
 
     val colorScheme = when {
 
