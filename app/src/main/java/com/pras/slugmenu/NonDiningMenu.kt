@@ -129,8 +129,6 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
         }
     }
 
-    Column(modifier = Modifier.fillMaxHeight()) {
-        HoursBottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
-    }
+    HoursBottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
 
 }
