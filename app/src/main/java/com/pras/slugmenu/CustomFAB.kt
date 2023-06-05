@@ -8,9 +8,11 @@ package com.pras.slugmenu
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -49,17 +51,8 @@ fun CustomFloatingActionButton(
 //        onClick = onClick,
         modifier = modifier
             .semantics { role = Role.Button }
-            .combinedClickable (
-                role = Role.Button,
-                onClick = {
-                    onClick()
-                },
-                onLongClick = {
-                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onLongClick()
-                },
-            )
-            .clip(shape = shape),
+            .clip(shape = shape)
+            .clipToBounds(),
         shape = shape,
         color = containerColor,
         contentColor = contentColor,
@@ -76,9 +69,19 @@ fun CustomFloatingActionButton(
             ) {
                 Box(
                     modifier = Modifier
-                        .defaultMinSize(
-                            minWidth = 56.dp,
-                            minHeight = 56.dp,
+                        .defaultMinSize(minWidth = 56.dp,minHeight = 56.dp)
+                        .background(Color.Transparent)
+                        .clip(shape = shape)
+                        .clipToBounds()
+                        .combinedClickable (
+                            role = Role.Button,
+                            onClick = {
+                                onClick()
+                            },
+                            onLongClick = {
+                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onLongClick()
+                            },
                         ),
                     contentAlignment = Alignment.Center,
                 ) { content() }
