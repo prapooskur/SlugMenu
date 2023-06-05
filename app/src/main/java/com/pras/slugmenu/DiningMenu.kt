@@ -125,11 +125,27 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                 //floating action button
                 // todo: on long press, open dialog bottom sheet
                 floatingActionButton = {
+
+                    /*
                     FloatingActionButton(
                         onClick = { showDatePicker = !showDatePicker }
                     ) {
                         Icon(Icons.Filled.DateRange,"Calendar")
                     }
+
+                     */
+
+
+                    CustomFloatingActionButton(
+                        onClick = { showDatePicker = !showDatePicker },
+                        onLongClick = { showBottomSheet.value = !showBottomSheet.value }
+                    ) {
+                        Icon(Icons.Filled.DateRange,"Calendar")
+                    }
+
+
+
+
                 },
                 floatingActionButtonPosition = FabPosition.End
             )
