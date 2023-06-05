@@ -542,7 +542,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                 items(hoursDictionary.getOrDefault(locationName, arrayOf()).size) { item ->
                     val element = hoursDictionary.getOrDefault(locationName, arrayOf())[item]
                     val isTitle = !element.contains(":")
-                    if (isTitle && item != 0) {
+                    if (isTitle) {
                         Divider()
                     }
                     ListItem(
