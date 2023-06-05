@@ -442,7 +442,6 @@ fun WaitzOneDialogRewrite(showDialog: MutableState<Boolean>, locationName: Strin
     }
 }
 
-// TODO: rework so it closes on back press
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {

@@ -13,8 +13,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.SlugMenu"
-        tools:targetApi="33"
-        android:enableOnBackInvokedCallback="true">
+        tools:targetApi="33">
         <activity
             android:name=".MainActivity"
             android:exported="true"
