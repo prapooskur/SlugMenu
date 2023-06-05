@@ -24,24 +24,26 @@ import androidx.navigation.NavController
 // Intended for use on main and settings screens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollapsingLargeTopBar(titleText: String, navController: NavController, showIcon: Boolean = false) {
+fun CollapsingLargeTopBar(titleText: String, navController: NavController, showSettingsIcon: Boolean = false) {
     Surface(shadowElevation = 4.dp) {
         TopAppBar(
             title = {
                 Text(
-                    text = "Slug Menu",
+                    text = titleText,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontSize = 20.sp
                 )
             },
             actions = {
-                IconButton(onClick = { navController.navigate("settings") }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Settings,
-                        contentDescription = "Settings",
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
+                if (showSettingsIcon) {
+                    IconButton(onClick = { navController.navigate("settings") }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Settings,
+                            contentDescription = "Settings",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
 
+                    }
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
