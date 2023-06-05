@@ -396,7 +396,6 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
         }
     }
 
-    Column(modifier = Modifier.fillMaxHeight()) {
-        HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
-    }
+    HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
+
 }
