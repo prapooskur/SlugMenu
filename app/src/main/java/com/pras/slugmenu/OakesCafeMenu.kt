@@ -144,9 +144,9 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
         }
     }
 
-    Column(modifier = Modifier.fillMaxHeight()) {
-        HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName)
-    }
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
+
     WaitzDialog(showDialog = showWaitzDialog, locationName = locationName, menuDatabase = menuDatabase)
 
 }

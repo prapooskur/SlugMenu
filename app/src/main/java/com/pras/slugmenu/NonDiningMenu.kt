@@ -3,7 +3,6 @@ package com.pras.slugmenu
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -90,8 +89,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
         ShortToast(exceptionFound)
     }
 
-    val openBottomSheet = remember { mutableStateOf(false) }
-    val bottomSheetState = rememberModalBottomSheetState()
+    val showBottomSheet = remember { mutableStateOf(false) }
 
     Column {
         if (dataLoadedState.value) {
@@ -109,7 +107,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
                 //floating action button - shows hours bottom sheet
                 floatingActionButton = {
                     FloatingActionButton(
-                        onClick = { openBottomSheet.value = !openBottomSheet.value }
+                        onClick = { showBottomSheet.value = !showBottomSheet.value }
                     ) {
                         Icon(Icons.Outlined.Info, "Info")
                     }
@@ -129,6 +127,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
         }
     }
 
-    HoursBottomSheet(openBottomSheet = openBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
 
 }

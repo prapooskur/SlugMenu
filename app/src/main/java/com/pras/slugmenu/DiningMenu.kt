@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.CircularProgressIndicator
@@ -136,16 +135,12 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
                      */
 
-
                     CustomFloatingActionButton(
                         onClick = { showDatePicker = !showDatePicker },
                         onLongClick = { showBottomSheet.value = !showBottomSheet.value }
                     ) {
                         Icon(Icons.Filled.DateRange,"Calendar")
                     }
-
-
-
 
                 },
                 floatingActionButtonPosition = FabPosition.End
@@ -414,7 +409,8 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
     }
 
     // Since the crown/merrill hours dialog is only 1 line smaller when partially expanded, there's no point in doing so
-    val bottomSheetState = if (locationName == "Crown/Merrill") { rememberModalBottomSheetState(skipPartiallyExpanded = true) } else { rememberModalBottomSheetState() }
+    // TODO: figure out why this doesn't work properly?
+    val bottomSheetState = if (locationName.substringBefore(" ") == "Crown/Merrill") { rememberModalBottomSheetState(skipPartiallyExpanded = true) } else { rememberModalBottomSheetState() }
 
     HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName.substringBefore(" "))
 

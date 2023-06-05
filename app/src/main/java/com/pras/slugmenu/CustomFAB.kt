@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -44,19 +46,20 @@ fun CustomFloatingActionButton(
     val haptics = LocalHapticFeedback.current
 
     Surface(
+//        onClick = onClick,
         modifier = modifier
             .semantics { role = Role.Button }
             .combinedClickable (
+                role = Role.Button,
                 onClick = {
                     onClick()
-                    Log.d("FAB","clicked!")
                 },
                 onLongClick = {
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     onLongClick()
-                    Log.d("FAB","Long clicked!")
                 },
-            ),
+            )
+            .clip(shape = shape),
         shape = shape,
         color = containerColor,
         contentColor = contentColor,

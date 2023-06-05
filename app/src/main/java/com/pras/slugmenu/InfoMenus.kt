@@ -448,33 +448,33 @@ fun WaitzOneDialogRewrite(showDialog: MutableState<Boolean>, locationName: Strin
 fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {
     val nineTenHours =  arrayOf(
         "Monday - Friday",
-        "Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM","Late Night: 8–11 PM",
+        "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM",
         "Saturday/Sunday",
-        "Breakfast: 7–10 AM","Brunch: 10 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM","Late Night: 8–11 PM"
+        "Breakfast: 7–10 AM\nBrunch: 10 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM"
     )
     val cowellStevHours = arrayOf(
         "Monday - Thursday",
-        "Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM","Late Night: 8–11 PM",
+        "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM",
         "Friday",
-        "Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM",
+        "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM",
         "Saturday",
-        "Breakfast: 7–10 AM","Brunch: 10 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM",
+        "Breakfast: 7–10 AM\nBrunch: 10 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM",
         "Sunday",
-        "Breakfast: 7–10 AM","Brunch: 10 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM","Late Night: 8–11 PM"
+        "Breakfast: 7–10 AM\nBrunch: 10 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM"
     )
     val crownMerrillHours = arrayOf(
         "Monday - Friday",
-        "Breakfast: 7-11 AM","Continuous Dining: 11–11:30 AM","Lunch: 11:30 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–8 PM"
+        "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM"
     )
     val porterKresgeHours = arrayOf(
         "Monday - Thursday",
-        "Breakfast: 7-11 AM","Continuous Dining: 11–11:30AM","Lunch: 11:30AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11PM",
+        "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30AM\nLunch: 11:30AM–2PM\nContinuous Dining: 2–5PM\nDinner: 5–8PM\nLate Night: 8–11PM",
         "Friday",
-        "Breakfast: 7-11 AM","Continuous Dining: 11–11:30AM","Lunch: 11:30AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–7PM",
+        "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30AM\nLunch: 11:30AM–2PM\nContinuous Dining: 2–5PM\nDinner: 5–7PM",
         "Saturday",
-        "Breakfast: 7–10 AM","Brunch: 10 AM–2 PM","Continuous Dining: 2–5 PM","Dinner: 5–7 PM",
+        "Breakfast: 7–10 AM\nBrunch: 10 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–7 PM",
         "Sunday",
-        "Breakfast: 7–10AM","Brunch: 10AM–2PM","Continuous Dining: 2–5PM","Dinner: 5–8PM","Late Night: 8–11 PM"
+        "Breakfast: 7–10AM\nBrunch: 10AM–2PM\nContinuous Dining: 2–5PM\nDinner: 5–8PM\nLate Night: 8–11 PM"
     )
 
     val perkHours = arrayOf(
@@ -547,6 +547,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
             LazyColumn {
                 items(hoursDictionary.getOrDefault(locationName, arrayOf()).size) { item ->
                     val element = hoursDictionary.getOrDefault(locationName, arrayOf())[item]
+                    val maxElement = hoursDictionary.getOrDefault(locationName, arrayOf()).size
                     val isTitle = !element.contains(":")
                     if (isTitle && item != 0) {
                         Divider()
@@ -560,21 +561,30 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                                 } else {
                                     FontWeight.Normal
                                 },
+                                /*
                                 fontSize = if (isTitle) {
                                     16.sp
                                 } else {
                                     14.sp
                                 },
+
+                                 */
                                 textAlign = if (isTitle) {
                                     TextAlign.Center
                                 } else {
                                     TextAlign.Left
                                 },
+                                lineHeight = 30.sp
                             )
                         }
                     )
                     if (isTitle) {
                         Divider()
+                    }
+
+                    // add a bit of bottom padding to dining hall hours sheets
+                    if (maxElement-1 == item && locationName.contains("/")) {
+                        Text("")
                     }
                 }
             }
