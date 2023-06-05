@@ -49,10 +49,7 @@ fun CustomFloatingActionButton(
 
     Surface(
 //        onClick = onClick,
-        modifier = modifier
-            .semantics { role = Role.Button }
-            .clip(shape = shape)
-            .clipToBounds(),
+        modifier = modifier.semantics { role = Role.Button },
         shape = shape,
         color = containerColor,
         contentColor = contentColor,
@@ -70,9 +67,6 @@ fun CustomFloatingActionButton(
                 Box(
                     modifier = Modifier
                         .defaultMinSize(minWidth = 56.dp,minHeight = 56.dp)
-                        .background(Color.Transparent)
-                        .clip(shape = shape)
-                        .clipToBounds()
                         .combinedClickable (
                             role = Role.Button,
                             onClick = {
