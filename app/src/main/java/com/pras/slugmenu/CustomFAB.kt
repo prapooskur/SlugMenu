@@ -65,6 +65,7 @@ fun CustomFloatingActionButton(
                 MaterialTheme.typography.labelLarge,
             ) {
                 Box(
+                    //By using combinedclickable on the box instead of the surface, the ripple effect does not extend past the rounded corners.
                     modifier = Modifier
                         .defaultMinSize(minWidth = 56.dp,minHeight = 56.dp)
                         .combinedClickable (
