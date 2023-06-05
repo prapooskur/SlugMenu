@@ -144,10 +144,12 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
         }
     }
 
+    WaitzDialog(showDialog = showWaitzDialog, locationName = locationName, menuDatabase = menuDatabase)
+
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
 
-    WaitzDialog(showDialog = showWaitzDialog, locationName = locationName, menuDatabase = menuDatabase)
+
 
 }
 
@@ -219,21 +221,3 @@ fun PriceTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues) {
         }
     }
 }
-
-
-//replaced with oakescafemenuroom
-/*
-@Composable
-fun OakesCafeMenu(navController: NavController, menu: Array<MutableList<String>>, name: String) {
-    Log.d("TAG", "Opening OakesCafeMenu!")
-//    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
-    Column() {
-        if (menu.isNotEmpty()) {
-            PriceTabBar(menu, navController, name)
-        } else {
-            PriceTabBar(arrayOf(mutableListOf<String>(), mutableListOf<String>()), navController, name)
-        }
-    }
-
-}
- */
