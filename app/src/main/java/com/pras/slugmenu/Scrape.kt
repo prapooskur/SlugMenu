@@ -76,8 +76,9 @@ suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
 
                 if (items.length > 42 && items !in listItems) {
                     var cleanItem = items.substring(29, items.length - 13)
-                    cleanItem = cleanItem.replace("&amp;", "&")
-                    cleanItem = cleanItem.replace("Iced Match ", "Iced Matcha ")
+                    // correct for typos in the menu items
+                    cleanItem = cleanItem.replace("&amp;", "&").replace("Iced Match ", "Iced Matcha ").replace("Mint Condition Condition","Mint Chocolate Cookie")
+                    cleanItem = cleanItem
 
                     if (!listItems.contains(cleanItem)) {
                         Log.d("TAG", "clean item: $cleanItem")
