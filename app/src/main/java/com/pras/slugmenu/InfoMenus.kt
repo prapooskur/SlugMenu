@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -538,11 +539,16 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                     )
                 }
             )
+
+            Divider(
+                thickness = 2.dp
+            )
+
             LazyColumn {
                 items(hoursDictionary.getOrDefault(locationName, arrayOf()).size) { item ->
                     val element = hoursDictionary.getOrDefault(locationName, arrayOf())[item]
                     val isTitle = !element.contains(":")
-                    if (isTitle) {
+                    if (isTitle && item != 0) {
                         Divider()
                     }
                     ListItem(
