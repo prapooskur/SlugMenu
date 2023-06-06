@@ -378,7 +378,7 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
             },
             supportingContent = {
                 Text(
-                    text = "Currently buggy, use with caution? Does not currently persist.",
+                    text = "Currently buggy, use with caution.",
                     modifier = Modifier.padding(start = 16.dp)
                 )
             },
