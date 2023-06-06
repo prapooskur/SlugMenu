@@ -9,13 +9,16 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -24,33 +27,36 @@ import androidx.navigation.NavController
 // Intended for use on main and settings screens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollapsingLargeTopBar(titleText: String, navController: NavController, showSettingsIcon: Boolean = false) {
-    Surface(shadowElevation = 4.dp) {
-        TopAppBar(
-            title = {
-                Text(
-                    text = titleText,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    fontSize = 20.sp
-                )
-            },
-            actions = {
-                if (showSettingsIcon) {
-                    IconButton(onClick = { navController.navigate("settings") }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Settings,
-                            contentDescription = "Settings",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-
-                    }
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-//            backgroundColor = MaterialTheme.colorScheme.primaryContainer
-        )
-
+fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrollBehavior: TopAppBarScrollBehavior, isHome: Boolean = false) {
+    val topBarColor = if (scrollBehavior.state.collapsedFraction < 0.5) {
+        TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
+    } else {
+        TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
     }
+    LargeTopAppBar(
+        title = {
+            Text(
+                modifier = Modifier,
+                text = titleText,
+            )
+        },
+        navigationIcon = {
+            if (!isHome) {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onPrimaryContainer)
+                }
+            }
+        },
+        actions = {
+            if (isHome) {
+                IconButton(onClick = { navController.navigate("settings") }) {
+                    Icon(Icons.Outlined.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.onPrimaryContainer)
+                }
+            }
+        },
+        scrollBehavior = scrollBehavior,
+        colors = topBarColor
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

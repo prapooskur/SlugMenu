@@ -12,58 +12,81 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.JsonNull.content
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDatastore) {
     val useGridLayout = remember { mutableStateOf(true) }
+    val useCollapsingTopBar = remember { mutableStateOf(true) }
     runBlocking {
         val gridLayoutChoice = preferencesDataStore.getListPreference.first()
         useGridLayout.value = gridLayoutChoice
     }
-    //Collapsing toolbar rewrite later?
+
+    //TODO: Complete collapsing top bar rewrite
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        rememberTopAppBarState(),
+        canScroll = { true })
+    val scaffoldModifier = if (useCollapsingTopBar.value) {
+        Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+    } else {
+        Modifier.fillMaxSize()
+    }
+
     Scaffold(
+        modifier = scaffoldModifier,
         topBar = {
-            Surface(shadowElevation = 4.dp) {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Slug Menu",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 20.sp
-                        )
-                    },
-
-                    actions = {
-                        IconButton(onClick = { navController.navigate("settings") }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Settings,
-                                contentDescription = "Settings",
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+            if (useCollapsingTopBar.value) {
+                CollapsingLargeTopBar(titleText = "Slug Menu", navController = navController, scrollBehavior = scrollBehavior, isHome = true)
+            } else {
+                Surface(shadowElevation = 4.dp) {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "Slug Menu",
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontSize = 20.sp
                             )
+                        },
 
-                        }
-                    },
+                        actions = {
+                            IconButton(onClick = { navController.navigate("settings") }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Settings,
+                                    contentDescription = "Settings",
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
 
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                )
+                            }
+                        },
 
+                        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+                    )
+
+                }
             }
         },
         content = {innerPadding ->
