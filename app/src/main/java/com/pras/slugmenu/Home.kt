@@ -65,29 +65,7 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
                 CollapsingLargeTopBar(titleText = "Slug Menu", navController = navController, scrollBehavior = scrollBehavior, isHome = true)
             } else {
                 Surface(shadowElevation = 4.dp) {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = "Slug Menu",
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                fontSize = 20.sp
-                            )
-                        },
-
-                        actions = {
-                            IconButton(onClick = { navController.navigate("settings") }) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Settings,
-                                    contentDescription = "Settings",
-                                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-
-                            }
-                        },
-
-                        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                    )
-
+                    TopBar(titleText = "Slug Menu", navController = navController, isHome = true)
                 }
             }
         },

@@ -214,7 +214,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             // Otherwise, display a loading indicator
             Surface {
                 Column {
-                    TopBar(titleText = locationName, navController = navController)
+                    TopBarWaitz(titleText = locationName, navController = navController)
                 }
             }
             Box(
@@ -395,7 +395,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
             // Otherwise, display a loading indicator
             Surface {
                 Column {
-                    TopBar(titleText = locationName, navController = navController)
+                    TopBarWaitz(titleText = locationName, navController = navController)
                 }
             }
             Box(

@@ -77,12 +77,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                 if (useCollapsingTopBar.value) {
                     CollapsingLargeTopBar(titleText = "Settings", navController = navController, scrollBehavior = scrollBehavior, isHome = false)
                 } else {
-                    Surface(shadowElevation = 4.dp) {
-                        TopBarClean(
-                            titleText = "Settings",
-                            navController = navController
-                        )
-                    }
+                    TopBar("Settings", navController = navController, isHome = false)
                 }
             },
             content = { innerPadding ->
