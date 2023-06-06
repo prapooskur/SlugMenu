@@ -357,12 +357,9 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
     Row(modifier = Modifier.clickable(
         onClick = {
             useLargeTopBar.value = !useLargeTopBar.value
-            /*
             coroutineScope.launch {
-                preferencesDataStore.setTopBarPreference(useLargeTopBar.value)
+                preferencesDataStore.setToolbarPreference(useLargeTopBar.value)
             }
-
-             */
             Log.d("TAG", "top bar choice toggled")
         },
     )) {
@@ -385,11 +382,10 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
                     checked = useLargeTopBar.value,
                     onCheckedChange = {
                         useLargeTopBar.value = !useLargeTopBar.value
-                        /*
                         coroutineScope.launch {
-                            preferencesDataStore.setAmoledPreference(useLargeTopBar.value)
+                            preferencesDataStore.setToolbarPreference(useLargeTopBar.value)
                         }
-                         */
+
                         Log.d("TAG", "Top Bar toggled")
                     }
                 )

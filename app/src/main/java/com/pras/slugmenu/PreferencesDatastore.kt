@@ -19,6 +19,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         val THEME_PREF = intPreferencesKey("theme_pref")
         val USE_MATERIAL_YOU = booleanPreferencesKey("use_material_you")
         val USE_AMOLED_BLACK = booleanPreferencesKey("use_amoled_black")
+        val USE_COLLAPSING_TOOLBAR = booleanPreferencesKey("use_collapsing_toolbar")
         const val TAG = "UserPreferencesRepo"
     }
 
@@ -86,7 +87,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
     val getAmoledPreference: Flow<Boolean> = dataStore.data
         .catch {
             if (it is IOException) {
-                Log.e(TAG, "Error reading material you preferences.", it)
+                Log.e(TAG, "Error reading AMOLED preferences.", it)
                 emit(emptyPreferences())
             } else {
                 throw it
@@ -99,6 +100,25 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
     suspend fun setAmoledPreference(userChoice: Boolean) {
         dataStore.edit {preferences ->
             preferences[USE_AMOLED_BLACK] = userChoice
+        }
+    }
+
+    val getToolbarPreference: Flow<Boolean> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading Top Bar preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map {preferences ->
+            preferences[USE_COLLAPSING_TOOLBAR] ?: false
+        }
+
+    suspend fun setToolbarPreference(userChoice: Boolean) {
+        dataStore.edit {preferences ->
+            preferences[USE_COLLAPSING_TOOLBAR] = userChoice
         }
     }
 }

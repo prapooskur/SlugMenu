@@ -42,6 +42,8 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
     runBlocking {
         val gridLayoutChoice = preferencesDataStore.getListPreference.first()
         useGridLayout.value = gridLayoutChoice
+        val collapsingTopBarChoice = preferencesDataStore.getToolbarPreference.first()
+        useCollapsingTopBar.value = collapsingTopBarChoice
     }
 
     //TODO: Complete collapsing top bar rewrite
