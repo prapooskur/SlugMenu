@@ -1,7 +1,6 @@
 package com.pras.slugmenu
 
 import android.util.Log
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
