@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -77,6 +78,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
         color = MaterialTheme.colorScheme.background
     ) {
         Scaffold(
+            contentWindowInsets = WindowInsets(0.dp),
             topBar = {
                 if (useCollapsingTopBar.value) {
                     CollapsingLargeTopBar(titleText = "Settings", navController = navController, scrollBehavior = scrollBehavior, isHome = false)
