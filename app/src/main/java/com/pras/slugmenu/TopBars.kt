@@ -40,30 +40,38 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
         MaterialTheme.colorScheme.onPrimaryContainer
     }
 
-    LargeTopAppBar(
-        title = {
-            Text(
-                modifier = Modifier,
-                text = titleText,
-            )
-        },
-        navigationIcon = {
-            if (!isHome) {
-                IconButton(onClick = { navController.navigateUp() }) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = iconColor)
+    val topBarElevation = if (scrollBehavior.state.collapsedFraction < 0.5) {
+        0.dp
+    } else {
+        4.dp
+    }
+
+    Surface(shadowElevation = topBarElevation) {
+        LargeTopAppBar(
+            title = {
+                Text(
+                    modifier = Modifier,
+                    text = titleText,
+                )
+            },
+            navigationIcon = {
+                if (!isHome) {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = iconColor)
+                    }
                 }
-            }
-        },
-        actions = {
-            if (isHome) {
-                IconButton(onClick = { navController.navigate("settings") }) {
-                    Icon(Icons.Outlined.Settings, contentDescription = "Settings", tint = iconColor)
+            },
+            actions = {
+                if (isHome) {
+                    IconButton(onClick = { navController.navigate("settings") }) {
+                        Icon(Icons.Outlined.Settings, contentDescription = "Settings", tint = iconColor)
+                    }
                 }
-            }
-        },
-        scrollBehavior = scrollBehavior,
-        colors = topBarColor
-    )
+            },
+            scrollBehavior = scrollBehavior,
+            colors = topBarColor
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
