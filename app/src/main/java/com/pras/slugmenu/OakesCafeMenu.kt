@@ -114,7 +114,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
     Column {
         if (dataLoadedState.value) {
             Scaffold(
-//                contentWindowInsets = WindowInsets(0.dp),
+                // custom insets necessary to render behind nav bar
                 contentWindowInsets = WindowInsets(0.dp),
 
                 topBar = {

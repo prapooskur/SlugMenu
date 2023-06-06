@@ -78,6 +78,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
         color = MaterialTheme.colorScheme.background
     ) {
         Scaffold(
+            // custom insets necessary to render behind nav bar
             contentWindowInsets = WindowInsets(0.dp),
             topBar = {
                 if (useCollapsingTopBar.value) {

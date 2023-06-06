@@ -96,6 +96,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
     Column {
         if (dataLoadedState.value) {
             Scaffold(
+                // custom insets necessary to render behind nav bar
                 contentWindowInsets = WindowInsets(0.dp),
                 topBar = {
                     TopBarClean(titleText = locationName, navController = navController)

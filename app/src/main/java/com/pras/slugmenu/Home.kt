@@ -53,6 +53,7 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
 
     Scaffold(
         modifier = scaffoldModifier,
+        // custom insets necessary to render behind nav bar
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             if (useCollapsingTopBar.value) {

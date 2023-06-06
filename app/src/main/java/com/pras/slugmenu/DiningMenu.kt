@@ -119,6 +119,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             // If the data has been loaded from the cache, display the menu
             Log.d("TAG", (System.currentTimeMillis() / 1000L).toString())
             Scaffold(
+                // custom insets necessary to render behind nav bar
                 contentWindowInsets = WindowInsets(0.dp),
 
                 topBar = {
@@ -313,6 +314,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
         if (dataLoadedState.value) {
             // If the data has been loaded from the internet, display the menu
             Scaffold(
+                // custom insets necessary to render behind nav bar
                 contentWindowInsets = WindowInsets(0.dp),
                 topBar = {
                     TopBarClean(titleText = locationName, navController = navController)
