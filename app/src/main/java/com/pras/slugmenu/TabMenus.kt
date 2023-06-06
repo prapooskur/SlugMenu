@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import java.time.LocalDateTime
 //Swipable tabs
 import androidx.compose.foundation.pager.HorizontalPager
+import com.pras.slugmenu.ui.elements.pagerTabIndicatorOffset
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.util.Collections

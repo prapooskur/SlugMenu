@@ -1,4 +1,4 @@
-package com.pras.slugmenu
+package com.pras.slugmenu.ui.elements
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.ScrollableTabRow

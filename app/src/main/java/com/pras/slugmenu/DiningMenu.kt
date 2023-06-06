@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.pras.slugmenu.ui.elements.CustomFloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException

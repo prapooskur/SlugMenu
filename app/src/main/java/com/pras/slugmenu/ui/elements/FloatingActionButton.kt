@@ -1,4 +1,4 @@
-package com.pras.slugmenu
+package com.pras.slugmenu.ui.elements
 
 /**
  * A custom implementation of the default Android [FloatingActionButton], with added support for long presses.
@@ -6,13 +6,10 @@ package com.pras.slugmenu
  * Default FAB available at https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/FloatingActionButton.kt
  */
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -23,8 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
