@@ -48,26 +48,43 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
         0.dp
     }
 
+    val topBarItemColor = if (scrollBehavior.state.collapsedFraction < 0.5) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    }
+
+    val topBarFontSize = (30-10*scrollBehavior.state.collapsedFraction).sp
+
     Surface(shadowElevation = topBarElevation) {
         LargeTopAppBar(
             title = {
                 Text(
                     modifier = Modifier,
                     text = titleText,
-//                    fontSize = 30.sp
+                    color = topBarItemColor,
+                    fontSize = topBarFontSize
                 )
             },
             navigationIcon = {
                 if (!isHome) {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = topBarItemColor
+                        )
                     }
                 }
             },
             actions = {
                 if (isHome) {
                     IconButton(onClick = { navController.navigate("settings") }) {
-                        Icon(Icons.Outlined.Settings, contentDescription = "Settings")
+                        Icon(
+                            imageVector = Icons.Outlined.Settings,
+                            contentDescription = "Settings",
+                            tint = topBarItemColor
+                        )
                     }
                 }
             },
@@ -85,7 +102,7 @@ fun TopBar(titleText: String, navController: NavController, isHome: Boolean = fa
             title = {
                 Text(
                     text = titleText,
-//                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontSize = 20.sp
                 )
             },
@@ -102,7 +119,7 @@ fun TopBar(titleText: String, navController: NavController, isHome: Boolean = fa
                         Icon(
                             imageVector = Icons.Outlined.Settings,
                             contentDescription = "Settings",
-//                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                 }
