@@ -5,9 +5,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -44,6 +47,7 @@ import com.pras.slugmenu.ui.elements.pagerTabIndicatorOffset
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.JsonNull.content
 import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -110,10 +114,14 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
     Column {
         if (dataLoadedState.value) {
             Scaffold(
+//                contentWindowInsets = WindowInsets(0.dp),
+                contentWindowInsets = WindowInsets(0.dp),
+
                 topBar = {
                     TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
                 },
                 content = {padding ->
+                    Log.d("padding",padding.toString())
                     if (menuList.isNotEmpty()) {
                         PriceTabBar(menuList,padding)
                     } else {
@@ -123,7 +131,8 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
                 //floating action button - shows hours bottom sheet on press
                 floatingActionButton = {
                     FloatingActionButton(
-                        onClick = { showBottomSheet.value = !showBottomSheet.value }
+                        onClick = { showBottomSheet.value = !showBottomSheet.value },
+                        modifier = Modifier.systemBarsPadding()
                     ) {
                         Icon(Icons.Outlined.Info,"Info")
                     }

@@ -1,6 +1,7 @@
 package com.pras.slugmenu
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -12,8 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -136,6 +141,14 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                             context = LocalContext.current
                         )
                     }
+                    item {
+                        Divider()
+                    }
+                    /*
+                    item {
+                        UpdateChecker(context = LocalContext.current)
+                    }
+                     */
                 }
             }
         )
@@ -409,3 +422,23 @@ fun ClearCache(menuDb: MenuDatabase, context: Context) {
         }
     )
 }
+
+@Composable
+fun UpdateChecker(context: Context) {
+    val slugMenuVersion = "0.157"
+    ListItem(
+        leadingContent = {
+            Icon(
+                Icons.Default.Refresh,
+                contentDescription = "Refresh",
+//                tint = MaterialTheme.colorScheme.onSurface
+            )
+        },
+        headlineContent = { Text(text = "Check for updates") },
+        supportingContent = { Text(text = "Current version is v$slugMenuVersion") },
+        modifier = Modifier.clickable {
+            Toast.makeText(context, "This feature is not currently implemented.", Toast.LENGTH_SHORT).show()
+        }
+    )
+}
+

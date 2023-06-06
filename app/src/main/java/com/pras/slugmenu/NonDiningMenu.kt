@@ -3,8 +3,10 @@ package com.pras.slugmenu
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CircularProgressIndicator
@@ -94,6 +96,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
     Column {
         if (dataLoadedState.value) {
             Scaffold(
+                contentWindowInsets = WindowInsets(0.dp),
                 topBar = {
                     TopBarClean(titleText = locationName, navController = navController)
                 },
@@ -107,7 +110,8 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
                 //floating action button - shows hours bottom sheet
                 floatingActionButton = {
                     FloatingActionButton(
-                        onClick = { showBottomSheet.value = !showBottomSheet.value }
+                        onClick = { showBottomSheet.value = !showBottomSheet.value },
+                        modifier = Modifier.systemBarsPadding()
                     ) {
                         Icon(Icons.Outlined.Info, "Info")
                     }

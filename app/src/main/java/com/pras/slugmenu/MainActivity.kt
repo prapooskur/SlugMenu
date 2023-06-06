@@ -70,8 +70,7 @@ class MainActivity : ComponentActivity() {
             }
 
             SlugMenuTheme(darkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value) {
-//                MenuBarColor(color = MaterialTheme.colorScheme.primary)
-                TransparentSystemBars()
+                SystemBarsColor(color = Color.Transparent)
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -113,14 +112,19 @@ fun MenuBarColor(color: Color) {
 }
 
 @Composable
+fun SystemBarsColor(color: Color) {
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(color = color)
+    systemUiController.setNavigationBarColor(color = color)
+}
+
+@Composable
 fun TransparentSystemBars() {
     val systemUiController = rememberSystemUiController()
-    val useDarkIcons = !isSystemInDarkTheme()
 
-    DisposableEffect(systemUiController, useDarkIcons) {
+    DisposableEffect(systemUiController) {
         systemUiController.setSystemBarsColor(
             color = Color.Transparent,
-            darkIcons = useDarkIcons
         )
 
         onDispose {}

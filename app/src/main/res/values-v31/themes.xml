@@ -4,5 +4,13 @@
     <style name="Theme.SlugMenu" parent="android:Theme.Material.Light.NoActionBar">
         <!-- set splash screen background -->
         <item name="android:windowSplashScreenBackground">@color/slugicon_background</item>
+        <item name="android:navigationBarColor">
+            @android:color/transparent
+        </item>
+
+        <!-- Optional: set to transparent if your app is drawing behind the status bar. -->
+        <item name="android:statusBarColor">
+            @android:color/transparent
+        </item>
     </style>
 </resources>

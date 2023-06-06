@@ -3,9 +3,11 @@ package com.pras.slugmenu
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.CircularProgressIndicator
@@ -117,6 +119,8 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
             // If the data has been loaded from the cache, display the menu
             Log.d("TAG", (System.currentTimeMillis() / 1000L).toString())
             Scaffold(
+                contentWindowInsets = WindowInsets(0.dp),
+
                 topBar = {
                     TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
                 },
@@ -138,7 +142,8 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 
                     CustomFloatingActionButton(
                         onClick = { showDatePicker = !showDatePicker },
-                        onLongClick = { showBottomSheet.value = !showBottomSheet.value }
+                        onLongClick = { showBottomSheet.value = !showBottomSheet.value },
+                        modifier = Modifier.systemBarsPadding()
                     ) {
                         Icon(Icons.Filled.DateRange,"Calendar")
                     }
@@ -308,19 +313,31 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
         if (dataLoadedState.value) {
             // If the data has been loaded from the internet, display the menu
             Scaffold(
+                contentWindowInsets = WindowInsets(0.dp),
                 topBar = {
                     TopBarClean(titleText = locationName, navController = navController)
                 },
                 content = {padding ->
                     SwipableTabBar(menuArray = menuList, padding = padding)
                 },
-                //floating action button, currently shows date picker on short press, TODO: show bottom sheet on long press
+                //floating action button, currently shows date picker on short press and hours on long press
+
                 floatingActionButton = {
+                    CustomFloatingActionButton(
+                        onClick = { showDatePicker = !showDatePicker },
+                        onLongClick = { showBottomSheet.value = !showBottomSheet.value },
+                        modifier = Modifier.systemBarsPadding()
+                    ) {
+                        Icon(Icons.Filled.DateRange,"Calendar")
+                    }
+
+                    /*
                     FloatingActionButton(
                         onClick = { showDatePicker = !showDatePicker },
                     ) {
                         Icon(Icons.Filled.DateRange,"Calendar")
                     }
+                     */
                 },
                 floatingActionButtonPosition = FabPosition.End
             )

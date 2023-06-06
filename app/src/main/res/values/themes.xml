@@ -2,6 +2,14 @@
 <resources>
 
     <style name="Theme.SlugMenu" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:navigationBarColor">
+            @android:color/transparent
+        </item>
+
+        <!-- Optional: set to transparent if your app is drawing behind the status bar. -->
+        <item name="android:statusBarColor">
+            @android:color/transparent
+        </item>
     </style>
 
 </resources>
