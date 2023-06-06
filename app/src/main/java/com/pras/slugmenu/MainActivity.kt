@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -69,7 +70,8 @@ class MainActivity : ComponentActivity() {
             }
 
             SlugMenuTheme(darkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value) {
-                MenuBarColor(color = MaterialTheme.colorScheme.primary)
+//                MenuBarColor(color = MaterialTheme.colorScheme.primary)
+                TransparentSystemBars()
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -110,6 +112,20 @@ fun MenuBarColor(color: Color) {
     systemUiController.setStatusBarColor(color = color)
 }
 
+@Composable
+fun TransparentSystemBars() {
+    val systemUiController = rememberSystemUiController()
+    val useDarkIcons = !isSystemInDarkTheme()
+
+    DisposableEffect(systemUiController, useDarkIcons) {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = useDarkIcons
+        )
+
+        onDispose {}
+    }
+}
 
 
 @OptIn(ExperimentalAnimationApi::class)
