@@ -28,22 +28,24 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrollBehavior: TopAppBarScrollBehavior, isHome: Boolean = false) {
+    val topBarColors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface, scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer)
+
+    /*
     val topBarColor = if (scrollBehavior.state.collapsedFraction < 0.5) {
         TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
     } else {
         TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
     }
-
     val iconColor = if (scrollBehavior.state.collapsedFraction < 0.5) {
         MaterialTheme.colorScheme.onSurface
     } else {
         MaterialTheme.colorScheme.onPrimaryContainer
     }
-
-    val topBarElevation = if (scrollBehavior.state.collapsedFraction < 0.5) {
-        0.dp
-    } else {
+     */
+    val topBarElevation = if (scrollBehavior.state.collapsedFraction > 0.99) {
         4.dp
+    } else {
+        0.dp
     }
 
     Surface(shadowElevation = topBarElevation) {
@@ -52,24 +54,25 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
                 Text(
                     modifier = Modifier,
                     text = titleText,
+//                    fontSize = 30.sp
                 )
             },
             navigationIcon = {
                 if (!isHome) {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = iconColor)
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             },
             actions = {
                 if (isHome) {
                     IconButton(onClick = { navController.navigate("settings") }) {
-                        Icon(Icons.Outlined.Settings, contentDescription = "Settings", tint = iconColor)
+                        Icon(Icons.Outlined.Settings, contentDescription = "Settings")
                     }
                 }
             },
             scrollBehavior = scrollBehavior,
-            colors = topBarColor
+            colors = topBarColors
         )
     }
 }
