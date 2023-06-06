@@ -47,7 +47,7 @@ import kotlinx.serialization.json.JsonNull.content
 @Composable
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
     Log.d("TAG","test $useMaterialYou")
-    val useCollapsingTopBar = remember { mutableStateOf(true) }
+    val useCollapsingTopBar = remember { mutableStateOf(false) }
 
     //TODO: Complete collapsing top bar rewrite
 
@@ -376,7 +376,7 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
             },
             supportingContent = {
                 Text(
-                    text = "Currently buggy, use with caution?",
+                    text = "Currently buggy, use with caution? Does not currently persist.",
                     modifier = Modifier.padding(start = 16.dp)
                 )
             },

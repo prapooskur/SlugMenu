@@ -38,7 +38,7 @@ import kotlinx.serialization.json.JsonNull.content
 @Composable
 fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDatastore) {
     val useGridLayout = remember { mutableStateOf(true) }
-    val useCollapsingTopBar = remember { mutableStateOf(true) }
+    val useCollapsingTopBar = remember { mutableStateOf(false) }
     runBlocking {
         val gridLayoutChoice = preferencesDataStore.getListPreference.first()
         useGridLayout.value = gridLayoutChoice
