@@ -40,6 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonNull.content
 
@@ -48,6 +49,10 @@ import kotlinx.serialization.json.JsonNull.content
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
     Log.d("TAG","test $useMaterialYou")
     val useCollapsingTopBar = remember { mutableStateOf(false) }
+    runBlocking {
+        val collapsingTopBarChoice = preferencesDataStore.getToolbarPreference.first()
+        useCollapsingTopBar.value = collapsingTopBarChoice
+    }
 
     //TODO: Complete collapsing top bar rewrite
 
