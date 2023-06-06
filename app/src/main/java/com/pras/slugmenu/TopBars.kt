@@ -33,6 +33,13 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
     } else {
         TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
     }
+
+    val iconColor = if (scrollBehavior.state.collapsedFraction < 0.5) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    }
+
     LargeTopAppBar(
         title = {
             Text(
@@ -43,14 +50,14 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
         navigationIcon = {
             if (!isHome) {
                 IconButton(onClick = { navController.navigateUp() }) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = iconColor)
                 }
             }
         },
         actions = {
             if (isHome) {
                 IconButton(onClick = { navController.navigate("settings") }) {
-                    Icon(Icons.Outlined.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Icon(Icons.Outlined.Settings, contentDescription = "Settings", tint = iconColor)
                 }
             }
         },
