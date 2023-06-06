@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -40,10 +41,13 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = SETTINGS_NAME
 )
 
+//TODO: Add edge-to-edge rendering
 class MainActivity : ComponentActivity() {
     private lateinit var userSettings: PreferencesDatastore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Tell app to render edge to edge
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         userSettings = PreferencesDatastore(dataStore)
 
