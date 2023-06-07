@@ -2,6 +2,7 @@ package com.pras.slugmenu
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -15,9 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,15 +35,19 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,8 +61,10 @@ import kotlinx.coroutines.withContext
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
     Log.d("TAG","test $useMaterialYou")
     val useCollapsingTopBar = remember { mutableStateOf(false) }
+    val updateAvailable = remember { mutableStateOf(false) }
 
     val appVersion = BuildConfig.VERSION_NAME
+    val newVersion = remember { mutableStateOf(appVersion) }
 
     runBlocking {
         val collapsingTopBarChoice = preferencesDataStore.getToolbarPreference.first()
@@ -148,14 +156,14 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                             context = LocalContext.current
                         )
                     }
+
                     item {
                         Divider()
                     }
-                    /*
+
                     item {
-                        UpdateChecker(context = LocalContext.current)
+                        UpdateChecker(context = LocalContext.current, appVersion = appVersion, newVersion = newVersion, updateAvailable = updateAvailable)
                     }
-                     */
                     item {
                         AboutItem(appVersion = appVersion)
                     }
@@ -163,6 +171,8 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
             }
         )
     }
+
+    UpdateDialog(updateAvailable = updateAvailable, newVersion = newVersion)
 }
 
 
@@ -452,7 +462,8 @@ fun AboutItem(appVersion: String) {
 }
 
 @Composable
-fun UpdateChecker(context: Context, appVersion: String) {
+fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState<String>, updateAvailable: MutableState<Boolean>) {
+    var latestVersion by remember { mutableStateOf(appVersion) }
     ListItem(
         leadingContent = {
             Icon(
@@ -464,9 +475,57 @@ fun UpdateChecker(context: Context, appVersion: String) {
         headlineContent = { Text(text = "Check for updates") },
         supportingContent = { Text(text = "Current version is v$appVersion") },
         modifier = Modifier.clickable {
-            Toast.makeText(context, "This feature is not currently implemented.", Toast.LENGTH_SHORT).show()
+            CoroutineScope(Dispatchers.IO).launch {
+                latestVersion = getLatestVersion()
+                withContext(Dispatchers.Main) {
+                    if (latestVersion != appVersion) {
+//                        Toast.makeText(context, "Update available!", Toast.LENGTH_SHORT).show()
+                        updateAvailable.value = true
+                        newVersion.value = latestVersion
+                    } else {
+                        Toast.makeText(context, "You are on the latest version.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     )
+}
+
+@Composable
+fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableState<String>) {
+    val context = LocalContext.current
+    if (updateAvailable.value) {
+        AlertDialog(
+            onDismissRequest = { updateAvailable.value = false },
+            icon = { Icon(Icons.Default.Refresh, contentDescription = "Update") },
+            title = { Text(text = "Update Available") },
+            text = { Text(text = "A new version of Slug Menu is available. Please update to Slug Menu v${newVersion.value}.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        updateAvailable.value = false
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = Uri.parse("https://github.com/prapooskur/SlugMenu/releases/tag/${newVersion.value}")
+                        startActivity(context, intent, null)
+                    },
+                    content = {
+                        Text(text = "Update")
+                    }
+                )
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        updateAvailable.value = false
+                    },
+                    content = {
+                        Text(text = "Cancel")
+                    }
+                )
+            }
+
+        )
+    }
 }
 
 
