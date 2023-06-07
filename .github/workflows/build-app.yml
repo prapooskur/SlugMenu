@@ -21,6 +21,12 @@ jobs:
       - name: Setup Gradle
         working-directory: .
         run: chmod +x ./gradlew
+
+      - name: Bump app version name
+        uses: chkfung/android-version-actions@v1.2.1
+        with:
+          gradlePath: app/build.gradle # or app/build.gradle.kts 
+          versionName: 0.${{github.run_number}}
       
       - name: Build app
         working-directory: .

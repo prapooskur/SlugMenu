@@ -17,6 +17,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -54,6 +55,9 @@ import kotlinx.coroutines.withContext
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
     Log.d("TAG","test $useMaterialYou")
     val useCollapsingTopBar = remember { mutableStateOf(false) }
+
+    val appVersion = BuildConfig.VERSION_NAME
+
     runBlocking {
         val collapsingTopBarChoice = preferencesDataStore.getToolbarPreference.first()
         useCollapsingTopBar.value = collapsingTopBarChoice
@@ -152,6 +156,9 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         UpdateChecker(context = LocalContext.current)
                     }
                      */
+                    item {
+                        AboutItem(appVersion = appVersion)
+                    }
                 }
             }
         )
@@ -427,8 +434,25 @@ fun ClearCache(menuDb: MenuDatabase, context: Context) {
 }
 
 @Composable
-fun UpdateChecker(context: Context) {
-    val slugMenuVersion = "0.157"
+fun AboutItem(appVersion: String) {
+    ListItem(
+        leadingContent = {
+            Icon(
+                Icons.Outlined.Info,
+                contentDescription = "About",
+            )
+        },
+        headlineContent = {
+            Text(text = "Slug Menu")
+        },
+        supportingContent = {
+            Text(text = "Version $appVersion")
+        },
+    )
+}
+
+@Composable
+fun UpdateChecker(context: Context, appVersion: String) {
     ListItem(
         leadingContent = {
             Icon(
@@ -438,10 +462,11 @@ fun UpdateChecker(context: Context) {
             )
         },
         headlineContent = { Text(text = "Check for updates") },
-        supportingContent = { Text(text = "Current version is v$slugMenuVersion") },
+        supportingContent = { Text(text = "Current version is v$appVersion") },
         modifier = Modifier.clickable {
             Toast.makeText(context, "This feature is not currently implemented.", Toast.LENGTH_SHORT).show()
         }
     )
 }
+
 

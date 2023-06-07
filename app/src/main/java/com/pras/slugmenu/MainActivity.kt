@@ -42,7 +42,6 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = SETTINGS_NAME
 )
 
-//TODO: Add edge-to-edge rendering
 class MainActivity : ComponentActivity() {
     private lateinit var userSettings: PreferencesDatastore
     override fun onCreate(savedInstanceState: Bundle?) {

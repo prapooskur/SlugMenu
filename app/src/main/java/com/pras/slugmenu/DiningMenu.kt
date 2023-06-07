@@ -129,7 +129,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                     SwipableTabBar(menuArray = menuList, padding = padding)
                 },
                 //floating action button
-                // todo: on long press, open dialog bottom sheet
+                // opens date picker on click, opens bottom sheet on long click
                 floatingActionButton = {
 
                     /*
