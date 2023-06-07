@@ -501,7 +501,7 @@ fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableStat
             onDismissRequest = { updateAvailable.value = false },
             icon = { Icon(Icons.Default.Refresh, contentDescription = "Update") },
             title = { Text(text = "Update Available") },
-            text = { Text(text = "A new version of Slug Menu is available. Please update to v${newVersion.value}.") },
+            text = { Text(text = "A new version of Slug Menu is available. Please update to v${newVersion.value}.", fontSize = 15.sp) },
             confirmButton = {
                 Button(
                     onClick = {
