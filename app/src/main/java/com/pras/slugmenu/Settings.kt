@@ -164,9 +164,11 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                     item {
                         UpdateChecker(context = LocalContext.current, appVersion = appVersion, newVersion = newVersion, updateAvailable = updateAvailable)
                     }
+                    /*
                     item {
                         AboutItem(appVersion = appVersion)
                     }
+                    */
                 }
             }
         )
@@ -499,7 +501,7 @@ fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableStat
             onDismissRequest = { updateAvailable.value = false },
             icon = { Icon(Icons.Default.Refresh, contentDescription = "Update") },
             title = { Text(text = "Update Available") },
-            text = { Text(text = "A new version of Slug Menu is available. Please update to Slug Menu v${newVersion.value}.") },
+            text = { Text(text = "A new version of Slug Menu is available. Please update to v${newVersion.value}.") },
             confirmButton = {
                 Button(
                     onClick = {
