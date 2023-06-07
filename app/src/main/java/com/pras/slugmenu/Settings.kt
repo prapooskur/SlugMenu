@@ -445,6 +445,7 @@ fun ClearCache(menuDb: MenuDatabase, context: Context) {
     )
 }
 
+//Not currently necessary, since the update checker already shows the version number
 @Composable
 fun AboutItem(appVersion: String) {
     ListItem(
@@ -530,4 +531,23 @@ fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableStat
     }
 }
 
-
+@Composable
+fun GithubItem() {
+    val context = LocalContext.current
+    ListItem(
+        leadingContent = {
+            // add Github icon here
+            Icon(
+                Icons.Default.Refresh,
+                contentDescription = "Refresh",
+            )
+        },
+        headlineContent = { Text(text = "Github") },
+        supportingContent = { Text(text = "Follow the app's development on Github") },
+        modifier = Modifier.clickable {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse("https://github.com/prapooskur/SlugMenu")
+            startActivity(context, intent, null)
+        }
+    )
+}
