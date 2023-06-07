@@ -27,7 +27,7 @@ jobs:
         with:
           gradlePath: app/build.gradle # or app/build.gradle.kts 
           #Without this, the version code gets set to the github run number
-          # keeping this at once till full release
+          # keeping this at one till full release
           versionCode: 1
           versionName: 0.${{github.run_number}}
       
