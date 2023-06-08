@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,6 +82,17 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
     val locations = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
 
+    val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+    // combine the padding values given by scaffold with the padding for bottom bar, so parts of
+    // the grid aren't stuck behind a transparent bottom bar
+    val combinedPadding: PaddingValues = PaddingValues(
+        innerPadding.calculateStartPadding(LocalLayoutDirection.current),
+        innerPadding.calculateTopPadding(),
+        innerPadding.calculateEndPadding(LocalLayoutDirection.current),
+        innerPadding.calculateBottomPadding() + navPadding
+    )
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
@@ -88,7 +100,7 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues = innerPadding)
+            .padding(paddingValues = combinedPadding)
     ) {
         items(10) { index ->
 
