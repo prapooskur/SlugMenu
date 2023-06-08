@@ -14,6 +14,8 @@ import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 
+private const val TAG = "Scraper"
+
 /*
 CATEGORIES:
 - getDiningMenu: 9/10, C/S, Cr/M, P/K
@@ -55,7 +57,7 @@ suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
         for (i in 0 until table.size) {
             val listItems = mutableListOf<String>()
 
-            Log.d("TAG", "iterator val: $i")
+            Log.d(TAG, "iterator val: $i")
             val rows: Elements = table[i].select("tr")
             val trs: Elements = rows.select("tr")
 
@@ -80,7 +82,7 @@ suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
                     cleanItem = cleanItem.replace("&amp;", "&").replace("Iced Match ", "Iced Matcha ").replace("Mint Condition Condition","Mint Chocolate Cookie")
 
                     if (!listItems.contains(cleanItem)) {
-                        Log.d("TAG", "clean item: $cleanItem")
+                        Log.d(TAG, "clean item: $cleanItem")
                         listItems.add(cleanItem)
                     }
                 }
@@ -89,7 +91,7 @@ suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
             allListItems.add(listItems)
         }
     }
-    Log.d("TAG", "Parse time: "+parseTime+"ms.")
+    Log.d(TAG, "Parse time: "+parseTime+"ms.")
     return allListItems
 
 }
@@ -97,7 +99,7 @@ suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
 suspend fun getDiningMenu(inputUrl: String): Array<MutableList<String>> {
     return withContext(Dispatchers.IO) {
         val menus = getWebData(inputUrl)
-//        Log.d("TAG", "array: $menus")
+//        Log.d(TAG, "array: $menus")
         if (menus.size > 3) {
             arrayOf(menus[0], menus[1], menus[2], menus[3])
         } else if (menus.size > 2) {
@@ -114,8 +116,8 @@ suspend fun getDiningMenuAsync(locationId: String): Array<MutableList<String>> =
 suspend fun getSingleMenu(inputUrl: String): Array<MutableList<String>> {
     return withContext(Dispatchers.IO) {
         val menu = getWebData(inputUrl)
-//        Log.d("TAG", "array: $menus")
-        Log.d("TAG", "array: "+menu.size)
+//        Log.d(TAG, "array: $menus")
+        Log.d(TAG, "array: "+menu.size)
         if (menu.size > 0) {
             arrayOf(menu[0])
         } else {
@@ -131,7 +133,7 @@ suspend fun getSingleMenuAsync(locationId: String): Array<MutableList<String>> =
 suspend fun getOakesMenu(inputUrl: String): Array<MutableList<String>> {
     return withContext(Dispatchers.IO) {
         val menus = getWebData(inputUrl)
-//        Log.d("TAG", "array: $menus")
+//        Log.d(TAG, "array: $menus")
         if (menus.size > 0) {
             arrayOf(menus[0],menus[1])
         } else {

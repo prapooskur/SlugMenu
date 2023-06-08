@@ -23,6 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+
+private const val TAG = "TopBars"
+
 // A large top bar that collapses into a small one
 // Intended for use on main and settings screens
 @OptIn(ExperimentalMaterial3Api::class)
@@ -153,7 +156,7 @@ fun TopBarBottomSheet(titleText: String, navController: NavController, showBotto
             IconButton(
                 onClick = {
                     showBottomSheet.value = !showBottomSheet.value
-                    Log.d("TAG",showBottomSheet.value.toString())
+                    Log.d(TAG,showBottomSheet.value.toString())
                 }
             ) {
                 Icon(
@@ -213,7 +216,7 @@ fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog
             IconButton(
                 onClick = {
                     showWaitzDialog.value = !showWaitzDialog.value
-                    Log.d("TAG",showWaitzDialog.value.toString())
+                    Log.d(TAG,showWaitzDialog.value.toString())
                 }
             ) {
                 Icon(

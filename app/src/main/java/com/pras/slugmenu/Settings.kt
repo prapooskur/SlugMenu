@@ -56,10 +56,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
+private const val TAG = "Settings"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
-    Log.d("TAG","test $useMaterialYou")
+    Log.d(TAG,"test $useMaterialYou")
     val useCollapsingTopBar = remember { mutableStateOf(false) }
     val updateAvailable = remember { mutableStateOf(false) }
 
@@ -245,7 +247,7 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
                 coroutineScope.launch {
                     preferencesDataStore.setMaterialYouPreference(useMaterialYou.value)
                 }
-                Log.d("TAG", "material you toggled")
+                Log.d(TAG, "material you toggled")
             },
     )) {
         ListItem(
@@ -265,7 +267,7 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
                         coroutineScope.launch {
                             preferencesDataStore.setMaterialYouPreference(useMaterialYou.value)
                         }
-                        Log.d("TAG", "material you toggled")
+                        Log.d(TAG, "material you toggled")
                     }
                 )
             }
@@ -282,7 +284,7 @@ fun AmoledSwitcher(useAmoledBlack: MutableState<Boolean>,preferencesDataStore: P
                 coroutineScope.launch {
                     preferencesDataStore.setAmoledPreference(useAmoledBlack.value)
                 }
-                Log.d("TAG", "amoled toggled")
+                Log.d(TAG, "amoled toggled")
             },
     )) {
         ListItem(
@@ -301,7 +303,7 @@ fun AmoledSwitcher(useAmoledBlack: MutableState<Boolean>,preferencesDataStore: P
                         coroutineScope.launch {
                             preferencesDataStore.setAmoledPreference(useAmoledBlack.value)
                         }
-                        Log.d("TAG", "amoled toggled")
+                        Log.d(TAG, "amoled toggled")
                     }
                 )
             }
@@ -342,7 +344,7 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
                                     currentChoice.value = false
                                 }
                             }
-                            Log.d("TAG", "layout switched")
+                            Log.d(TAG, "layout switched")
                         },
                         role = Role.RadioButton
                     ),
@@ -375,7 +377,7 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
                                         currentChoice.value = false
                                     }
                                 }
-                                Log.d("TAG", "layout switched")
+                                Log.d(TAG, "layout switched")
                             }
                         )
                     }
@@ -394,7 +396,7 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
             coroutineScope.launch {
                 preferencesDataStore.setToolbarPreference(useLargeTopBar.value)
             }
-            Log.d("TAG", "top bar choice toggled")
+            Log.d(TAG, "top bar choice toggled")
         },
     )) {
         ListItem(
@@ -420,7 +422,7 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
                             preferencesDataStore.setToolbarPreference(useLargeTopBar.value)
                         }
 
-                        Log.d("TAG", "Top Bar toggled")
+                        Log.d(TAG, "Top Bar toggled")
                     }
                 )
             }

@@ -8,6 +8,8 @@ import io.ktor.client.request.get
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+private const val TAG = "UpdateChecker"
+
 @Serializable
 data class Response(
     val tag_name: String
@@ -24,6 +26,6 @@ suspend fun getLatestVersion(): String {
     val responseList: List<Response> = json.decodeFromString(responseBody)
     val response: Response = responseList[0]
     val latestVersion = response.tag_name
-    Log.d("UpdateChecker", "Latest version: v$latestVersion")
+    Log.d(TAG, "Latest version: v$latestVersion")
     return latestVersion
 }

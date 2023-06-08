@@ -16,6 +16,8 @@ import androidx.room.TypeConverters
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+private const val TAG = "Room"
+
 @Entity(tableName = "menu")
 data class Menu(
     @PrimaryKey val location: String,
@@ -45,13 +47,13 @@ interface MenuDao {
 class MenuTypeConverters {
     @TypeConverter
     fun fromString(value: String): Array<MutableList<String>> {
-        Log.d("TAG","from string value: $value")
+        Log.d(TAG,"from string value: $value")
         return(Json.decodeFromString(value))
     }
 
     @TypeConverter
     fun fromList(value: Array<MutableList<String>>): String {
-        Log.d("TAG","from list value: $value")
+        Log.d(TAG,"from list value: $value")
         return(Json.encodeToString(value))
     }
 }
@@ -71,13 +73,13 @@ interface WaitzDao {
 class WaitzTypeConverters {
     @TypeConverter
     fun fromWaitzString(value: String): MutableMap<String,MutableList<String>> {
-        Log.d("TAG","from string value: $value")
+        Log.d(TAG,"from string value: $value")
         return(Json.decodeFromString(value))
     }
 
     @TypeConverter
     fun fromWaitzList(value: MutableMap<String,MutableList<String>>): String {
-        Log.d("TAG","from list value: $value")
+        Log.d(TAG,"from list value: $value")
         return(Json.encodeToString(value))
     }
 }

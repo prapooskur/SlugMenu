@@ -44,11 +44,12 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import javax.net.ssl.SSLHandshakeException
 
+private const val TAG = "DiningMenu"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiningMenuRoom(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
-    Log.d("TAG", "Hello, World from room!")
+    Log.d(TAG, "Hello, World from room!")
 //    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
 
     val currentDate = LocalDate.now()
@@ -65,7 +66,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy")
     val titleDateFormat = DateTimeFormatter.ofPattern("M/dd/yy")
     val encodedDate = currentDate.format(dateFormat).replace("-", "%2f")
-    Log.d("TAG", "current date: $encodedDate")
+    Log.d(TAG, "current date: $encodedDate")
 
     val showBottomSheet = remember { mutableStateOf(false) }
 
@@ -117,7 +118,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     Column {
         if (dataLoadedState.value) {
             // If the data has been loaded from the cache, display the menu
-            Log.d("TAG", (System.currentTimeMillis() / 1000L).toString())
+            Log.d(TAG, (System.currentTimeMillis() / 1000L).toString())
             Scaffold(
                 // custom insets necessary to render behind nav bar
                 contentWindowInsets = WindowInsets(0.dp),
@@ -176,15 +177,15 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                                 Log.d("DATE", "date picked: $date")
                                 val dateUrl = date.toString().replace("-", "%2f")
 
-                                Log.d("TAG", "date url: $dateUrl")
+                                Log.d(TAG, "date url: $dateUrl")
 
                                 val titleDate = titleDateFormat.format(LocalDateTime.ofInstant(instant, ZoneId.of("GMT")))
 
                                 val locationDateName = "${locationName.substringBefore(" ").replace("Cowell/Stevenson","Cowell/Stev")} $titleDate"
-                                Log.d("TAG", "location date name: $locationDateName")
+                                Log.d(TAG, "location date name: $locationDateName")
                                 val encodedLocationName = URLEncoder.encode(locationDateName, "UTF-8")
 
-                                Log.d("TAG","route: \"customdiningdate/$locationUrl/$dateUrl/$encodedLocationName\"")
+                                Log.d(TAG,"route: \"customdiningdate/$locationUrl/$dateUrl/$encodedLocationName\"")
                                 navController.navigate("customdiningdate/$locationUrl/$dateUrl/$encodedLocationName")
 
                                 showDatePicker = false
@@ -243,7 +244,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
 /*
 @Composable
 fun DiningMenu(navController: NavController, menuList: Array<MutableList<String>>, collegeName: String) {
-    Log.d("TAG", "Hello, World!")
+    Log.d(TAG, "Hello, World!")
 //    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
 
 
@@ -266,12 +267,12 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
     val locationUrl = inputLocationUrl.replace("/", "%2f")
 
 
-    Log.d("TAG", "Manually choosing date! $locationUrl $dateUrl")
+    Log.d(TAG, "Manually choosing date! $locationUrl $dateUrl")
 //    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
 
     val fullUrl = "$locationUrl&WeeksMenus=UCSC+-+This+Week's+Menus&myaction=read&dtdate=$dateUrl"
 
-    Log.d("TAG","full url: $fullUrl")
+    Log.d(TAG,"full url: $fullUrl")
 
     var showDatePicker by remember { mutableStateOf(false) }
     val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy")
@@ -368,7 +369,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                                 Log.d("DATE", "date picked: $titleDate")
                                 val newDateUrl = date.toString().replace("-", "%2f")
 
-                                Log.d("TAG", "date url: $dateUrl")
+                                Log.d(TAG, "date url: $dateUrl")
 
                                 // this breaks the world
                                 /*
@@ -381,7 +382,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                                  */
 
                                 val locationDateName = "${locationName.substringBefore(" ").replace("Cowell/Stevenson","Cowell/Stev")} $titleDate"
-                                Log.d("TAG", "location date name: $locationDateName")
+                                Log.d(TAG, "location date name: $locationDateName")
                                 val encodedLocationName = URLEncoder.encode(locationDateName, "UTF-8")
                                 val strippedLocationUrl = locationUrl.substringBefore("&WeeksMenus=UCSC+-+This+Week's+Menus&myaction=read&dtdate=")
 

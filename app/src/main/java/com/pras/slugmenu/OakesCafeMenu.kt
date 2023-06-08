@@ -56,10 +56,12 @@ import java.security.cert.CertificateException
 import java.time.LocalDate
 import javax.net.ssl.SSLHandshakeException
 
+private const val TAG = "OakesCafeMenu"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OakesCafeMenuRoom(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
-    Log.d("TAG", "Opening OakesCafeMenu with room!")
+    Log.d(TAG, "Opening OakesCafeMenu with room!")
 
     val currentDate = LocalDate.now().toString()
     val menuDao = menuDatabase.menuDao()
@@ -77,12 +79,12 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
             val menu = menuDao.getMenu(locationName)
             if (menu != null && menu.cacheDate == currentDate) {
                 menuList = MenuTypeConverters().fromString(menu.menus)
-                Log.d("TAG", "menu list: ${menuList.size}")
+                Log.d(TAG, "menu list: ${menuList.size}")
                 dataLoadedState.value = true
             } else {
                 try {
                     menuList = getOakesMenuAsync(locationUrl)
-                    Log.d("TAG", "menu list: ${menuList.size}")
+                    Log.d(TAG, "menu list: ${menuList.size}")
                     menuDao.insertMenu(
                         Menu(
                             locationName,
@@ -166,7 +168,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
 @Composable
 fun PriceTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues) {
     val currentHour: Int = LocalDateTime.now().hour
-//    Log.d("TAG","hour: "+currentHour)
+//    Log.d(TAG,"hour: "+currentHour)
 
 
     val titles: List<String> = if (menuArray[0].isEmpty() && menuArray[1].isEmpty()) {
@@ -184,7 +186,7 @@ fun PriceTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues) {
         // if all else fails (even though it never should), default to breakfast
         else -> 0
     }
-//    Log.d("TAG","initstate: "+initState)
+//    Log.d(TAG,"initstate: "+initState)
 
     var state by remember { mutableStateOf(initState) }
     val pagerState = androidx.compose.foundation.pager.rememberPagerState(initState)

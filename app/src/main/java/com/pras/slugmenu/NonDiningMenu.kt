@@ -36,11 +36,12 @@ import java.security.cert.CertificateException
 import java.time.LocalDate
 import javax.net.ssl.SSLHandshakeException
 
+private const val TAG = "NonDiningMenu"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NonDiningMenuRoom(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
-    Log.d("TAG", "Opening NonDiningMenu with room!")
+    Log.d(TAG, "Opening NonDiningMenu with room!")
 
     val currentDate = LocalDate.now().toString()
     val menuDao = menuDatabase.menuDao()

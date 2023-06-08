@@ -37,6 +37,8 @@ import java.time.DayOfWeek
 import java.util.Collections
 
 
+private const val TAG = "TabMenus"
+
 //Swipable tab bar
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -45,8 +47,8 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
     val currentHour: Int = LocalDateTime.now().hour
     val currentMinute: Int = LocalDateTime.now().minute
     val currentDay: DayOfWeek = LocalDateTime.now().dayOfWeek
-    Log.d("TAG", "day: $currentDay")
-//    Log.d("TAG","hour: "+currentHour)
+    Log.d(TAG, "day: $currentDay")
+//    Log.d(TAG,"hour: "+currentHour)
 
     val titles: List<String> = if (menuArray.isEmpty()) {
         listOf("No menu available")
@@ -92,7 +94,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
             else -> 0
         }
     }
-//    Log.d("TAG","initstate: "+initState)
+//    Log.d(TAG,"initstate: "+initState)
 
     var state by remember { mutableStateOf(initState) }
     val pagerState = androidx.compose.foundation.pager.rememberPagerState(initState)
