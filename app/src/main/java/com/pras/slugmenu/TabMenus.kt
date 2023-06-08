@@ -203,7 +203,7 @@ fun PrintMenu(itemList: MutableList<String>) {
 @Composable
 fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
     if (itemList.isNotEmpty()) {
-        LazyColumn(modifier = Modifier.padding(padding)) {
+        LazyColumn(modifier = Modifier.padding(padding), contentPadding = WindowInsets.navigationBars.asPaddingValues()) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
 
@@ -285,7 +285,7 @@ fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
 @Composable
 fun PrintOakesMenu(itemList: MutableList<String>) {
     if (itemList.size > 0) {
-        LazyColumn {
+        LazyColumn (contentPadding = WindowInsets.navigationBars.asPaddingValues()) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
 
