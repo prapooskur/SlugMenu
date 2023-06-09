@@ -86,7 +86,8 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
 
     // combine the padding values given by scaffold with the padding for bottom bar, so parts of
     // the grid aren't stuck behind a transparent bottom bar
-    val contentPadding = PaddingValues(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 8.dp+navPadding)
+    val paddingAmount = 10.dp
+    val contentPadding = PaddingValues(start = paddingAmount, top = paddingAmount, end = paddingAmount, bottom = paddingAmount+navPadding)
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
