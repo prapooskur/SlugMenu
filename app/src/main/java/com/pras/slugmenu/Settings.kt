@@ -432,6 +432,43 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
     }
 }
 
+// currently not yet implemented
+@Composable
+fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>,preferencesDataStore: PreferencesDatastore) {
+    val coroutineScope = rememberCoroutineScope()
+    Row(modifier = Modifier.clickable(
+        onClick = {
+            updateInBackground.value = !updateInBackground.value
+            coroutineScope.launch {
+                preferencesDataStore.setBackgroundUpdatePreference(updateInBackground.value)
+            }
+            Log.d(TAG, "Background Updates toggled")
+        },
+    )) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = "Enable AMOLED Theme",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            },
+            trailingContent = {
+                Switch(
+                    checked = updateInBackground.value,
+                    onCheckedChange = {
+                        updateInBackground.value = !updateInBackground.value
+                        coroutineScope.launch {
+                            preferencesDataStore.setBackgroundUpdatePreference(updateInBackground.value)
+                        }
+                        Log.d(TAG, "Background Updates toggled")
+                    }
+                )
+            }
+        )
+    }
+}
+
 @Composable
 fun ClearCache(menuDb: MenuDatabase, context: Context) {
     ListItem(

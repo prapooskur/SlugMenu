@@ -20,13 +20,14 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         val USE_MATERIAL_YOU = booleanPreferencesKey("use_material_you")
         val USE_AMOLED_BLACK = booleanPreferencesKey("use_amoled_black")
         val USE_COLLAPSING_TOOLBAR = booleanPreferencesKey("use_collapsing_toolbar")
+        val ENABLE_BACKGROUND_UPDATES = booleanPreferencesKey("enable_background_updates")
         const val TAG = "UserPreferencesRepo"
     }
 
     val getListPreference: Flow<Boolean> = dataStore.data
         .catch {
             if (it is IOException) {
-                Log.e(TAG, "Error reading preferences.", it)
+                Log.e(TAG, "Error reading UI preferences.", it)
                 emit(emptyPreferences())
             } else {
                 throw it
@@ -45,7 +46,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
     val getThemePreference: Flow<Int> = dataStore.data
         .catch {
             if (it is IOException) {
-                Log.e(TAG, "Error reading preferences.", it)
+                Log.e(TAG, "Error reading Theme preference.", it)
                 emit(emptyPreferences())
             } else {
                 throw it
@@ -57,7 +58,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
 
     suspend fun setThemePreference(themePref: Int) {
         if (themePref > 2 || themePref < 0) {
-            Log.e(TAG, "Error setting themepref to $themePref.")
+            Log.e(TAG, "Error setting Theme preference to $themePref.")
         } else {
             dataStore.edit { preferences ->
                 preferences[THEME_PREF] = themePref
@@ -68,7 +69,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
     val getMaterialYouPreference: Flow<Boolean> = dataStore.data
         .catch {
             if (it is IOException) {
-                Log.e(TAG, "Error reading material you preferences.", it)
+                Log.e(TAG, "Error reading Material You preferences.", it)
                 emit(emptyPreferences())
             } else {
                 throw it
@@ -119,6 +120,25 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
     suspend fun setToolbarPreference(userChoice: Boolean) {
         dataStore.edit {preferences ->
             preferences[USE_COLLAPSING_TOOLBAR] = userChoice
+        }
+    }
+
+    val getBackgroundUpdatePreference: Flow<Boolean> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading Background Update preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map {preferences ->
+            preferences[ENABLE_BACKGROUND_UPDATES] ?: false
+        }
+
+    suspend fun setBackgroundUpdatePreference(userChoice: Boolean) {
+        dataStore.edit {preferences ->
+            preferences[ENABLE_BACKGROUND_UPDATES] = userChoice
         }
     }
 }
