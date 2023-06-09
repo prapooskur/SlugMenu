@@ -2,7 +2,12 @@ package com.pras.slugmenu
 
 import android.content.Context
 import android.util.Log
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -10,6 +15,11 @@ import kotlinx.serialization.json.Json
 import java.time.LocalDate
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "BackgroundDownloadWorker"
 
@@ -113,4 +123,47 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
         }
     }
 
+}
+
+// Object that automatically schedules background downloads
+object BackgroundDownloadScheduler {
+
+    fun refreshPeriodicWork(context: Context) {
+
+        val currentDate = LocalDate.now()
+
+        // hardcoded to PST, since that's where UCSC is
+        val timeZone = ZoneId.of("America/Los_Angeles")
+        var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(2, 0, 0))
+            .atZone(timeZone)
+            .toLocalDateTime()
+
+        if (executionDateTime.toLocalDate().isBefore(currentDate) || executionDateTime.toLocalDate().isEqual(currentDate)) {
+            executionDateTime.plusDays(1)
+        }
+
+
+
+
+
+        val duration = Duration.between(executionDateTime, currentDate.atStartOfDay())
+        val minutes = duration.toMinutes()
+
+        Log.d("MyWorker", "time difference $minutes")
+
+        //define constraints
+        val myConstraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val refreshCpnWork = PeriodicWorkRequest.Builder(BackgroundDownloadWorker::class.java, 24, TimeUnit.HOURS)
+            .setInitialDelay(minutes, TimeUnit.MINUTES)
+            .setConstraints(myConstraints)
+            .addTag("backgroundMenuDownload")
+            .build()
+
+
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork("backgroundMenuDownload",
+            ExistingPeriodicWorkPolicy.UPDATE, refreshCpnWork)
+    }
 }
