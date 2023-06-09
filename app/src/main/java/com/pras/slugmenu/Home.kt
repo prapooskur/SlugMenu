@@ -136,7 +136,7 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
 @Composable
 fun CardList(navController: NavController, innerPadding: PaddingValues) {
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
-    val locations = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+    val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
 
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
