@@ -17,7 +17,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
     override suspend fun doWork(): Result {
         // TODO: Come back to this and finish
 
-        // takes a serialized List<List<Any>> comprised of three-element lists: String, Int, Boolean
+        // takes a serialized List<List<Any>> comprised of four-element lists: String, String, Int, Boolean
 
         val menuDatabase = MenuDatabase.getInstance(applicationContext)
         val menuDao = menuDatabase.menuDao()
@@ -29,9 +29,9 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
             if (!locationUrls.isNullOrEmpty()) {
                 // Schema: three-element list of strings
                 // String 1: location name
-                // String 1: location URL
-                // String 2: type of menu (dining menu, non dining menu, oakes)
-                // String 3: Whether to download the menu or not
+                // String 2: location URL
+                // String 3: type of menu (dining menu, non dining menu, oakes)
+                // String 4: Whether to download the menu or not
 
                 coroutineScope {
                     // Uses coroutines to download and insert the menus asynchronously (untested)
