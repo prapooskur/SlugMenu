@@ -71,6 +71,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                     deferredResults.awaitAll()
                 }
 
+                // old synchronous implementation
                 /*
                 for (url in locationUrls) {
                     if (url.size == 3 && url[0] is String && url[1] is String && url[2] is Int && url[3] is Boolean && url[3] == true) {
