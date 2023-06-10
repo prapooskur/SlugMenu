@@ -47,7 +47,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = SETTINGS_NAME
 )
 
-private const val TAG = "MainActivity"
+private const val TAG = "MainActivityLog"
 
 class MainActivity : ComponentActivity() {
     private lateinit var userSettings: PreferencesDatastore

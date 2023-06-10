@@ -86,6 +86,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                         }
                     }
                     deferredResults.awaitAll()
+                    Log.d(TAG, "All menu downloads completed.")
                 }
 
                 // old synchronous implementation
