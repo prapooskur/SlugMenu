@@ -554,7 +554,7 @@ fun AboutItem(appVersion: String) {
 
 @Composable
 fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState<String>, updateAvailable: MutableState<Boolean>) {
-    var latestVersion by remember { mutableStateOf(appVersion) }
+    var latestVersion  by remember { mutableStateOf(appVersion) }
     var exceptionFound by remember { mutableStateOf("") }
     ListItem(
         leadingContent = {
@@ -584,7 +584,7 @@ fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState
                     exceptionFound = "Exception: $e"
                 }
                 withContext(Dispatchers.Main) {
-                    if (exceptionFound != "") {
+                    if (exceptionFound.isNotEmpty()) {
                         Toast.makeText(context, exceptionFound, Toast.LENGTH_SHORT).show()
                     } else if (latestVersion != appVersion) {
 //                        Toast.makeText(context, "Update available!", Toast.LENGTH_SHORT).show()
