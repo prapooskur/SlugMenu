@@ -66,6 +66,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
     Log.d(TAG,"test $useMaterialYou")
     val useCollapsingTopBar = remember { mutableStateOf(false) }
     val updateAvailable = remember { mutableStateOf(false) }
+    val updateInBackground = remember { mutableStateOf(false) }
 
     val appVersion = BuildConfig.VERSION_NAME
     val newVersion = remember { mutableStateOf(appVersion) }
@@ -73,6 +74,8 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
     runBlocking {
         val collapsingTopBarChoice = preferencesDataStore.getToolbarPreference.first()
         useCollapsingTopBar.value = collapsingTopBarChoice
+        val backgroundDownloadChoice = withContext(Dispatchers.IO) { preferencesDataStore.getListPreference.first() }
+        updateInBackground.value = backgroundDownloadChoice
     }
 
     //TODO: Complete collapsing top bar rewrite
@@ -153,6 +156,9 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                     }
                     item {
                         Divider()
+                    }
+                    item {
+                        BackgroundUpdateSwitcher(updateInBackground = updateInBackground, preferencesDataStore = preferencesDataStore)
                     }
                     item {
                         ClearCache(
@@ -434,7 +440,7 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
 
 // currently not yet implemented
 @Composable
-fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>,preferencesDataStore: PreferencesDatastore) {
+fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier.clickable(
         onClick = {
@@ -448,9 +454,15 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>,preferenc
         ListItem(
             headlineContent = {
                 Text(
-                    text = "Enable AMOLED Theme",
+                    text = "Download Menus in Background",
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(start = 16.dp)
+//                    modifier = Modifier.padding(start = 16.dp)
+                )
+            },
+            supportingContent = {
+                Text(
+                    text = "May increase data use.",
+//                    modifier = Modifier.padding(start = 16.dp)
                 )
             },
             trailingContent = {

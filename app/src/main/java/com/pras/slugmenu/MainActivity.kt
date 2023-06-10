@@ -2,6 +2,7 @@ package com.pras.slugmenu
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentScope
@@ -33,7 +34,11 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 
@@ -41,6 +46,8 @@ private const val SETTINGS_NAME = "user_settings"
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = SETTINGS_NAME
 )
+
+private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
     private lateinit var userSettings: PreferencesDatastore
@@ -61,6 +68,14 @@ class MainActivity : ComponentActivity() {
                 useMaterialYou.value = materialYouEnabled
                 val themeChosen = userSettings.getThemePreference.first()
                 themeChoice.value = themeChosen
+
+                // Schedule background downloads if enabled
+                // TODO: This probably doesn't need to be blocking, fix later
+                if (userSettings.getBackgroundUpdatePreference.first()) {
+                    Log.d(TAG, "scheduling background downloads")
+                    val backgroundDownloadScheduler = BackgroundDownloadScheduler
+                    backgroundDownloadScheduler.refreshPeriodicWork(applicationContext)
+                }
             }
             LaunchedEffect(key1 = Unit) {
                 userSettings.getThemePreference.collect {
