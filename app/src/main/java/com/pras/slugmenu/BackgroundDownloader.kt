@@ -2,6 +2,7 @@ package com.pras.slugmenu
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -118,7 +119,7 @@ object BackgroundDownloadScheduler {
             .atZone(timeZone)
             .toLocalDateTime()
 
-        executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now()+Duration.ofMinutes(2))
+        executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now())
         /*
         if (executionDateTime.toLocalDate().isBefore(currentDate) || executionDateTime.toLocalDate().isEqual(currentDate)) {
             executionDateTime = executionDateTime.plusDays(1)
@@ -126,8 +127,6 @@ object BackgroundDownloadScheduler {
         */
 
         Log.d(TAG, "Scheduled for $executionDateTime")
-
-
 
 
         val duration = Duration.between(currentDate.atStartOfDay(), executionDateTime)
@@ -169,8 +168,7 @@ object BackgroundDownloadScheduler {
 
         WorkManager
             .getInstance(context)
-            .enqueueUniquePeriodicWork("backgroundMenuDownload",
-            ExistingPeriodicWorkPolicy.UPDATE, refreshCpnWork)
+            .enqueueUniquePeriodicWork("backgroundMenuDownload", ExistingPeriodicWorkPolicy.UPDATE, refreshCpnWork)
     }
 
     fun runSingleDownload(context: Context) {

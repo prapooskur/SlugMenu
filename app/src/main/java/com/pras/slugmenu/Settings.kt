@@ -83,7 +83,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
     runBlocking {
         val collapsingTopBarChoice = preferencesDataStore.getToolbarPreference.first()
         useCollapsingTopBar.value = collapsingTopBarChoice
-        val backgroundDownloadChoice = preferencesDataStore.getListPreference.first()
+        val backgroundDownloadChoice = preferencesDataStore.getBackgroundUpdatePreference.first()
         updateInBackground.value = backgroundDownloadChoice
     }
 
@@ -511,7 +511,9 @@ fun BackgroundOneTimeDownload(context: Context) {
                 text = "Untested, use with caution. Probably works?",
             )
         },
-        modifier = Modifier.clickable { runSingleDownload(context) }
+        modifier = Modifier.clickable {
+            runSingleDownload(context)
+        }
     )
 }
 
