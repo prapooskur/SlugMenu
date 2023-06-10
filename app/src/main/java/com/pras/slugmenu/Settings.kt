@@ -170,10 +170,8 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         BackgroundUpdateSwitcher(updateInBackground = updateInBackground, preferencesDataStore = preferencesDataStore)
                     }
 
-                    if (updateInBackground.value) {
-                        item {
-                            BackgroundOneTimeDownload(context)
-                        }
+                    item {
+                        BackgroundOneTimeDownload(context)
                     }
 
                     item {
