@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -21,16 +22,25 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         val USE_AMOLED_BLACK = booleanPreferencesKey("use_amoled_black")
         val USE_COLLAPSING_TOOLBAR = booleanPreferencesKey("use_collapsing_toolbar")
         val ENABLE_BACKGROUND_UPDATES = booleanPreferencesKey("enable_background_updates")
+        val BACKGROUND_DOWNLOAD_LIST = stringPreferencesKey("background_download_list")
         const val TAG = "UserPreferencesRepo"
     }
 
-    suspend fun setUserPreference(key: Preferences.Key<Boolean>, userChoice: Boolean) {
+    // generic setters
+    // TODO: update settings to use these
+    suspend fun setBooleanPreference(key: Preferences.Key<Boolean>, userChoice: Boolean) {
         dataStore.edit {preferences ->
             preferences[key] = userChoice
         }
     }
 
-    suspend fun setUserPreference(key: Preferences.Key<Int>, userChoice: Int) {
+    suspend fun setIntPreference(key: Preferences.Key<Int>, userChoice: Int) {
+        dataStore.edit {preferences ->
+            preferences[key] = userChoice
+        }
+    }
+
+    suspend fun setStringPreference(key: Preferences.Key<String>, userChoice: String) {
         dataStore.edit {preferences ->
             preferences[key] = userChoice
         }
@@ -153,5 +163,18 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
             preferences[ENABLE_BACKGROUND_UPDATES] = userChoice
         }
     }
+
+    val getBackgroundMenuPrefs: Flow<String> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading Background Menu Download preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map {preferences ->
+            preferences[BACKGROUND_DOWNLOAD_LIST] ?: ""
+        }
 }
 
