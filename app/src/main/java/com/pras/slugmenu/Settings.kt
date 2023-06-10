@@ -77,7 +77,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
     runBlocking {
         val collapsingTopBarChoice = preferencesDataStore.getToolbarPreference.first()
         useCollapsingTopBar.value = collapsingTopBarChoice
-        val backgroundDownloadChoice = withContext(Dispatchers.IO) { preferencesDataStore.getListPreference.first() }
+        val backgroundDownloadChoice = preferencesDataStore.getListPreference.first()
         updateInBackground.value = backgroundDownloadChoice
     }
 

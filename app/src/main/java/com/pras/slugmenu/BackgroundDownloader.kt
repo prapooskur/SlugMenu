@@ -50,14 +50,14 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
 
         return try {
             if (locationList.isNotEmpty()) {
-                // Schema: four-element class of string/string/int/bool
+                // Schema: four-element class of string/string/enum/bool
                 // String 1: location name
                 // String 2: location URL
-                // String 3: type of menu (dining menu, non dining menu, oakes)
-                // String 4: Whether to download the menu or not
+                // Enum: type of menu (dining menu, non dining menu, oakes)
+                // Boolean: Whether to download the menu or not
 
                 coroutineScope {
-                    // Uses coroutines to download and insert the menus asynchronously (untested)
+                    // Uses coroutines to download and insert the menus asynchronously
                     val deferredResults = locationList.map { location ->
                         async(Dispatchers.IO) {
                             if (location.enabled) {
@@ -94,41 +94,6 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                     deferredResults.awaitAll()
                     Log.d(TAG, "All menu downloads completed.")
                 }
-
-                // old synchronous implementation
-                /*
-                for (url in locationUrls) {
-                    if (url.size == 3 && url[0] is String && url[1] is String && url[2] is Int && url[3] is Boolean && url[3] == true) {
-                        val locationName = url[0] as String
-                        val locationUrl = url[1] as String
-                        val menuType = url[2] as Int
-
-                        try {
-                            val menuList: Array<MutableList<String>> = when (menuType) {
-                                0 -> getDiningMenuAsync(locationUrl)
-                                1 -> getSingleMenuAsync(locationUrl)
-                                2 -> getOakesMenuAsync(locationUrl)
-                                else -> emptyArray()
-                            }
-                            if (!menuList.isNullOrEmpty()) {
-                                menuDao.insertMenu(
-                                    Menu(
-                                        locationName,
-                                        MenuTypeConverters().fromList(menuList),
-                                        LocalDate.now().toString()
-                                    )
-                                )
-                            } else {
-                                Log.d(TAG, "Error downloading menu for $locationName: menu list is null or empty")
-                            }
-                        } catch (e: Exception) {
-                            Log.d(TAG, "Error downloading menu for $locationName: $e")
-                        }
-                    } else {
-                        Log.d(TAG, "Error downloading menu: invalid List schema")
-                    }
-                }
-                */
             }
             Result.success()
         } catch (throwable: Throwable) {
