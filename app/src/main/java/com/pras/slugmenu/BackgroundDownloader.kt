@@ -28,7 +28,14 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "BackgroundDownloadWorker"
 
 @Serializable
-data class LocationListItem(val name: String, val url: String, val type: Int, val enabled: Boolean)
+data class LocationListItem(val name: String, val url: String, val type: LocationType, val enabled: Boolean)
+
+enum class LocationType {
+    Dining,
+    NonDining,
+    Oakes
+}
+
 class BackgroundDownloadWorker(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         // TODO: Come back to this and finish
@@ -42,7 +49,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
             ?.let { Json.decodeFromString(it) } ?: emptyList()
 
         return try {
-            if (!locationList.isNullOrEmpty()) {
+            if (locationList.isNotEmpty()) {
                 // Schema: four-element class of string/string/int/bool
                 // String 1: location name
                 // String 2: location URL
@@ -60,12 +67,11 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
 
                                 try {
                                     val menuList: Array<MutableList<String>> = when (menuType) {
-                                        0 -> getDiningMenuAsync(locationUrl)
-                                        1 -> getSingleMenuAsync(locationUrl)
-                                        2 -> getOakesMenuAsync(locationUrl)
-                                        else -> emptyArray()
+                                        LocationType.Dining     -> getDiningMenuAsync(locationUrl)
+                                        LocationType.NonDining  -> getSingleMenuAsync(locationUrl)
+                                        LocationType.Oakes      -> getOakesMenuAsync(locationUrl)
                                     }
-                                    if (!menuList.isNullOrEmpty()) {
+                                    if (menuList.isNotEmpty()) {
                                         Log.d(TAG, "Downloading menu in background for $locationName")
                                         menuDao.insertMenu(
                                             Menu(
@@ -171,7 +177,7 @@ object BackgroundDownloadScheduler {
 
         val locationNames = listOf<String>("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
         val locationUrls = listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
-        val locationTypes = listOf<Int>(0,0,0,0,1,1,1,1,1,2)
+        val locationTypes = listOf<LocationType>(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
         val locationEnabled = listOf<Boolean>(true,true,true,true,true,true,true,true,true,true)
 
         val mutableLocationList = mutableListOf<LocationListItem>()
@@ -210,7 +216,7 @@ object BackgroundDownloadScheduler {
 
         val locationNames = listOf<String>("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
         val locationUrls = listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
-        val locationTypes = listOf<Int>(0,0,0,0,1,1,1,1,1,2)
+        val locationTypes = listOf<LocationType>(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
         val locationEnabled = listOf<Boolean>(true,true,true,true,true,true,true,true,true,true)
 
         val mutableLocationList = mutableListOf<LocationListItem>()
