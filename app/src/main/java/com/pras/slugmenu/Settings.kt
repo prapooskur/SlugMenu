@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
+import com.pras.slugmenu.BackgroundDownloadScheduler.runSingleDownload
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -70,6 +71,8 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
 
     val appVersion = BuildConfig.VERSION_NAME
     val newVersion = remember { mutableStateOf(appVersion) }
+
+    val context = LocalContext.current
 
     runBlocking {
         val collapsingTopBarChoice = preferencesDataStore.getToolbarPreference.first()
@@ -160,6 +163,13 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                     item {
                         BackgroundUpdateSwitcher(updateInBackground = updateInBackground, preferencesDataStore = preferencesDataStore)
                     }
+
+                    if (updateInBackground.value) {
+                        item {
+                            BackgroundOneTimeDownload(LocalContext.current)
+                        }
+                    }
+
                     item {
                         ClearCache(
                             menuDb = menuDb,
@@ -438,7 +448,7 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
     }
 }
 
-// currently not yet implemented
+// currently not yet tested
 @Composable
 fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
     val coroutineScope = rememberCoroutineScope()
@@ -461,7 +471,7 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
             },
             supportingContent = {
                 Text(
-                    text = "May increase data use.",
+                    text = "Untested, use with caution.",
 //                    modifier = Modifier.padding(start = 16.dp)
                 )
             },
@@ -480,6 +490,25 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
         )
     }
 }
+
+@Composable
+fun BackgroundOneTimeDownload(context: Context) {
+    ListItem(
+        headlineContent = {
+            Text(
+                text = "Download all menus now",
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        },
+        supportingContent = {
+            Text(
+                text = "Untested, use with caution.",
+            )
+        },
+        modifier = Modifier.clickable { runSingleDownload(context) }
+    )
+}
+
 
 @Composable
 fun ClearCache(menuDb: MenuDatabase, context: Context) {
