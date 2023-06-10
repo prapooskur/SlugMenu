@@ -167,7 +167,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         Divider()
                     }
                     item {
-                        BackgroundUpdateSwitcher(updateInBackground = updateInBackground, preferencesDataStore = preferencesDataStore)
+                        BackgroundUpdateSwitcher(updateInBackground = updateInBackground, preferencesDataStore = preferencesDataStore, context = context)
                     }
 
                     item {
@@ -454,8 +454,9 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
 
 // currently not yet tested
 @Composable
-fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
+fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore, context: Context) {
     val coroutineScope = rememberCoroutineScope()
+    val backgroundDownloadScheduler = BackgroundDownloadScheduler
     Row(modifier = Modifier.clickable(
         onClick = {
             updateInBackground.value = !updateInBackground.value
@@ -484,10 +485,17 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
                     checked = updateInBackground.value,
                     onCheckedChange = {
                         updateInBackground.value = !updateInBackground.value
+                        if (updateInBackground.value) {
+                            Log.d(TAG, "Background Updates enabled")
+                            backgroundDownloadScheduler.refreshPeriodicWork(context)
+                        } else {
+                            Log.d(TAG, "Background Updates disabled")
+                            backgroundDownloadScheduler.cancelDownloadByTag(context, "backgroundMenuDownload")
+                        }
                         coroutineScope.launch {
                             preferencesDataStore.setBackgroundUpdatePreference(updateInBackground.value)
                         }
-                        Log.d(TAG, "Background Updates toggled")
+
                     }
                 )
             }

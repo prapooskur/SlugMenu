@@ -205,4 +205,10 @@ object BackgroundDownloadScheduler {
             .getInstance(context)
             .enqueue(oneTimeWorkRequest)
     }
+
+    fun cancelDownloadByTag(context: Context, tag: String) {
+        WorkManager
+            .getInstance(context)
+            .cancelAllWorkByTag(tag)
+    }
 }
