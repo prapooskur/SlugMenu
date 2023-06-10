@@ -41,7 +41,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
     override suspend fun doWork(): Result {
         // TODO: Come back to this and finish
 
-        // takes a serialized List<LocationList> comprised of four-element lists: String, String, Int, Boolean
+        // takes a serialized List<LocationList> comprised of four-element LocationListItems
 
         val menuDatabase = MenuDatabase.getInstance(applicationContext)
         val menuDao = menuDatabase.menuDao()
@@ -112,27 +112,25 @@ object BackgroundDownloadScheduler {
         // hardcoded to PST, since that's where UCSC is
         val timeZone = ZoneId.of("America/Los_Angeles")
 
-        val currentDate = LocalDate.now()
+        val currentDateTime = LocalDateTime.now()
 
 
-        var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 45, 0))
+        var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(2, 0))
             .atZone(timeZone)
             .toLocalDateTime()
 
-        executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now())
-        /*
-        if (executionDateTime.toLocalDate().isBefore(currentDate) || executionDateTime.toLocalDate().isEqual(currentDate)) {
+        if (executionDateTime.isBefore(currentDateTime)) {
+            Log.d(TAG,"current time is after 2:00 AM, scheduling for tomorrow")
             executionDateTime = executionDateTime.plusDays(1)
         }
-        */
 
         Log.d(TAG, "Scheduled for $executionDateTime")
 
 
-        val duration = Duration.between(currentDate.atStartOfDay(), executionDateTime)
+        val duration = Duration.between(currentDateTime, executionDateTime)
         val minutes = duration.toMinutes()
 
-        Log.d(TAG, "time difference $minutes")
+        Log.d(TAG, "time difference is $minutes minutes")
 
         //define constraints
         val workerConstraints = Constraints.Builder()
@@ -140,7 +138,7 @@ object BackgroundDownloadScheduler {
             .build()
 
         val locationNames = listOf<String>("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
-        val locationUrls = listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
+        val locationUrls =  listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
         val locationTypes = listOf<LocationType>(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
         val locationEnabled = listOf<Boolean>(true,true,true,true,true,true,true,true,true,true)
 

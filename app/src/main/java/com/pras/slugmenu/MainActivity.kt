@@ -74,8 +74,8 @@ class MainActivity : ComponentActivity() {
                 if (userSettings.getBackgroundUpdatePreference.first()) {
                     Log.d(TAG, "scheduling background downloads")
                     val backgroundDownloadScheduler = BackgroundDownloadScheduler
-//                    backgroundDownloadScheduler.refreshPeriodicWork(applicationContext)
-                    backgroundDownloadScheduler.runSingleDownload(applicationContext)
+                    backgroundDownloadScheduler.refreshPeriodicWork(applicationContext)
+//                    backgroundDownloadScheduler.runSingleDownload(applicationContext)
                 }
             }
             LaunchedEffect(key1 = Unit) {
