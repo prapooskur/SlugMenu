@@ -201,25 +201,7 @@ object BackgroundDownloadScheduler {
     }
 
     fun runSingleDownload(context: Context) {
-        // hardcoded to PST, since that's where UCSC is
-        val timeZone = ZoneId.of("America/Los_Angeles")
-
-        val currentDate = LocalDate.now()
-
-        var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 45, 0))
-            .atZone(timeZone)
-            .toLocalDateTime()
-
-        executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now())
-        /*
-        if (executionDateTime.toLocalDate().isBefore(currentDate) || executionDateTime.toLocalDate().isEqual(currentDate)) {
-            executionDateTime = executionDateTime.plusDays(1)
-        }
-        */
-
-        Log.d(TAG, "Scheduled for $executionDateTime")
-
-        //define constraints
+        // define constraints
         val workerConstraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
