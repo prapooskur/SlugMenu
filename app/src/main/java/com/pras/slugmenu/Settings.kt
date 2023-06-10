@@ -471,7 +471,7 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
             },
             supportingContent = {
                 Text(
-                    text = "Untested, use with caution.",
+                    text = "Untested, use with caution. Might not actually work?",
 //                    modifier = Modifier.padding(start = 16.dp)
                 )
             },
@@ -502,7 +502,7 @@ fun BackgroundOneTimeDownload(context: Context) {
         },
         supportingContent = {
             Text(
-                text = "Untested, use with caution.",
+                text = "Untested, use with caution. Probably works?",
             )
         },
         modifier = Modifier.clickable { runSingleDownload(context) }
