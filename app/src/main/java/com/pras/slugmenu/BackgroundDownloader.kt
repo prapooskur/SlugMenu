@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit
 
 private const val TAG = "BackgroundDownloadWorker"
 
+@Serializable
 data class LocationListItem(val name: String, val url: String, val type: Int, val enabled: Boolean)
 class BackgroundDownloadWorker(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
@@ -64,6 +65,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                         else -> emptyArray()
                                     }
                                     if (!menuList.isNullOrEmpty()) {
+                                        Log.d(TAG, "Downloading menu in background for $locationName")
                                         menuDao.insertMenu(
                                             Menu(
                                                 locationName,
@@ -138,7 +140,7 @@ object BackgroundDownloadScheduler {
 
         val currentDate = LocalDate.now()
 
-        var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 25, 0))
+        var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 35, 0))
             .atZone(timeZone)
             .toLocalDateTime()
 
