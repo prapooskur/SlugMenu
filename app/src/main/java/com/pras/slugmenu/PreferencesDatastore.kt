@@ -24,6 +24,18 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         const val TAG = "UserPreferencesRepo"
     }
 
+    suspend fun setUserPreference(key: Preferences.Key<Boolean>, userChoice: Boolean) {
+        dataStore.edit {preferences ->
+            preferences[key] = userChoice
+        }
+    }
+
+    suspend fun setUserPreference(key: Preferences.Key<Int>, userChoice: Int) {
+        dataStore.edit {preferences ->
+            preferences[key] = userChoice
+        }
+    }
+
     val getListPreference: Flow<Boolean> = dataStore.data
         .catch {
             if (it is IOException) {
