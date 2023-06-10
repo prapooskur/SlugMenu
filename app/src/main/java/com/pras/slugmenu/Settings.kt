@@ -58,6 +58,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.lang.Exception
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import java.nio.channels.UnresolvedAddressException
+import java.security.cert.CertificateException
+import javax.net.ssl.SSLHandshakeException
 
 private const val TAG = "Settings"
 
@@ -549,6 +555,7 @@ fun AboutItem(appVersion: String) {
 @Composable
 fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState<String>, updateAvailable: MutableState<Boolean>) {
     var latestVersion by remember { mutableStateOf(appVersion) }
+    var exceptionFound by remember { mutableStateOf("") }
     ListItem(
         leadingContent = {
             Icon(
@@ -561,9 +568,25 @@ fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState
         supportingContent = { Text(text = "Current version is v$appVersion") },
         modifier = Modifier.clickable {
             CoroutineScope(Dispatchers.IO).launch {
-                latestVersion = getLatestVersion()
+                try {
+                    latestVersion = getLatestVersion()
+                } catch (e: UnresolvedAddressException) {
+                    exceptionFound = "No Internet connection"
+                } catch (e: SocketTimeoutException) {
+                    exceptionFound = "Connection timed out"
+                } catch (e: UnknownHostException) {
+                    exceptionFound = "Failed to resolve URL"
+                } catch (e: CertificateException) {
+                    exceptionFound = "Website's SSL certificate is invalid"
+                } catch (e: SSLHandshakeException) {
+                    exceptionFound = "SSL handshake failed"
+                } catch (e: Exception) {
+                    exceptionFound = "Exception: $e"
+                }
                 withContext(Dispatchers.Main) {
-                    if (latestVersion != appVersion) {
+                    if (exceptionFound != "") {
+                        Toast.makeText(context, exceptionFound, Toast.LENGTH_SHORT).show()
+                    } else if (latestVersion != appVersion) {
 //                        Toast.makeText(context, "Update available!", Toast.LENGTH_SHORT).show()
                         updateAvailable.value = true
                         newVersion.value = latestVersion
