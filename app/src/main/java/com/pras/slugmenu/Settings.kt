@@ -166,14 +166,14 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
 
                     if (updateInBackground.value) {
                         item {
-                            BackgroundOneTimeDownload(LocalContext.current)
+                            BackgroundOneTimeDownload(context)
                         }
                     }
 
                     item {
                         ClearCache(
                             menuDb = menuDb,
-                            context = LocalContext.current
+                            context = context
                         )
                     }
 
@@ -182,7 +182,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                     }
 
                     item {
-                        UpdateChecker(context = LocalContext.current, appVersion = appVersion, newVersion = newVersion, updateAvailable = updateAvailable)
+                        UpdateChecker(context = context, appVersion = appVersion, newVersion = newVersion, updateAvailable = updateAvailable)
                     }
                     /*
                     item {
@@ -194,7 +194,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
         )
     }
 
-    UpdateDialog(updateAvailable = updateAvailable, newVersion = newVersion)
+    UpdateDialog(updateAvailable = updateAvailable, newVersion = newVersion, context = context)
 }
 
 
@@ -577,8 +577,7 @@ fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState
 }
 
 @Composable
-fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableState<String>) {
-    val context = LocalContext.current
+fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableState<String>, context: Context) {
     if (updateAvailable.value) {
         AlertDialog(
             onDismissRequest = { updateAvailable.value = false },
@@ -614,8 +613,7 @@ fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableStat
 }
 
 @Composable
-fun GithubItem() {
-    val context = LocalContext.current
+fun GithubItem(context: Context) {
     ListItem(
         leadingContent = {
             // add Github icon here

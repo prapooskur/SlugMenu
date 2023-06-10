@@ -141,6 +141,7 @@ object BackgroundDownloadScheduler {
 
         val currentDate = LocalDate.now()
 
+
         var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 45, 0))
             .atZone(timeZone)
             .toLocalDateTime()
