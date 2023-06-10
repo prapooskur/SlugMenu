@@ -7,6 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
@@ -140,14 +141,18 @@ object BackgroundDownloadScheduler {
 
         val currentDate = LocalDate.now()
 
-        var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 35, 0))
+        var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 45, 0))
             .atZone(timeZone)
             .toLocalDateTime()
 
+        executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now()+Duration.ofMinutes(2))
+        /*
         if (executionDateTime.toLocalDate().isBefore(currentDate) || executionDateTime.toLocalDate().isEqual(currentDate)) {
             executionDateTime = executionDateTime.plusDays(1)
         }
+        */
 
+        Log.d(TAG, "Scheduled for $executionDateTime")
 
 
 
@@ -155,10 +160,10 @@ object BackgroundDownloadScheduler {
         val duration = Duration.between(currentDate.atStartOfDay(), executionDateTime)
         val minutes = duration.toMinutes()
 
-        Log.d("MyWorker", "time difference $minutes")
+        Log.d(TAG, "time difference $minutes")
 
         //define constraints
-        val myConstraints = Constraints.Builder()
+        val workerConstraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
@@ -184,12 +189,69 @@ object BackgroundDownloadScheduler {
         val refreshCpnWork = PeriodicWorkRequest.Builder(BackgroundDownloadWorker::class.java, 24, TimeUnit.HOURS)
             .setInputData(inputLocationList)
             .setInitialDelay(minutes, TimeUnit.MINUTES)
-            .setConstraints(myConstraints)
+            .setConstraints(workerConstraints)
             .addTag("backgroundMenuDownload")
             .build()
 
 
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork("backgroundMenuDownload",
+        WorkManager
+            .getInstance(context)
+            .enqueueUniquePeriodicWork("backgroundMenuDownload",
             ExistingPeriodicWorkPolicy.UPDATE, refreshCpnWork)
+    }
+
+    fun runSingleDownload(context: Context) {
+        // hardcoded to PST, since that's where UCSC is
+        val timeZone = ZoneId.of("America/Los_Angeles")
+
+        val currentDate = LocalDate.now()
+
+        var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 45, 0))
+            .atZone(timeZone)
+            .toLocalDateTime()
+
+        executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.now())
+        /*
+        if (executionDateTime.toLocalDate().isBefore(currentDate) || executionDateTime.toLocalDate().isEqual(currentDate)) {
+            executionDateTime = executionDateTime.plusDays(1)
+        }
+        */
+
+        Log.d(TAG, "Scheduled for $executionDateTime")
+
+        //define constraints
+        val workerConstraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val locationNames = listOf<String>("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+        val locationUrls = listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
+        val locationTypes = listOf<Int>(0,0,0,0,1,1,1,1,1,2)
+        val locationEnabled = listOf<Boolean>(true,true,true,true,true,true,true,true,true,true)
+
+        val mutableLocationList = mutableListOf<LocationListItem>()
+        for (i in locationNames.indices) {
+            mutableLocationList.add(LocationListItem(locationNames[i], locationUrls[i], locationTypes[i], locationEnabled[i]))
+        }
+
+        val locationList = mutableLocationList.toList()
+        Log.d(TAG,"location List: $locationList")
+        val serializedLocationList = Json.encodeToString(locationList)
+        Log.d(TAG,"serialized Location List: $serializedLocationList")
+
+        val inputLocationList = Data.Builder()
+            .putString("locationList", serializedLocationList)
+            .build()
+
+        val oneTimeWorkRequest = OneTimeWorkRequestBuilder<BackgroundDownloadWorker>()
+            .setInputData(inputLocationList)
+            .setConstraints(workerConstraints)
+            .addTag("backgroundMenuDownload")
+            .build()
+
+
+        WorkManager
+            .getInstance(context)
+            .enqueue(oneTimeWorkRequest)
     }
 }
