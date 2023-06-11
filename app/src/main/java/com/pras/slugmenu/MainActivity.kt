@@ -82,9 +82,6 @@ class MainActivity : ComponentActivity() {
                 themeChoice.value = userSettings.getThemePreference.first()
             }
 
-
-
-
             LaunchedEffect(key1 = Unit) {
                 lifecycleScope.launch {
                     // Schedule background downloads if enabled
@@ -93,7 +90,7 @@ class MainActivity : ComponentActivity() {
                         Log.d(TAG, "scheduling background downloads")
                         val backgroundDownloadScheduler = BackgroundDownloadScheduler
                         backgroundDownloadScheduler.refreshPeriodicWork(applicationContext)
-//                    backgroundDownloadScheduler.runSingleDownload(applicationContext)
+//                        backgroundDownloadScheduler.runSingleDownload(applicationContext)
                     }
                 }
                 userSettings.getThemePreference.collect {

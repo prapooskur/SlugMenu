@@ -3,6 +3,9 @@ package com.pras.slugmenu
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -18,6 +21,8 @@ import kotlinx.serialization.json.Json
 import java.time.LocalDate
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import java.time.Duration
@@ -38,6 +43,8 @@ enum class LocationType {
 }
 
 class BackgroundDownloadWorker(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
+
+
     override suspend fun doWork(): Result {
         // TODO: Come back to this and finish
 
@@ -45,9 +52,20 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
 
         val menuDatabase = MenuDatabase.getInstance(applicationContext)
         val menuDao = menuDatabase.menuDao()
-        
+        /*
         val locationList: List<LocationListItem> = inputData.getString("locationList")
             ?.let { Json.decodeFromString(it) } ?: emptyList()
+
+         */
+
+        val preferencesDatastore = PreferencesDatastore(applicationContext.dataStore)
+        val locationList: List<LocationListItem>
+        // TODO: find alternative to runblocking
+        runBlocking {
+            locationList = Json.decodeFromString<List<LocationListItem>>(preferencesDatastore.getBackgroundDownloadPreference.first())
+        }
+
+        Log.d(TAG,"location list: $locationList")
 
         return try {
             if (locationList.isNotEmpty()) {
@@ -137,6 +155,7 @@ object BackgroundDownloadScheduler {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
+        /*
         val locationNames = listOf<String>("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
         val locationUrls =  listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
         val locationTypes = listOf<LocationType>(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
@@ -156,8 +175,10 @@ object BackgroundDownloadScheduler {
             .putString("locationList", serializedLocationList)
             .build()
 
+         */
+
         val refreshCpnWork = PeriodicWorkRequest.Builder(BackgroundDownloadWorker::class.java, 24, TimeUnit.HOURS)
-            .setInputData(inputLocationList)
+//            .setInputData(inputLocationList)
             .setInitialDelay(minutes, TimeUnit.MINUTES)
             .setConstraints(workerConstraints)
             .addTag("backgroundMenuDownload")
@@ -175,6 +196,7 @@ object BackgroundDownloadScheduler {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
+        /*
         val locationNames = listOf<String>("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
         val locationUrls = listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
         val locationTypes = listOf<LocationType>(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
@@ -194,8 +216,10 @@ object BackgroundDownloadScheduler {
             .putString("locationList", serializedLocationList)
             .build()
 
+         */
+
         val oneTimeWorkRequest = OneTimeWorkRequestBuilder<BackgroundDownloadWorker>()
-            .setInputData(inputLocationList)
+//            .setInputData(inputLocationList)
             .setConstraints(workerConstraints)
             .addTag("backgroundMenuDownload")
             .build()
@@ -204,6 +228,8 @@ object BackgroundDownloadScheduler {
         WorkManager
             .getInstance(context)
             .enqueue(oneTimeWorkRequest)
+
+        Log.d(TAG,"Single download queued")
     }
 
     fun cancelDownloadByTag(context: Context, tag: String) {
