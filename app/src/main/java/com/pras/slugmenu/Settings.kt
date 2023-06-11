@@ -496,10 +496,16 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
                 )
             },
             supportingContent = {
-                Text(
-                    text = "Untested, use with caution. Might not actually work?",
-//                    modifier = Modifier.padding(start = 16.dp)
-                )
+                if (updateInBackground.value) {
+                    Text(
+                        text = "Untested, use with caution. Downloading at 2AM Pacific Time.",
+                    )
+                } else {
+                    Text(
+                        text = "Untested, use with caution.",
+    //                    modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
             },
             trailingContent = {
                 Switch(
