@@ -568,7 +568,7 @@ fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesD
     //TODO: make this non-blocking
     var locationList by remember { mutableStateOf(mutableListOf<LocationListItem>()) }
     runBlocking {
-        locationList = Json.decodeFromString(preferencesDataStore.getBackgroundDownloadPreference.first())
+        locationList = (Json.decodeFromString<List<LocationListItem>>(preferencesDataStore.getBackgroundDownloadPreference.first())).toMutableList()
     }
     Log.d(TAG,"location list: $locationList")
 
