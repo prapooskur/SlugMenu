@@ -55,6 +55,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
@@ -572,6 +575,14 @@ fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesD
     }
     Log.d(TAG,"location list: $locationList")
 
+    val textStyle = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 20.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.sp
+    )
+
 
     if (showSelector.value) {
         AlertDialog(onDismissRequest = { showSelector.value = false } ) {
@@ -582,17 +593,17 @@ fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesD
                 shape = AlertDialogDefaults.shape,
                 tonalElevation = AlertDialogDefaults.TonalElevation
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(vertical = 12.dp)) {
                     Text(
                         text = "Select locations to download",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(start = 16.dp)
+                        style = textStyle,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                     LazyColumn {
                         items(locationList.size) { location ->
                             ListItem(
                                 headlineContent = {
-                                    Text(locationList[location].name)
+                                    Text(locationList[location].name, modifier = Modifier.padding(horizontal = 16.dp))
                                 },
                                 trailingContent = {
                                     Checkbox(
@@ -603,14 +614,15 @@ fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesD
                                         }
                                     )
                                 },
-                                modifier = Modifier.clickable {
-                                    locationList[location].enabled = !locationList[location].enabled
-                                    Log.d(TAG, "item at ${locationList[location]} swapped")
-                                }
+                                modifier = Modifier
+                                    .clickable {
+                                        locationList[location].enabled = !locationList[location].enabled
+                                        Log.d(TAG, "item at ${locationList[location]} swapped")
+                                    }
                             )
                         }
                     }
-                    Row(horizontalArrangement = Arrangement.End, modifier = Modifier.align(Alignment.End)) {
+                    Row(horizontalArrangement = Arrangement.End, modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp)) {
                         TextButton(
                             onClick = {
                                 showSelector.value = false
