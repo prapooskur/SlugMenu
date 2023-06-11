@@ -69,6 +69,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.lang.Exception
 import java.net.SocketTimeoutException
@@ -607,14 +608,16 @@ fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesD
                     )
                     LazyColumn {
                         items(locationList.size) { location ->
+                            var checked by remember { mutableStateOf(locationList[location].enabled) }
                             ListItem(
                                 headlineContent = {
                                     Text(locationList[location].name, modifier = Modifier.padding(horizontal = 16.dp))
                                 },
                                 trailingContent = {
                                     Checkbox(
-                                        checked = remember { mutableStateOf(locationList[location].enabled) }.value,
+                                        checked = checked,
                                         onCheckedChange = {
+                                            checked = !checked
                                             locationList[location].enabled = !locationList[location].enabled
                                             Log.d(TAG, "item at ${locationList[location]} swapped")
                                         }
@@ -622,6 +625,7 @@ fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesD
                                 },
                                 modifier = Modifier
                                     .clickable {
+                                        checked = !checked
                                         locationList[location].enabled = !locationList[location].enabled
                                         Log.d(TAG, "item at ${locationList[location]} swapped")
                                     }
@@ -631,6 +635,7 @@ fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesD
                     Row(horizontalArrangement = Arrangement.End, modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp)) {
                         TextButton(
                             onClick = {
+                                Log.d(TAG,"select operation canceled.")
                                 showSelector.value = false
                             }
                         ) {
@@ -639,6 +644,10 @@ fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesD
 
                         TextButton(
                             onClick = {
+                                runBlocking {
+                                    Log.d(TAG, "saving location list: $locationList")
+                                    preferencesDataStore.setBackgroundDownloadPreference(Json.encodeToString(locationList))
+                                }
                                 showSelector.value = false
                             }
                         ) {
