@@ -27,6 +27,7 @@ import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -62,13 +63,9 @@ class MainActivity : ComponentActivity() {
             val useMaterialYou = remember { mutableStateOf(true) }
             val themeChoice = remember { mutableStateOf(0)}
 
+            /*
             // this is bad practice, change later
             runBlocking {
-                val materialYouEnabled = userSettings.getMaterialYouPreference.first()
-                useMaterialYou.value = materialYouEnabled
-                val themeChosen = userSettings.getThemePreference.first()
-                themeChoice.value = themeChosen
-
                 // Schedule background downloads if enabled
                 // TODO: This probably doesn't need to be blocking, fix later
                 if (userSettings.getBackgroundUpdatePreference.first()) {
@@ -78,9 +75,23 @@ class MainActivity : ComponentActivity() {
 //                    backgroundDownloadScheduler.runSingleDownload(applicationContext)
                 }
             }
+             */
             LaunchedEffect(key1 = Unit) {
+                lifecycleScope.launch {
+                    // Schedule background downloads if enabled
+                    // TODO: This probably doesn't need to be blocking, fix later
+                    if (userSettings.getBackgroundUpdatePreference.first()) {
+                        Log.d(TAG, "scheduling background downloads")
+                        val backgroundDownloadScheduler = BackgroundDownloadScheduler
+                        backgroundDownloadScheduler.refreshPeriodicWork(applicationContext)
+//                    backgroundDownloadScheduler.runSingleDownload(applicationContext)
+                    }
+                }
                 userSettings.getThemePreference.collect {
                     themeChoice.value = it
+                }
+                userSettings.getMaterialYouPreference.collect {
+                    useMaterialYou.value = it
                 }
             }
 
