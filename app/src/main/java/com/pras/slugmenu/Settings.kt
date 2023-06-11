@@ -646,7 +646,7 @@ fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesD
                             onClick = {
                                 runBlocking {
                                     Log.d(TAG, "saving location list: $locationList")
-                                    preferencesDataStore.setBackgroundDownloadPreference(Json.encodeToString(locationList))
+                                    preferencesDataStore.setBackgroundDownloadPreference(Json.encodeToString(locationList.toList()))
                                 }
                                 showSelector.value = false
                             }
