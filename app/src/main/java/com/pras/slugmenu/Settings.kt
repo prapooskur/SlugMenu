@@ -7,13 +7,18 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -21,7 +26,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,6 +39,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -58,10 +66,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
+import java.security.cert.CertSelector
 import java.security.cert.CertificateException
 import javax.net.ssl.SSLHandshakeException
 
@@ -72,11 +82,14 @@ private const val TAG = "Settings"
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
     Log.d(TAG,"test $useMaterialYou")
     val useCollapsingTopBar = remember { mutableStateOf(false) }
-    val updateAvailable = remember { mutableStateOf(false) }
+
     val updateInBackground = remember { mutableStateOf(false) }
+    val showSelector = remember { mutableStateOf(false) }
 
     val appVersion = BuildConfig.VERSION_NAME
     val newVersion = remember { mutableStateOf(appVersion) }
+    val updateAvailable = remember { mutableStateOf(false) }
+
 
     val context = LocalContext.current
 
@@ -175,6 +188,10 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                     }
 
                     item {
+                        BackgroundSelectorToggle(showSelector = showSelector)
+                    }
+
+                    item {
                         ClearCache(
                             menuDb = menuDb,
                             context = context
@@ -196,6 +213,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                 }
             }
         )
+        BackgroundDownloadSelector(showSelector = showSelector, preferencesDataStore = preferencesDataStore)
     }
 
     UpdateDialog(updateAvailable = updateAvailable, newVersion = newVersion, context = context)
@@ -523,6 +541,99 @@ fun BackgroundOneTimeDownload(context: Context) {
     )
 }
 
+@Composable
+fun BackgroundSelectorToggle (showSelector: MutableState<Boolean>) {
+    ListItem(
+        headlineContent = {
+            Text(
+                text = "Select locations to download",
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        },
+        supportingContent = {
+            Text(
+                text = "Untested, use with caution. Doesn't work?",
+            )
+        },
+        modifier = Modifier.clickable {
+            showSelector.value = !showSelector.value
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
+
+    //TODO: make this non-blocking
+    var locationList by remember { mutableStateOf(mutableListOf<LocationListItem>()) }
+    runBlocking {
+        locationList = Json.decodeFromString(preferencesDataStore.getBackgroundDownloadPreference.first())
+    }
+    Log.d(TAG,"location list: $locationList")
+
+
+    if (showSelector.value) {
+        AlertDialog(onDismissRequest = { showSelector.value = false } ) {
+            Surface(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .wrapContentHeight(),
+                shape = AlertDialogDefaults.shape,
+                tonalElevation = AlertDialogDefaults.TonalElevation
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Select locations to download",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                    LazyColumn {
+                        items(locationList.size) { location ->
+                            ListItem(
+                                headlineContent = {
+                                    Text(locationList[location].name)
+                                },
+                                trailingContent = {
+                                    Checkbox(
+                                        checked = remember { mutableStateOf(locationList[location].enabled) }.value,
+                                        onCheckedChange = {
+                                            locationList[location].enabled = !locationList[location].enabled
+                                            Log.d(TAG, "item at ${locationList[location]} swapped")
+                                        }
+                                    )
+                                },
+                                modifier = Modifier.clickable {
+                                    locationList[location].enabled = !locationList[location].enabled
+                                    Log.d(TAG, "item at ${locationList[location]} swapped")
+                                }
+                            )
+                        }
+                    }
+                    Row(horizontalArrangement = Arrangement.End, modifier = Modifier.align(Alignment.End)) {
+                        TextButton(
+                            onClick = {
+                                showSelector.value = false
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
+
+                        TextButton(
+                            onClick = {
+                                showSelector.value = false
+                            }
+                        ) {
+                            Text("Confirm")
+                        }
+                    }
+
+
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun ClearCache(menuDb: MenuDatabase, context: Context) {

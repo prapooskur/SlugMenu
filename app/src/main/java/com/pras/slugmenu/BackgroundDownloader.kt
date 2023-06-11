@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit
 private const val TAG = "BackgroundDownloadWorker"
 
 @Serializable
-data class LocationListItem(val name: String, val url: String, val type: LocationType, val enabled: Boolean)
+data class LocationListItem(val name: String, val url: String, val type: LocationType, var enabled: Boolean)
 
 enum class LocationType {
     Dining,
