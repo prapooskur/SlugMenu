@@ -64,10 +64,9 @@ class MainActivity : ComponentActivity() {
             val themeChoice = remember { mutableStateOf(0)}
 
             /*
-            // this is bad practice, change later
+            // old blocking scheduler code
             runBlocking {
                 // Schedule background downloads if enabled
-                // TODO: This probably doesn't need to be blocking, fix later
                 if (userSettings.getBackgroundUpdatePreference.first()) {
                     Log.d(TAG, "scheduling background downloads")
                     val backgroundDownloadScheduler = BackgroundDownloadScheduler
