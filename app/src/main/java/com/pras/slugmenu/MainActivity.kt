@@ -76,6 +76,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
              */
+
+            // necessary to do this first, since otherwise ui takes a second to update
+            runBlocking {
+                useMaterialYou.value = userSettings.getMaterialYouPreference.first()
+                themeChoice.value = userSettings.getThemePreference.first()
+            }
+
+
+
+
             LaunchedEffect(key1 = Unit) {
                 lifecycleScope.launch {
                     // Schedule background downloads if enabled
