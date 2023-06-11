@@ -498,11 +498,11 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
             supportingContent = {
                 if (updateInBackground.value) {
                     Text(
-                        text = "Untested, use with caution. Downloading at 2AM Pacific Time.",
+                        text = "Untested, use with caution. Downloading at 2AM Pacific Time."
                     )
                 } else {
                     Text(
-                        text = "Untested, use with caution.",
+                        text = "Untested, use with caution."
     //                    modifier = Modifier.padding(start = 16.dp)
                     )
                 }
