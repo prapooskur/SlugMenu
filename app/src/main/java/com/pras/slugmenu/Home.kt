@@ -28,6 +28,8 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
+private const val TAG = "Home"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDatastore) {
