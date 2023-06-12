@@ -499,12 +499,7 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
             supportingContent = {
                 if (updateInBackground.value) {
                     Text(
-                        text = "Untested, use with caution. Downloading at 2AM Pacific Time."
-                    )
-                } else {
-                    Text(
-                        text = "Untested, use with caution."
-    //                    modifier = Modifier.padding(start = 16.dp)
+                        text = "Downloading at 2AM Pacific Time."
                     )
                 }
             },
@@ -536,13 +531,8 @@ fun BackgroundOneTimeDownload(context: Context) {
     ListItem(
         headlineContent = {
             Text(
-                text = "Download all menus now",
+                text = "Download Menus Now",
                 style = MaterialTheme.typography.bodyLarge,
-            )
-        },
-        supportingContent = {
-            Text(
-                text = "Untested, use with caution. Probably works?",
             )
         },
         modifier = Modifier.clickable {
@@ -556,13 +546,8 @@ fun BackgroundSelectorToggle (showSelector: MutableState<Boolean>) {
     ListItem(
         headlineContent = {
             Text(
-                text = "Select locations to download",
+                text = "Select Menus to Download",
                 style = MaterialTheme.typography.bodyLarge,
-            )
-        },
-        supportingContent = {
-            Text(
-                text = "Untested, use with caution. Doesn't work?",
             )
         },
         modifier = Modifier.clickable {
