@@ -155,11 +155,11 @@ object BackgroundDownloadScheduler {
 
         Log.d(TAG, "time difference is $minutes minutes")
 
+
         //define constraints
         val workerConstraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-
 
         val locationNames = listOf<String>("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
         val locationUrls =  listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
@@ -178,7 +178,6 @@ object BackgroundDownloadScheduler {
         val inputLocationList = Data.Builder()
             .putString("locationList", serializedLocationList)
             .build()
-
 
 
         val refreshCpnWork = PeriodicWorkRequest.Builder(BackgroundDownloadWorker::class.java, 24, TimeUnit.HOURS)
@@ -200,9 +199,8 @@ object BackgroundDownloadScheduler {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-
         val locationNames = listOf<String>("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
-        val locationUrls = listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
+        val locationUrls =  listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
         val locationTypes = listOf<LocationType>(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
 
         val mutableLocationList = mutableListOf<LocationListItem>()
@@ -219,14 +217,11 @@ object BackgroundDownloadScheduler {
             .putString("locationList", serializedLocationList)
             .build()
 
-
-
         val oneTimeWorkRequest = OneTimeWorkRequestBuilder<BackgroundDownloadWorker>()
             .setInputData(inputLocationList)
             .setConstraints(workerConstraints)
             .addTag("backgroundMenuDownload")
             .build()
-
 
         WorkManager
             .getInstance(context)
