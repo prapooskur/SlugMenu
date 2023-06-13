@@ -88,7 +88,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
     val useCollapsingTopBar = remember { mutableStateOf(false) }
 
     val updateInBackground = remember { mutableStateOf(false) }
-    val showSelector = remember { mutableStateOf(false) }
+//    val showSelector = remember { mutableStateOf(false) }
 
     val appVersion = BuildConfig.VERSION_NAME
     val newVersion = remember { mutableStateOf(appVersion) }
@@ -191,9 +191,11 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         BackgroundOneTimeDownload(context)
                     }
 
+                    /*
                     item {
                         BackgroundSelectorToggle(showSelector = showSelector)
                     }
+                    */
 
                     item {
                         ClearCache(
@@ -217,7 +219,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                 }
             }
         )
-        BackgroundDownloadSelector(showSelector = showSelector, preferencesDataStore = preferencesDataStore)
+//        BackgroundDownloadSelector(showSelector = showSelector, preferencesDataStore = preferencesDataStore)
     }
 
     UpdateDialog(updateAvailable = updateAvailable, newVersion = newVersion, context = context)
@@ -541,6 +543,9 @@ fun BackgroundOneTimeDownload(context: Context) {
     )
 }
 
+// Background download selector
+// currently disabled, since no reason to select locatins
+/*
 @Composable
 fun BackgroundSelectorToggle (showSelector: MutableState<Boolean>) {
     ListItem(
@@ -560,7 +565,7 @@ fun BackgroundSelectorToggle (showSelector: MutableState<Boolean>) {
 @Composable
 fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
 
-    //TODO: make this non-blocking
+    //make this non-blocking?
     var locationList by remember { mutableStateOf(mutableListOf<LocationListItem>()) }
     runBlocking {
         locationList = (Json.decodeFromString<List<LocationListItem>>(preferencesDataStore.getBackgroundDownloadPreference.first())).toMutableList()
@@ -646,6 +651,7 @@ fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesD
         }
     }
 }
+*/
 
 @Composable
 fun ClearCache(menuDb: MenuDatabase, context: Context) {
