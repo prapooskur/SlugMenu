@@ -85,7 +85,6 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(key1 = Unit) {
                 lifecycleScope.launch {
                     // Schedule background downloads if enabled
-                    // TODO: This probably doesn't need to be blocking, fix later
                     if (userSettings.getBackgroundUpdatePreference.first()) {
                         Log.d(TAG, "scheduling background downloads")
                         val backgroundDownloadScheduler = BackgroundDownloadScheduler
