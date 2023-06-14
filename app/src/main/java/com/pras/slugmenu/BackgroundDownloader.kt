@@ -108,7 +108,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                         )
                                     )
                                 } else {
-                                    Log.d(TAG, "Error downloading menu for $locationName: menu list is null or empty")
+                                    Log.d(TAG, "Error downloading menu for $locationName: menu list is empty")
                                 }
                             } catch (e: Exception) {
                                 Log.d(TAG, "Error downloading menu for $locationName: $e")
