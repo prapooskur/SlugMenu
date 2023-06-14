@@ -411,6 +411,13 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                 }
             }
 
+            // Since the crown/merrill hours dialog is only 1 line smaller when partially expanded, there's no point in doing so
+            // TODO: figure out why this doesn't work properly?
+            val bottomSheetState = if (locationName.substringBefore(" ") == "Crown/Merrill") { rememberModalBottomSheetState(skipPartiallyExpanded = true) } else { rememberModalBottomSheetState() }
+            Column(modifier = Modifier.fillMaxHeight()) {
+                HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName.substringBefore(" "))
+            }
+
         } else {
             // Otherwise, display a loading indicator
             Surface {
@@ -428,11 +435,5 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
             }
         }
     }
-
-    // Since the crown/merrill hours dialog is only 1 line smaller when partially expanded, there's no point in doing so
-    // TODO: figure out why this doesn't work properly?
-    val bottomSheetState = if (locationName.substringBefore(" ") == "Crown/Merrill") { rememberModalBottomSheetState(skipPartiallyExpanded = true) } else { rememberModalBottomSheetState() }
-
-    HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName.substringBefore(" "))
 
 }

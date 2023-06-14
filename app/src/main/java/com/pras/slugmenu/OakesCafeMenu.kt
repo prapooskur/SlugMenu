@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -141,6 +142,10 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
                 },
                 floatingActionButtonPosition = FabPosition.End
             )
+            val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+            Column(modifier = Modifier.fillMaxHeight()) {
+                HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
+            }
         }
         else {
             TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
@@ -156,9 +161,6 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
     }
 
     WaitzDialog(showDialog = showWaitzDialog, locationName = locationName, menuDatabase = menuDatabase)
-
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
 
 
 

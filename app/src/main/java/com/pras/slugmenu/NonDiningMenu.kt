@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -120,6 +121,11 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
                 },
                 floatingActionButtonPosition = FabPosition.End
             )
+
+            val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+            Column(modifier = Modifier.fillMaxHeight()) {
+                HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
+            }
         } else {
             TopBarClean(titleText = locationName, navController = navController)
             Box(
@@ -132,8 +138,4 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
             }
         }
     }
-
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
-
 }
