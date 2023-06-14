@@ -1,17 +1,17 @@
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
 
     //KSP for room
-    id 'com.google.devtools.ksp'
+    id "com.google.devtools.ksp"
 
     //Serialization
-    id 'org.jetbrains.kotlin.plugin.serialization'
+    id "org.jetbrains.kotlin.plugin.serialization"
 
 }
 
 android {
-    namespace 'com.pras.slugmenu'
+    namespace "com.pras.slugmenu"
     compileSdk 33
 
     defaultConfig {
@@ -43,14 +43,14 @@ android {
             // the Android Gradle plugin. To learn more, go to the section about
             // R8 configuration files.
             proguardFiles getDefaultProguardFile(
-                    'proguard-android-optimize.txt'),
-                    'proguard-rules.pro'
+                    "proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
         }
 
          */
         release {
             // Enables code shrinking, obfuscation, and optimization for only
-            // your project's release build type.
+            // your project"s release build type.
             minifyEnabled true
 
             // Enables resource shrinking, which is performed by the
@@ -61,8 +61,8 @@ android {
             // the Android Gradle plugin. To learn more, go to the section about
             // R8 configuration files.
             proguardFiles getDefaultProguardFile(
-                    'proguard-android-optimize.txt'),
-                    'proguard-rules.pro'
+                    "proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
         }
     }
 
@@ -81,35 +81,35 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.4'
+        kotlinCompilerExtensionVersion "1.4.4"
     }
     packagingOptions {
         resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
 }
 
 // for Room KSP
 ksp {
-    arg('room.schemaLocation', "$projectDir/schemas")
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.activity:activity:1.7.2'
-    implementation 'androidx.activity:activity-compose:1.7.2'
-    implementation "androidx.compose.ui:ui:$compose_ui_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
-    implementation "androidx.compose.material:material:$compose_ui_version"
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.activity:activity:1.7.2")
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.compose.ui:ui:$compose_ui_version")
+    implementation("androidx.compose.ui:ui-tooling-preview:$compose_ui_version")
+    implementation("androidx.compose.material:material:$compose_ui_version")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_ui_version")
+    debugImplementation("androidx.compose.ui:ui-tooling:$compose_ui_version")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_ui_version")
 
     // jsoup HTML parser library @ https://jsoup.org/
     implementation ("org.jsoup:jsoup:1.16.1")
