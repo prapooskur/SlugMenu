@@ -118,9 +118,9 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
                 onClick = {
                     // TODO: Verify this works correctly
                     if (clickable) {
+                        clickable = false
                         navController.navigate(location)
                         coroutineScope.launch {
-                            clickable = false
                             // tween time set in mainactivity.kt
                             delay(350)
                             clickable = true
@@ -158,7 +158,7 @@ fun CardList(navController: NavController, innerPadding: PaddingValues) {
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
     val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
 
-    var clickable = remember { mutableStateOf(true) }
+    var clickable by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
 
     LazyColumn(
@@ -179,13 +179,13 @@ fun CardList(navController: NavController, innerPadding: PaddingValues) {
             Card(
                 onClick = {
                     // TODO: Verify this works correctly
-                    if (clickable.value) {
+                    if (clickable) {
+                        clickable = false
                         navController.navigate(location)
                         coroutineScope.launch {
-                            clickable.value = false
                             // tween time set in mainactivity.kt
                             delay(350)
-                            clickable.value = true
+                            clickable = true
                         }
                     }
                 },
