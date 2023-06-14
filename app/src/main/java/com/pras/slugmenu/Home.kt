@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,8 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,7 +29,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 private const val TAG = "Home"
@@ -82,6 +88,9 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
     val locations = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
 
+    var clickable by remember { mutableStateOf(true) }
+    val coroutineScope = rememberCoroutineScope()
+
     val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     // combine the padding values given by scaffold with the padding for bottom bar, so parts of
@@ -106,7 +115,18 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
                 "cowellstev"
             }
             Card(
-                onClick = { navController.navigate(location) },
+                onClick = {
+                    // TODO: Verify this works correctly
+                    if (clickable) {
+                        navController.navigate(location)
+                        coroutineScope.launch {
+                            clickable = false
+                            // tween time set in mainactivity.kt
+                            delay(350)
+                            clickable = true
+                        }
+                    }
+                },
                 shape = MaterialTheme.shapes.small,
                 modifier = Modifier
                     .aspectRatio(1f),
@@ -138,6 +158,9 @@ fun CardList(navController: NavController, innerPadding: PaddingValues) {
     val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
     val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
 
+    var clickable = remember { mutableStateOf(true) }
+    val coroutineScope = rememberCoroutineScope()
+
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
         modifier = Modifier
@@ -154,10 +177,21 @@ fun CardList(navController: NavController, innerPadding: PaddingValues) {
             }
 
             Card(
-                onClick = { navController.navigate(location) },
+                onClick = {
+                    // TODO: Verify this works correctly
+                    if (clickable.value) {
+                        navController.navigate(location)
+                        coroutineScope.launch {
+                            clickable.value = false
+                            // tween time set in mainactivity.kt
+                            delay(350)
+                            clickable.value = true
+                        }
+                    }
+                },
                 shape = MaterialTheme.shapes.small,
                 modifier = Modifier
-                    .aspectRatio(3f),
+                    .aspectRatio(4f),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
 
             ) {

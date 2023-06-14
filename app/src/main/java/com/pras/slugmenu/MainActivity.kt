@@ -185,7 +185,8 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
     AnimatedNavHost(navController = navController, startDestination = startDestination) {
         composable(
             "home",
-            enterTransition = {fadeIn(animationSpec = tween(0))},
+            enterTransition = { fadeIn(animationSpec = tween(0)) },
+//            exitTransition = { fadeOut(animationSpec = tween(0)) }
         ) { HomeScreen(navController = navController, preferencesDataStore = userSettings) }
         composable(
             "ninelewis",
