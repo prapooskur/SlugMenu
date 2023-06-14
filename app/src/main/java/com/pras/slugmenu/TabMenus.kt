@@ -169,7 +169,7 @@ fun PrintMenu(itemList: MutableList<String>) {
                 val itemval = itemList[item]
                 var boldness = FontWeight.Normal
                 var divider = false
-                if (itemval.contains("--")) {
+                if (itemval.contains("--") || itemval.contains("—")) {
                     boldness = FontWeight.ExtraBold
                     divider = true
                 }
@@ -207,7 +207,7 @@ fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
 
-                if (itemval.contains("--")) {
+                if (itemval.contains("--") || itemval.contains("—")) {
                     if (item != 0) {
                         Divider(
                             thickness = 2.dp
@@ -289,7 +289,7 @@ fun PrintOakesMenu(itemList: MutableList<String>) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
 
-                if (itemval.contains("--")) {
+                if (itemval.contains("--") || itemval.contains("—")) {
                     Divider(
                         thickness = 2.dp
                     )
