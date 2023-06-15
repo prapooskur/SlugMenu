@@ -124,42 +124,6 @@ fun TopBar(titleText: String, navController: NavController, isHome: Boolean = fa
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarBottomSheet(titleText: String, navController: NavController, showBottomSheet: MutableState<Boolean> = mutableStateOf(false)) {
-    TopAppBar(
-        title = {
-            Text(
-                text = titleText,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontSize = 20.sp
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = {navController.navigateUp()}) {
-                Icon(
-                    Icons.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        },
-        actions = {
-            IconButton(
-                onClick = {
-                    showBottomSheet.value = !showBottomSheet.value
-                    Log.d(TAG,showBottomSheet.value.toString())
-                }
-            ) {
-                Icon(
-                    Icons.Outlined.Info, contentDescription = "Hours",tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-//        backgroundColor = MaterialTheme.colorScheme.primaryContainer
-//        elevation = 8.dp
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 fun TopBarClean(titleText: String, navController: NavController) {
     TopAppBar(
         title = {
