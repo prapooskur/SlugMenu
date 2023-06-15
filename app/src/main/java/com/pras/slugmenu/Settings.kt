@@ -211,6 +211,10 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                     item {
                         UpdateChecker(context = context, appVersion = appVersion, newVersion = newVersion, updateAvailable = updateAvailable)
                     }
+
+                    item {
+                        AboutNavigator(navController = navController)
+                    }
                     /*
                     item {
                         AboutItem(appVersion = appVersion)
@@ -672,7 +676,7 @@ fun ClearCache(menuDb: MenuDatabase, context: Context) {
 
 //Not currently necessary, since the update checker already shows the version number
 @Composable
-fun AboutItem(appVersion: String) {
+fun AboutNavigator(navController: NavController) {
     ListItem(
         leadingContent = {
             Icon(
@@ -681,11 +685,9 @@ fun AboutItem(appVersion: String) {
             )
         },
         headlineContent = {
-            Text(text = "Slug Menu")
+            Text(text = "About Slug Menu")
         },
-        supportingContent = {
-            Text(text = "Version $appVersion")
-        },
+        modifier = Modifier.clickable { navController.navigate("about") }
     )
 }
 
@@ -770,24 +772,4 @@ fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableStat
 
         )
     }
-}
-
-@Composable
-fun GithubItem(context: Context) {
-    ListItem(
-        leadingContent = {
-            // add Github icon here
-            Icon(
-                Icons.Default.Refresh,
-                contentDescription = "Refresh",
-            )
-        },
-        headlineContent = { Text(text = "Github") },
-        supportingContent = { Text(text = "Follow the app's development on Github") },
-        modifier = Modifier.clickable {
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("https://github.com/prapooskur/SlugMenu")
-            startActivity(context, intent, null)
-        }
-    )
 }

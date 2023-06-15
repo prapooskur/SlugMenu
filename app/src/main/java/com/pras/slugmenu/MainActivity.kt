@@ -529,12 +529,22 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
             )
         }
 
+        //about menu
+        composable(
+            "about",
+            enterTransition = {fadeIn(animationSpec = tween(200))},
+            exitTransition = {fadeOut(animationSpec = tween(200))}
+        ) {
+            AboutScreen(userSettings)
+        }
+
         //custom date dining menu
         composable("customdiningdate/{locationUrl}/{dateUrl}/{locationName}", arguments = listOf(navArgument("locationUrl") { type = NavType.StringType },navArgument("dateUrl") { type = NavType.StringType },navArgument("locationName") { type = NavType.StringType }))
         { backStackEntry ->
             DiningMenuCustomDate(
                 navController,
                 inputLocationUrl = backStackEntry.arguments?.getString("locationUrl") ?: "example.com",
+                // date the feature was added
                 dateUrl = backStackEntry.arguments?.getString("dateUrl") ?: "5-18-23",
                 inputLocationName = backStackEntry.arguments?.getString("locationName") ?: "Null - this should never happen."
             )
