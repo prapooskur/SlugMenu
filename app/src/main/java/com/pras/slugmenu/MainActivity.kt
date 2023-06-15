@@ -535,7 +535,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
             enterTransition = {fadeIn(animationSpec = tween(200))},
             exitTransition = {fadeOut(animationSpec = tween(200))}
         ) {
-            AboutScreen(userSettings)
+            AboutScreen(navController, userSettings)
         }
 
         //custom date dining menu

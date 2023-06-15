@@ -35,13 +35,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun AboutScreen(preferencesDataStore: PreferencesDatastore) {
+fun AboutScreen(navController: NavController, preferencesDataStore: PreferencesDatastore) {
     val useCollapsingTopBar = remember { mutableStateOf(false) }
     runBlocking {
         useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
@@ -59,8 +60,6 @@ fun AboutScreen(preferencesDataStore: PreferencesDatastore) {
     } else {
         Modifier.fillMaxSize()
     }
-
-    val navController = rememberAnimatedNavController()
 
     val appVersion = BuildConfig.VERSION_NAME
 
