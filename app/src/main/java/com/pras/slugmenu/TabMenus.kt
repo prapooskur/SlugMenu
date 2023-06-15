@@ -124,6 +124,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
                         state = index
                         Log.d(TAG,"$current $state ${current-state}")
                         // make the animated scroll a bit more continuous
+                        // without this, it skips to tab 3 when going from 1 -> 4 and 2 when going from 4 -> 1
                         if (current - state >= 3) {
                             scope.launch {
                                 pagerState.scrollToPage(2)
