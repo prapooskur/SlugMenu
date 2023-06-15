@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
@@ -120,7 +119,28 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
                 // create a tab for each element in titles
                 Tab(
                     selected = state == index,
-                    onClick = { state = index; scope.launch { pagerState.animateScrollToPage(index) } },
+                    onClick = {
+                        val current = state
+                        state = index
+                        Log.d(TAG,"$current $state ${current-state}")
+                        // make the animated scroll a bit more continuous
+                        if (current - state >= 3) {
+                            scope.launch {
+                                pagerState.scrollToPage(2)
+                                pagerState.animateScrollToPage(index)
+                            }
+                            Log.d(TAG,"rtl")
+                        } else if (current - state <= -3) {
+                            scope.launch {
+                                pagerState.scrollToPage(1)
+                                pagerState.animateScrollToPage(index)
+                            }
+                            Log.d(TAG,"ltr")
+                        } else {
+                            scope.launch { pagerState.animateScrollToPage(index) }
+                            Log.d(TAG,"basic")
+                        }
+                    },
                     text = {
                         Text(
                             text = title,
