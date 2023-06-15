@@ -120,7 +120,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
                 // create a tab for each element in titles
                 Tab(
                     selected = state == index,
-                    onClick = { state = index; scope.launch { pagerState.scrollToPage(index) } },
+                    onClick = { state = index; scope.launch { pagerState.animateScrollToPage(index) } },
                     text = {
                         Text(
                             text = title,
