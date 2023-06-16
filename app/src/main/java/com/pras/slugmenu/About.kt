@@ -80,9 +80,11 @@ fun AboutScreen(navController: NavController, preferencesDataStore: PreferencesD
                 item {
                     GithubItem(context = context)
                 }
+                /*
                 item {
                     ContactItem(context = context)
                 }
+                 */
             }
         }
     )
