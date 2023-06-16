@@ -23,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,6 +67,9 @@ fun MenuOrganizer(navController: NavController, preferencesDataStore: Preference
         useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
     }
 
+    val resetPressed = remember { mutableStateOf(false) }
+
+
     Log.d(TAG,"location order: $locationOrder")
 
     //TODO: Complete collapsing top bar rewrite
@@ -86,25 +91,33 @@ fun MenuOrganizer(navController: NavController, preferencesDataStore: Preference
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             if (useCollapsingTopBar.value) {
-                CollapsingLargeTopBar(titleText = "Organize Menu Items", navController = navController, scrollBehavior = scrollBehavior, isOrganizer = true)
+                CollapsingLargeTopBar(titleText = "Organize Menu Items", navController = navController, scrollBehavior = scrollBehavior, isOrganizer = true, resetPressed = resetPressed)
             } else {
                 Surface(shadowElevation = 4.dp) {
-                    TopBar(titleText = "Organize Menu Items", navController = navController, isOrganizer = true)
+                    TopBar(titleText = "Organize Menu Items", navController = navController, isOrganizer = true, resetPressed = resetPressed)
                 }
             }
         },
         content = { paddingValues ->
-            ReorderableLocationList(locationOrderInput = locationOrder, preferencesDataStore = preferencesDataStore, paddingValues = paddingValues)
+            ReorderableLocationList(locationOrderInput = locationOrder, preferencesDataStore = preferencesDataStore, paddingValues = paddingValues, resetPressed = resetPressed)
 //            TestReorderableList(paddingValues = paddingValues)
         }
     )
 }
 
 @Composable
-fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, preferencesDataStore: PreferencesDatastore, paddingValues: PaddingValues) {
+fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, preferencesDataStore: PreferencesDatastore, paddingValues: PaddingValues, resetPressed: MutableState<Boolean> = mutableStateOf(false)) {
 
     val locationOrderState = remember { mutableStateOf(locationOrderInput) }
     val coroutineScope = rememberCoroutineScope()
+
+    if (resetPressed.value) {
+        locationOrderState.value = Json.decodeFromString("[{\"navLocation\":\"ninelewis\",\"locationName\":\"Nine/Lewis\",\"visible\":true},{\"navLocation\":\"cowellstev\",\"locationName\":\"Cowell/Stevenson\",\"visible\":true},{\"navLocation\":\"crownmerrill\",\"locationName\":\"Crown/Merrill\",\"visible\":true},{\"navLocation\":\"porterkresge\",\"locationName\":\"Porter/Kresge\",\"visible\":true},{\"navLocation\":\"perkcoffee\",\"locationName\":\"Perks\",\"visible\":true},{\"navLocation\":\"terrafresca\",\"locationName\":\"Terra Fresca\",\"visible\":true},{\"navLocation\":\"portermarket\",\"locationName\":\"Porter Market\",\"visible\":true},{\"navLocation\":\"stevcoffee\",\"locationName\":\"Stevenson Coffee House\",\"visible\":true},{\"navLocation\":\"globalvillage\",\"locationName\":\"Global Village Cafe\",\"visible\":true},{\"navLocation\":\"oakescafe\",\"locationName\":\"Oakes Cafe\",\"visible\":true}]")
+        LaunchedEffect(Unit) {
+            preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrderState.value.toList()))
+        }
+        resetPressed.value = false
+    }
 
     Log.d(TAG,"$paddingValues")
 

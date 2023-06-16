@@ -31,7 +31,7 @@ private const val TAG = "TopBars"
 // Intended for use on main and settings screens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrollBehavior: TopAppBarScrollBehavior, isHome: Boolean = false, isOrganizer: Boolean = false) {
+fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrollBehavior: TopAppBarScrollBehavior, isHome: Boolean = false, isOrganizer: Boolean = false, resetPressed: MutableState<Boolean> = mutableStateOf(false)) {
     val topBarColors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface, scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer)
 
     val topBarElevation = if (scrollBehavior.state.collapsedFraction > 0.99) {
@@ -82,7 +82,7 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
                         )
                     }
                 } else if (isOrganizer) {
-                    IconButton(onClick = { /* make this reset the list somehow */ }) {
+                    IconButton(onClick = { resetPressed.value = true }) {
                         Icon(
                             imageVector = Icons.Outlined.Refresh,
                             contentDescription = "Reset",
@@ -99,7 +99,7 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(titleText: String, navController: NavController, isHome: Boolean = false, isOrganizer: Boolean = false) {
+fun TopBar(titleText: String, navController: NavController, isHome: Boolean = false, isOrganizer: Boolean = false, resetPressed: MutableState<Boolean> = mutableStateOf(false)) {
     Surface(shadowElevation = 4.dp) {
         TopAppBar(
             title = {
@@ -126,7 +126,7 @@ fun TopBar(titleText: String, navController: NavController, isHome: Boolean = fa
                         )
                     }
                 } else if (isOrganizer) {
-                    IconButton(onClick = { /* make this reset the list somehow */ }) {
+                    IconButton(onClick = { resetPressed.value = true }) {
                         Icon(
                             imageVector = Icons.Outlined.Refresh,
                             contentDescription = "Reset",
