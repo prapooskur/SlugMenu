@@ -1,11 +1,12 @@
 package com.pras.slugmenu
 
+import android.app.Activity
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,9 +24,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,8 +34,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 private const val TAG = "Home"
@@ -46,7 +44,7 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
     val useGridLayout = remember { mutableStateOf(true) }
     val useCollapsingTopBar = remember { mutableStateOf(false) }
     val locationOrder: List<LocationOrderItem>
-    var cleanLocationOrder: List<LocationOrderItem> = emptyList()
+    val mutableCleanLocationOrder: MutableList<LocationOrderItem> = mutableListOf()
     runBlocking {
         useGridLayout.value = preferencesDataStore.getListPreference.first()
         useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
@@ -55,9 +53,10 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
 
     for (location in locationOrder) {
         if (location.visible) {
-            cleanLocationOrder += location
+            mutableCleanLocationOrder.add(location)
         }
     }
+    val cleanLocationOrder = mutableCleanLocationOrder.toList()
 
     //TODO: Complete collapsing top bar rewrite
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -93,6 +92,22 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
         }
     )
 
+    val context = LocalContext.current
+    var pressedTime: Long = 0
+    BackHandler() {
+        if (pressedTime + 2000 > System.currentTimeMillis()) {
+            // if time is greater than 2 sec we are closing the application.
+            (context as? Activity)?.finish()
+            Log.d(TAG, "back pressed twice, exiting")
+        } else {
+            // in else condition displaying a toast message.
+            ShortToast("Press back again to exit", context)
+            Log.d(TAG, "back pressed, toast shown")
+        }
+        // on below line initializing our press time variable
+        pressedTime = System.currentTimeMillis()
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -123,7 +138,7 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues, loca
 
         items(locationOrder.size) { index ->
             val location: String = locationOrder[index].navLocation
-            val name: String = locationOrder[index].locationName
+            val name: String = locationOrder[index].locationName.replace("/","\n")
             Card(
                 onClick = {
                     if (clickable) {

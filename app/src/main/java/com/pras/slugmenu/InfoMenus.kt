@@ -1,5 +1,6 @@
 package com.pras.slugmenu
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
@@ -34,9 +35,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.net.ssl.SSLHandshakeException
 
-@Composable
-fun ShortToast(text: String) {
-    Toast.makeText(LocalContext.current, text, Toast.LENGTH_SHORT).show()
+fun ShortToast(text: String, context: Context) {
+    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 }
 
 @Composable
@@ -93,10 +93,10 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
 
     if (showDialog.value && exceptionFound != "No Exception") {
         showDialog.value = false
-        ShortToast(text = exceptionFound)
+        ShortToast(exceptionFound, LocalContext.current)
     } else if (showDialog.value && !dataLoadedState.value) {
         showDialog.value = false
-        ShortToast(text = "Data not loaded yet")
+        ShortToast(text = "Data not loaded yet", LocalContext.current)
     } else if (showDialog.value && dataLoadedState.value) {
         val locationData = waitzData[0][locIndex]
         val compareData = waitzData[1][locIndex]

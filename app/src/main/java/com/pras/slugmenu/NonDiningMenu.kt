@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
@@ -90,7 +91,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
         }
     }
     if (exceptionFound != "No Exception") {
-        ShortToast(exceptionFound)
+        ShortToast(exceptionFound, LocalContext.current)
     }
 
     val showBottomSheet = remember { mutableStateOf(false) }
