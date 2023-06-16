@@ -108,7 +108,6 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
 
     Log.d(TAG,"$paddingValues")
 
-    // todo: fix
     val state = rememberReorderableLazyListState(
         onMove = { from, to ->
             locationOrderState.value = locationOrderState.value.toMutableList().apply {
@@ -128,6 +127,8 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
                 .reorderable(state)
                 .detectReorderAfterLongPress(state)
         ) {
+
+            // todo: find a workaround for the first item not animating bug
             items(locationOrderState.value.size, {locationOrderState.value[it].navLocation}) { item ->
                 Log.d(TAG, "item key: ${locationOrderState.value[item].navLocation}")
                 var isVisible by remember { mutableStateOf(locationOrderState.value[item].visible) }
