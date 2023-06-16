@@ -135,8 +135,10 @@ suspend fun getOakesMenu(inputUrl: String): Array<MutableList<String>> {
     return withContext(Dispatchers.IO) {
         val menus = getWebData(inputUrl)
 //        Log.d(TAG, "array: $menus")
-        if (menus.size > 0) {
+        if (menus.size > 1) {
             arrayOf(menus[0],menus[1])
+        } else if (menus.size > 0 ) {
+            arrayOf(menus[0], mutableListOf())
         } else {
             arrayOf()
         }
