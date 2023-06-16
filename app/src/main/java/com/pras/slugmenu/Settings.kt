@@ -176,13 +176,13 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         LayoutSwitcher(preferencesDataStore = preferencesDataStore)
                     }
                     item {
-                        MenuOrganizerNavigator(navController = navController)
-                    }
-                    item {
                         TopAppBarSwitcher(
                             preferencesDataStore = preferencesDataStore,
                             useLargeTopBar = useCollapsingTopBar
                         )
+                    }
+                    item {
+                        MenuOrganizerNavigator(navController = navController)
                     }
                     item {
                         Divider()
