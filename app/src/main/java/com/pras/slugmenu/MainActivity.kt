@@ -33,11 +33,8 @@ import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
+import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -113,25 +110,6 @@ class MainActivity : ComponentActivity() {
         }
 
     }
-
-    //figure out how to get this working only on home screen
-    /*
-    var pressedTime: Long = 0
-    override fun onBackPressed() {
-        // on below line we are checking if the press time is greater than 2 sec
-        if (pressedTime + 2000 > System.currentTimeMillis()) {
-            // if time is greater than 2 sec we are closing the application.
-            super.onBackPressed()
-            finish()
-        } else {
-            // in else condition displaying a toast message.
-            Toast.makeText(baseContext, "Press back again to exit", Toast.LENGTH_SHORT).show();
-        }
-        // on below line initializing our press time variable
-        pressedTime = System.currentTimeMillis();
-    }
-     */
-
 }
 
 
