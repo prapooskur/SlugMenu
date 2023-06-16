@@ -105,6 +105,8 @@ suspend fun getDiningMenu(inputUrl: String): Array<MutableList<String>> {
             arrayOf(menus[0], menus[1], menus[2], menus[3])
         } else if (menus.size > 2) {
             arrayOf(menus[0], menus[1], menus[2], mutableListOf())
+        } else if (menus.size == 2) {
+            arrayOf(menus[0], menus[1], mutableListOf(), mutableListOf())
         } else {
             arrayOf()
         }
