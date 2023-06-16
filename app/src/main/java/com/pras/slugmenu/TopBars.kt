@@ -46,7 +46,8 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
         MaterialTheme.colorScheme.onPrimaryContainer
     }
 
-    val expandedFontSize = 33
+    // make the title smaller if it's too long (organize screen title was almost hitting the other edge)
+    val expandedFontSize = if (titleText.length > 15) { 30 } else { 33 }
     val collapsedFontSize = 20
 
     val topBarFontSize = (expandedFontSize-(expandedFontSize-collapsedFontSize)*scrollBehavior.state.collapsedFraction).sp
