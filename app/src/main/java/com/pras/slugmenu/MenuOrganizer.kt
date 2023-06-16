@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -111,14 +112,6 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
     val locationOrderState = remember { mutableStateOf(locationOrderInput) }
     val coroutineScope = rememberCoroutineScope()
 
-    if (resetPressed.value) {
-        locationOrderState.value = Json.decodeFromString("[{\"navLocation\":\"ninelewis\",\"locationName\":\"Nine/Lewis\",\"visible\":true},{\"navLocation\":\"cowellstev\",\"locationName\":\"Cowell/Stevenson\",\"visible\":true},{\"navLocation\":\"crownmerrill\",\"locationName\":\"Crown/Merrill\",\"visible\":true},{\"navLocation\":\"porterkresge\",\"locationName\":\"Porter/Kresge\",\"visible\":true},{\"navLocation\":\"perkcoffee\",\"locationName\":\"Perks\",\"visible\":true},{\"navLocation\":\"terrafresca\",\"locationName\":\"Terra Fresca\",\"visible\":true},{\"navLocation\":\"portermarket\",\"locationName\":\"Porter Market\",\"visible\":true},{\"navLocation\":\"stevcoffee\",\"locationName\":\"Stevenson Coffee House\",\"visible\":true},{\"navLocation\":\"globalvillage\",\"locationName\":\"Global Village Cafe\",\"visible\":true},{\"navLocation\":\"oakescafe\",\"locationName\":\"Oakes Cafe\",\"visible\":true}]")
-        LaunchedEffect(Unit) {
-            preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrderState.value.toList()))
-        }
-        resetPressed.value = false
-    }
-
     Log.d(TAG,"$paddingValues")
 
     val state = rememberReorderableLazyListState(
@@ -143,7 +136,6 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
 
             // todo: find a workaround for the first item not animating bug
             items(locationOrderState.value.size, {locationOrderState.value[it].navLocation}) { item ->
-                Log.d(TAG, "item key: ${locationOrderState.value[item].navLocation}")
                 var isVisible by remember { mutableStateOf(locationOrderState.value[item].visible) }
                 ReorderableItem(state, key = item) { isDragging ->
                     val elevation = animateDpAsState(if (isDragging) 46.dp else 0.dp)
@@ -152,6 +144,11 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
                             .shadow(elevation.value)
                             .background(MaterialTheme.colorScheme.surface)
                     ) {
+                        if (resetPressed.value) {
+                            isVisible = true
+                            locationOrderState.value[item].visible = true
+                            Log.d(TAG,"reset button pressed, reset ${locationOrderState.value[item].locationName} checkbox status")
+                        }
                         ListItem(
                             leadingContent = {
                                 Icon(Icons.Default.Menu, contentDescription = "Handle")
@@ -183,6 +180,14 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
                     }
                 }
             }
+        }
+    }
+    if (resetPressed.value) {
+        LaunchedEffect(Unit) {
+            locationOrderState.value = Json.decodeFromString("[{\"navLocation\":\"ninelewis\",\"locationName\":\"Nine/Lewis\",\"visible\":true},{\"navLocation\":\"cowellstev\",\"locationName\":\"Cowell/Stevenson\",\"visible\":true},{\"navLocation\":\"crownmerrill\",\"locationName\":\"Crown/Merrill\",\"visible\":true},{\"navLocation\":\"porterkresge\",\"locationName\":\"Porter/Kresge\",\"visible\":true},{\"navLocation\":\"perkcoffee\",\"locationName\":\"Perks\",\"visible\":true},{\"navLocation\":\"terrafresca\",\"locationName\":\"Terra Fresca\",\"visible\":true},{\"navLocation\":\"portermarket\",\"locationName\":\"Porter Market\",\"visible\":true},{\"navLocation\":\"stevcoffee\",\"locationName\":\"Stevenson Coffee House\",\"visible\":true},{\"navLocation\":\"globalvillage\",\"locationName\":\"Global Village Cafe\",\"visible\":true},{\"navLocation\":\"oakescafe\",\"locationName\":\"Oakes Cafe\",\"visible\":true}]")
+            preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrderState.value.toList()))
+            resetPressed.value = false
+            Log.d(TAG, "reset pressed, set preferences to default and set resetpressed to false.")
         }
     }
 }
