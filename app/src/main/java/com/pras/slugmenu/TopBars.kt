@@ -5,6 +5,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,7 +31,7 @@ private const val TAG = "TopBars"
 // Intended for use on main and settings screens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrollBehavior: TopAppBarScrollBehavior, isHome: Boolean = false) {
+fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrollBehavior: TopAppBarScrollBehavior, isHome: Boolean = false, isOrganizer: Boolean = false) {
     val topBarColors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface, scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer)
 
     val topBarElevation = if (scrollBehavior.state.collapsedFraction > 0.99) {
@@ -45,7 +46,10 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
         MaterialTheme.colorScheme.onPrimaryContainer
     }
 
-    val topBarFontSize = (30-10*scrollBehavior.state.collapsedFraction).sp
+    val expandedFontSize = 33
+    val collapsedFontSize = 20
+
+    val topBarFontSize = (expandedFontSize-(expandedFontSize-collapsedFontSize)*scrollBehavior.state.collapsedFraction).sp
 
     Surface(shadowElevation = topBarElevation) {
         LargeTopAppBar(
@@ -77,6 +81,14 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
                             tint = topBarItemColor
                         )
                     }
+                } else if (isOrganizer) {
+                    IconButton(onClick = { /* make this reset the list somehow */ }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Refresh,
+                            contentDescription = "Reset",
+                            tint = topBarItemColor
+                        )
+                    }
                 }
             },
             scrollBehavior = scrollBehavior,
@@ -87,7 +99,7 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(titleText: String, navController: NavController, isHome: Boolean = false) {
+fun TopBar(titleText: String, navController: NavController, isHome: Boolean = false, isOrganizer: Boolean = false) {
     Surface(shadowElevation = 4.dp) {
         TopAppBar(
             title = {
@@ -110,6 +122,14 @@ fun TopBar(titleText: String, navController: NavController, isHome: Boolean = fa
                         Icon(
                             imageVector = Icons.Outlined.Settings,
                             contentDescription = "Settings",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                } else if (isOrganizer) {
+                    IconButton(onClick = { /* make this reset the list somehow */ }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Refresh,
+                            contentDescription = "Reset",
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
