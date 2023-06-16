@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
@@ -173,6 +174,9 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                     }
                     item {
                         LayoutSwitcher(preferencesDataStore = preferencesDataStore)
+                    }
+                    item {
+                        MenuOrganizerNavigator(navController = navController)
                     }
                     item {
                         TopAppBarSwitcher(
@@ -435,6 +439,22 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
             }
         }
     }
+}
+
+@Composable
+fun MenuOrganizerNavigator(navController: NavController) {
+    ListItem(
+        leadingContent = {
+            Icon(
+                Icons.Default.Menu,
+                contentDescription = "Menu",
+            )
+        },
+        headlineContent = {
+            Text(text = "Organize Menu Items")
+        },
+        modifier = Modifier.clickable { navController.navigate("menuorganizer") }
+    )
 }
 
 @Composable

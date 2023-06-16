@@ -538,6 +538,14 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
             AboutScreen(navController, userSettings)
         }
 
+        composable(
+            "menuorganizer",
+            enterTransition = {fadeIn(animationSpec = tween(200))},
+            exitTransition = {fadeOut(animationSpec = tween(200))}
+        ) {
+            MenuOrganizer(navController, userSettings)
+        }
+
         //custom date dining menu
         composable("customdiningdate/{locationUrl}/{dateUrl}/{locationName}", arguments = listOf(navArgument("locationUrl") { type = NavType.StringType },navArgument("dateUrl") { type = NavType.StringType },navArgument("locationName") { type = NavType.StringType }))
         { backStackEntry ->

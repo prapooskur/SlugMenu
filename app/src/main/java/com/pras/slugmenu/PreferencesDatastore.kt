@@ -24,6 +24,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         val USE_COLLAPSING_TOOLBAR = booleanPreferencesKey("use_collapsing_toolbar")
         val ENABLE_BACKGROUND_UPDATES = booleanPreferencesKey("enable_background_updates")
         val BACKGROUND_DOWNLOAD_LIST = stringPreferencesKey("background_download_list")
+        val LOCATION_ORDER = stringPreferencesKey("location_order")
         const val TAG = "UserPreferencesRepo"
     }
 
@@ -183,5 +184,25 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
             preferences[BACKGROUND_DOWNLOAD_LIST] = userChoice
         }
     }
+
+    val getLocationOrder: Flow<String> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading Location Order preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map {preferences ->
+            preferences[LOCATION_ORDER] ?: "[{\"navLocation\":\"ninelewis\",\"locationName\":\"Nine/Lewis\",\"visible\":true},{\"navLocation\":\"cowellstev\",\"locationName\":\"Cowell/Stevenson\",\"visible\":true},{\"navLocation\":\"crownmerrill\",\"locationName\":\"Crown/Merrill\",\"visible\":true},{\"navLocation\":\"porterkresge\",\"locationName\":\"Porter/Kresge\",\"visible\":true},{\"navLocation\":\"perkcoffee\",\"locationName\":\"Perks\",\"visible\":true},{\"navLocation\":\"terrafresca\",\"locationName\":\"Terra Fresca\",\"visible\":true},{\"navLocation\":\"portermarket\",\"locationName\":\"Porter Market\",\"visible\":true},{\"navLocation\":\"stevcoffee\",\"locationName\":\"Stevenson Coffee House\",\"visible\":true},{\"navLocation\":\"globalvillage\",\"locationName\":\"Global Village Cafe\",\"visible\":true},{\"navLocation\":\"oakescafe\",\"locationName\":\"Oakes Cafe\",\"visible\":true}]"
+        }
+
+    suspend fun setLocationOrder(userChoice: String) {
+        dataStore.edit {preferences ->
+            preferences[LOCATION_ORDER] = userChoice
+        }
+    }
+
 }
 

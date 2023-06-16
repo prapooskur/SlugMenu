@@ -1,5 +1,6 @@
 package com.pras.slugmenu
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -33,6 +34,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 private const val TAG = "Home"
 
@@ -90,6 +94,19 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues) {
 
     var clickable by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
+
+    val homeList = mutableListOf<LocationOrderItem>()
+    for (i in locationnav.indices) {
+        homeList.add(LocationOrderItem(locationnav[i], locations[i], true))
+    }
+
+    val homeListTwo = homeList.toList()
+
+    val ser = Json.encodeToString(homeListTwo)
+    Log.d(TAG, "Serialized bare list: $ser")
+
+    val deser = Json.decodeFromString<List<LocationOrderItem>>(ser)
+    Log.d(TAG, "deserialized: $deser")
 
     val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
@@ -160,6 +177,19 @@ fun CardList(navController: NavController, innerPadding: PaddingValues) {
 
     var clickable by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
+
+    val homeList = mutableListOf<LocationOrderItem>()
+    for (i in locationnav.indices) {
+        homeList.add(LocationOrderItem(locationnav[i], locations[i], true))
+    }
+
+    val homeListTwo = homeList.toList()
+
+    val ser = Json.encodeToString(homeListTwo)
+    Log.d(TAG, "Serialized bare list: $ser")
+
+    val deser = Json.decodeFromString<List<LocationOrderItem>>(ser)
+    Log.d(TAG, "deserialized: $deser")
 
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
