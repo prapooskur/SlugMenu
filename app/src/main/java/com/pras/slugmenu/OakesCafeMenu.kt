@@ -80,7 +80,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
             val menu = menuDao.getMenu(locationName)
             if (menu != null && menu.cacheDate == currentDate) {
                 menuList = MenuTypeConverters().fromString(menu.menus)
-                Log.d(TAG, "menu list: ${menuList.size}")
+                Log.d(TAG, "menu list: $menuList")
                 dataLoadedState.value = true
             } else {
                 try {
@@ -175,6 +175,8 @@ fun PriceTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues) {
 
     val titles: List<String> = if (menuArray[0].isEmpty() && menuArray[1].isEmpty()) {
         listOf("Closed")
+    } else if (menuArray[1].isEmpty()) {
+        listOf("Breakfast")
     } else {
         listOf("Breakfast", "All Day")
     }
