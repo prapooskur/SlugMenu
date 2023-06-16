@@ -46,10 +46,17 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
     val useGridLayout = remember { mutableStateOf(true) }
     val useCollapsingTopBar = remember { mutableStateOf(false) }
     val locationOrder: List<LocationOrderItem>
+    var cleanLocationOrder: List<LocationOrderItem> = emptyList()
     runBlocking {
         useGridLayout.value = preferencesDataStore.getListPreference.first()
         useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
         locationOrder = Json.decodeFromString(preferencesDataStore.getLocationOrder.first())
+    }
+
+    for (location in locationOrder) {
+        if (location.visible) {
+            cleanLocationOrder += location
+        }
     }
 
     //TODO: Complete collapsing top bar rewrite
@@ -79,9 +86,9 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
         },
         content = {innerPadding ->
             if (useGridLayout.value) {
-                TwoByTwoGrid(navController = navController, innerPadding = innerPadding, locationOrder = locationOrder)
+                TwoByTwoGrid(navController = navController, innerPadding = innerPadding, locationOrder = cleanLocationOrder)
             } else {
-                CardList(navController = navController, innerPadding = innerPadding)
+                CardList(navController = navController, innerPadding = innerPadding, locationOrder = cleanLocationOrder)
             }
         }
     )
@@ -91,26 +98,9 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues, locationOrder: List<LocationOrderItem>) {
-    val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
-    val locations = arrayOf("Nine\nLewis","Cowell\nStevenson","Crown\nMerrill","Porter\nKresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
 
     var clickable by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
-
-    /*
-    val homeList = mutableListOf<LocationOrderItem>()
-    for (i in locationnav.indices) {
-        homeList.add(LocationOrderItem(locationnav[i], locations[i], true))
-    }
-
-    val homeListTwo = homeList.toList()
-
-    val ser = Json.encodeToString(homeListTwo)
-    Log.d(TAG, "Serialized bare list: $ser")
-
-    val deser = Json.decodeFromString<List<LocationOrderItem>>(ser)
-    Log.d(TAG, "deserialized: $deser")
-     */
 
     Log.d(TAG, "location order: $locationOrder")
 
@@ -134,40 +124,37 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues, loca
         items(locationOrder.size) { index ->
             val location: String = locationOrder[index].navLocation
             val name: String = locationOrder[index].locationName
-            val visible: Boolean = locationOrder[index].visible
-            if (visible) {
-                Card(
-                    onClick = {
-                        if (clickable) {
-                            clickable = false
-                            navController.navigate(location)
-                            coroutineScope.launch {
-                                // tween time set in mainactivity.kt
-                                delay(350)
-                                clickable = true
-                            }
+            Card(
+                onClick = {
+                    if (clickable) {
+                        clickable = false
+                        navController.navigate(location)
+                        coroutineScope.launch {
+                            // tween time set in mainactivity.kt
+                            delay(350)
+                            clickable = true
                         }
-                    },
-                    shape = MaterialTheme.shapes.small,
-                    modifier = Modifier
-                        .aspectRatio(1f),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = name,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 18.sp
-                        )
                     }
+                },
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .aspectRatio(1f),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = name,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontSize = 18.sp
+                    )
                 }
             }
         }
@@ -222,26 +209,58 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues, loca
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CardList(navController: NavController, innerPadding: PaddingValues) {
-    val locationnav = arrayOf("ninelewis","cowellstev","crownmerrill","porterkresge","perkcoffee","terrafresca","portermarket","stevcoffee","globalvillage","oakescafe")
-    val locations = arrayOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+fun CardList(navController: NavController, innerPadding: PaddingValues, locationOrder: List<LocationOrderItem>) {
 
     var clickable by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
 
-    val homeList = mutableListOf<LocationOrderItem>()
-    for (i in locationnav.indices) {
-        homeList.add(LocationOrderItem(locationnav[i], locations[i], true))
+    LazyColumn(
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues = innerPadding),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        items(locationOrder.size) { index ->
+            val location: String = locationOrder[index].navLocation
+            val name: String = locationOrder[index].locationName
+            Card(
+                onClick = {
+                    if (clickable) {
+                        clickable = false
+                        navController.navigate(location)
+                        coroutineScope.launch {
+                            // tween time set in mainactivity.kt
+                            delay(350)
+                            clickable = true
+                        }
+                    }
+                },
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .aspectRatio(4f),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = name,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontSize = 18.sp
+                    )
+                }
+            }
+        }
     }
 
-    val homeListTwo = homeList.toList()
-
-    val ser = Json.encodeToString(homeListTwo)
-    Log.d(TAG, "Serialized bare list: $ser")
-
-    val deser = Json.decodeFromString<List<LocationOrderItem>>(ser)
-    Log.d(TAG, "deserialized: $deser")
-
+    /*
+    // original, static implementation
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
         modifier = Modifier
@@ -259,7 +278,6 @@ fun CardList(navController: NavController, innerPadding: PaddingValues) {
 
             Card(
                 onClick = {
-                    // TODO: Verify this works correctly
                     if (clickable) {
                         clickable = false
                         navController.navigate(location)
@@ -292,4 +310,5 @@ fun CardList(navController: NavController, innerPadding: PaddingValues) {
             }
         }
     }
+     */
 }
