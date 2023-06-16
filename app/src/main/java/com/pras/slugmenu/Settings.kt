@@ -5,20 +5,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -27,9 +21,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,7 +32,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -56,9 +47,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
@@ -70,13 +58,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
-import java.security.cert.CertSelector
 import java.security.cert.CertificateException
 import javax.net.ssl.SSLHandshakeException
 
@@ -687,7 +671,7 @@ fun ClearCache(menuDb: MenuDatabase, context: Context) {
                 menuDb.menuDao().dropMenus()
                 menuDb.waitzDao().dropWaitz()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Cache cleared.", Toast.LENGTH_SHORT).show()
+                    ShortToast("Cache cleared.", context)
                 }
             }
         }
@@ -724,7 +708,7 @@ fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState
             )
         },
         headlineContent = { Text(text = "Check for updates") },
-        supportingContent = { Text(text = "Current version is v$appVersion") },
+        supportingContent = { if (appVersion != "selfbuilt") { Text(text = "Current version is v$appVersion") } else {Text(text = "Current version is $appVersion")} },
         modifier = Modifier.clickable {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
@@ -744,13 +728,12 @@ fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState
                 }
                 withContext(Dispatchers.Main) {
                     if (exceptionFound.isNotEmpty()) {
-                        Toast.makeText(context, exceptionFound, Toast.LENGTH_SHORT).show()
+                        ShortToast(exceptionFound, context)
                     } else if (latestVersion != appVersion) {
-//                        Toast.makeText(context, "Update available!", Toast.LENGTH_SHORT).show()
                         updateAvailable.value = true
                         newVersion.value = latestVersion
                     } else {
-                        Toast.makeText(context, "You are on the latest version.", Toast.LENGTH_SHORT).show()
+                        ShortToast("You are on the latest version.", context)
                     }
                 }
             }
