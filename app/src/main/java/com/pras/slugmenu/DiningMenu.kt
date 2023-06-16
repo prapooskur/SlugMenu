@@ -15,7 +15,6 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -26,6 +25,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.pras.slugmenu.ui.elements.CustomFloatingActionButton
@@ -109,7 +109,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     }
 
     if (exceptionFound != "No Exception") {
-        ShortToast(exceptionFound)
+        ShortToast(exceptionFound, LocalContext.current)
     }
 
 
@@ -307,7 +307,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
         }
     }
     if (exceptionFound != "No Exception") {
-        ShortToast(exceptionFound)
+        ShortToast(exceptionFound, LocalContext.current)
     }
 
 
