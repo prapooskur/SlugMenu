@@ -10,18 +10,22 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -32,7 +36,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
@@ -111,6 +117,7 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
 
     val locationOrderState = remember { mutableStateOf(locationOrderInput) }
     val coroutineScope = rememberCoroutineScope()
+    val haptics = LocalHapticFeedback.current
 
     Log.d(TAG,"$paddingValues")
 
@@ -135,33 +142,36 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
         ) {
 
             // todo: find a workaround for the first item not animating bug
-            items(locationOrderState.value.size, {locationOrderState.value[it].navLocation}) { item ->
-                var isVisible by remember { mutableStateOf(locationOrderState.value[item].visible) }
-                ReorderableItem(state, key = item) { isDragging ->
-                    val elevation = animateDpAsState(if (isDragging) 46.dp else 0.dp)
+            items(locationOrderState.value, {it.navLocation}) { item ->
+                var isVisible by remember { mutableStateOf(item.visible) }
+                ReorderableItem(state, key = item.navLocation) { isDragging ->
+                    val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp)
+                    if (isDragging) {
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    }
                     Column(
                         modifier = Modifier
-                            .shadow(elevation.value)
-                            .background(MaterialTheme.colorScheme.surface)
+//                            .shadow(elevation.value)
+                            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(elevation.value))
                     ) {
                         if (resetPressed.value) {
                             isVisible = true
-                            locationOrderState.value[item].visible = true
-                            Log.d(TAG,"reset button pressed, reset ${locationOrderState.value[item].locationName} checkbox status")
+                            item.visible = true
+                            Log.d(TAG,"reset button pressed, reset ${item.locationName} checkbox status")
                         }
                         ListItem(
                             leadingContent = {
                                 Icon(Icons.Default.Menu, contentDescription = "Handle")
                             },
                             headlineContent = {
-                                Text(locationOrderState.value[item].locationName)
+                                Text(item.locationName)
                             },
                             trailingContent = {
                                 Checkbox(
                                     checked = isVisible,
                                     onCheckedChange = {
                                         isVisible = !isVisible
-                                        locationOrderState.value[item].visible = isVisible
+                                        item.visible = isVisible
                                         coroutineScope.launch {
                                             preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrderState.value))
                                         }
@@ -170,11 +180,12 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
                             },
                             modifier = Modifier.clickable {
                                 isVisible = !isVisible
-                                locationOrderState.value[item].visible = isVisible
+                                item.visible = isVisible
                                 coroutineScope.launch {
                                     preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrderState.value))
                                 }
-                            }
+                            },
+                            colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(elevation.value))
                         )
 
                     }
