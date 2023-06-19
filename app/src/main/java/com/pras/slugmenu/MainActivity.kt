@@ -1,6 +1,7 @@
 package com.pras.slugmenu
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -98,7 +99,15 @@ class MainActivity : ComponentActivity() {
             }
 
             SlugMenuTheme(darkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value) {
-                SystemBarsColor(color = Color.Transparent)
+                //SystemBarsColor(color = Color.Transparent)
+
+                
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    TransparentSystemBars()
+                } else {
+                    NavigationBarColor(Color.Black)
+                }
+
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -115,15 +124,15 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MenuBarColor(color: Color) {
+fun StatusBarColor(color: Color) {
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(color = color)
 }
 
+
 @Composable
-fun SystemBarsColor(color: Color) {
+fun NavigationBarColor(color: Color) {
     val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(color = color)
     systemUiController.setNavigationBarColor(color = color)
 }
 
