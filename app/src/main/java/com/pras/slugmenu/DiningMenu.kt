@@ -422,7 +422,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
             // Otherwise, display a loading indicator
             Surface {
                 Column {
-                    TopBarWaitz(titleText = locationName, navController = navController)
+                    TopBarClean(titleText = locationName, navController = navController)
                 }
             }
             Box(
