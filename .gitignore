@@ -18,3 +18,4 @@ local.properties
 
 app/release
 install.sh
+install.ps1
