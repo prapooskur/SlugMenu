@@ -19,3 +19,4 @@ local.properties
 app/release
 install.sh
 install.ps1
+uninstall.ps1
