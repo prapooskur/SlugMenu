@@ -74,7 +74,7 @@ suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
                         cleanSeparator = cleanSeparator.substring(0, cleanSeparator.length - 95)
                         cleanSeparator += " --"
                     }
-                    listItems.add(cleanSeparator.replace("--", "—"))
+                    listItems.add(cleanSeparator)
                 }
 
                 if (items.length > 42 && items !in listItems) {
