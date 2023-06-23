@@ -2,6 +2,7 @@ package com.pras.slugmenu
 
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -57,18 +59,15 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
         listOf("No menu available")
     } else if (menuArray.size < 3 || (menuArray[0].isEmpty() && menuArray[1].isEmpty() && menuArray[2].isEmpty() && menuArray[3].isEmpty())) {
         listOf("Closed")
-    } else if (menuArray[2].isEmpty() && menuArray[3].isEmpty()) {
-        listOf("Breakfast", "Lunch")
     } else if (menuArray[3].isEmpty()) {
         listOf("Breakfast", "Lunch", "Dinner")
     } else {
         listOf("Breakfast", "Lunch", "Dinner", "Late Night")
     }
 
-    val initState: Int
-    if (currentDay == DayOfWeek.SATURDAY || currentDay == DayOfWeek.SUNDAY) {
+    val initState = if (currentDay == DayOfWeek.SATURDAY || currentDay == DayOfWeek.SUNDAY) {
         // weekend hours
-        initState = when {
+        when {
             titles.size <= 1 -> 0
             //Breakfast from 12AM-11AM
             (currentHour in 0..11) -> 0
@@ -84,7 +83,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
         }
     } else {
         //normal hours
-        initState = when {
+         when {
             titles.size <= 1 -> 0
             //Breakfast from 12AM-11:30AM
             (currentHour in 0..10) || (currentHour == 11 && currentMinute < 30) -> 0
@@ -164,7 +163,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
             pageCount = titles.size,
             state = pagerState
         ) { state ->
-            if (titles[0] != "No menu available") {
+            if (titles[0] != "No menu available" && titles[0] != "Closed") {
                 PrintMenu(itemList = menuArray[state])
             }
 
@@ -218,6 +217,17 @@ fun PrintMenu(itemList: MutableList<String>) {
                     )
                 }
             }
+        }
+    } else {
+        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "Not Available Today",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                //eyeballed it, this is close enough to actual center
+                modifier = Modifier.offset(y = (-40).dp)
+            )
         }
     }
 }
