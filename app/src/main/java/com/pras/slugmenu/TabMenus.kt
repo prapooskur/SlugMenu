@@ -55,9 +55,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
     Log.d(TAG, "day: $currentDay")
 //    Log.d(TAG,"hour: "+currentHour)
 
-    val titles: List<String> = if (menuArray.isEmpty()) {
-        listOf("No menu available")
-    } else if (menuArray.size < 3 || (menuArray[0].isEmpty() && menuArray[1].isEmpty() && menuArray[2].isEmpty() && menuArray[3].isEmpty())) {
+    val titles: List<String> = if (menuArray.isEmpty() || menuArray.all { it.isEmpty() }) {
         listOf("Closed")
     } else if (menuArray[3].isEmpty()) {
         listOf("Breakfast", "Lunch", "Dinner")
@@ -165,6 +163,8 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
         ) { state ->
             if (titles[0] != "No menu available" && titles[0] != "Closed") {
                 PrintMenu(itemList = menuArray[state])
+            } else {
+                PrintMenu(itemList = mutableListOf("Not Open Today"))
             }
 
             // commented out for now, since some holidays trigger this state in the non-custom date menu
@@ -179,7 +179,7 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
 
 @Composable
 fun PrintMenu(itemList: MutableList<String>) {
-    if (itemList.size > 0) {
+    if (itemList.size > 0 && itemList[0] != "Not Open Today") {
         LazyColumn (
             modifier = Modifier
                 .fillMaxWidth()
@@ -219,9 +219,10 @@ fun PrintMenu(itemList: MutableList<String>) {
             }
         }
     } else {
+        val unavailableText = itemList.getOrElse(0) { "Not Available Today" }
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "Not Available Today",
+                text = unavailableText,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
