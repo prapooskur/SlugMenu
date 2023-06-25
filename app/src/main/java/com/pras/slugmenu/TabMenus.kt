@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
@@ -289,7 +290,7 @@ fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
             }
         }
     } else {
-        Column(modifier = Modifier.padding(padding)) {
+        Column(modifier = Modifier.padding(padding).fillMaxWidth()) {
             TabRow(
                 selectedTabIndex = 0
             ) {
@@ -311,6 +312,16 @@ fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
                     }
                 )
             }
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "Not Open Today",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                    //eyeballed it, this is close enough to actual center
+                    modifier = Modifier.offset(y = (-40).dp)
+                )
+            }
         }
     }
 }
@@ -318,7 +329,7 @@ fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
 //Menus with multiple lists of prices - Oakes
 @Composable
 fun PrintOakesMenu(itemList: MutableList<String>) {
-    if (itemList.size > 0) {
+    if (itemList.size > 0 && itemList[0] != "Not Open Today") {
         LazyColumn (contentPadding = WindowInsets.navigationBars.asPaddingValues()) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
@@ -370,11 +381,17 @@ fun PrintOakesMenu(itemList: MutableList<String>) {
             }
         }
     } else {
-        ListItem(
-            modifier = Modifier.fillMaxWidth(),
-            headlineContent = {
-            }
-        )
+        val unavailableText = itemList.getOrElse(0) { "Not Available Today" }
+        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = unavailableText,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                //eyeballed it, this is close enough to actual center
+                modifier = Modifier.offset(y = (-40).dp)
+            )
+        }
     }
 }
 

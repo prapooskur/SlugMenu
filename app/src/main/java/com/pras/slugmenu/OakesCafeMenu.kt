@@ -126,7 +126,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
                     if (menuList.isNotEmpty()) {
                         PriceTabBar(menuList,padding)
                     } else {
-                        PriceTabBar(arrayOf(mutableListOf(), mutableListOf()),padding)
+                        PriceTabBar(arrayOf(mutableListOf("Not Open Today"), mutableListOf()),padding)
                     }
                 },
                 //floating action button - shows hours bottom sheet on press
@@ -171,10 +171,8 @@ fun PriceTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues) {
 //    Log.d(TAG,"hour: "+currentHour)
 
 
-    val titles: List<String> = if (menuArray[0].isEmpty() && menuArray[1].isEmpty()) {
+    val titles: List<String> = if ((menuArray[0].isEmpty() || menuArray[0] == mutableListOf("Not Open Today")) && menuArray[1].isEmpty()) {
         listOf("Closed")
-    } else if (menuArray[1].isEmpty()) {
-        listOf("Breakfast")
     } else {
         listOf("Breakfast", "All Day")
     }
