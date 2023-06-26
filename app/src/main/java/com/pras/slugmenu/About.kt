@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -143,7 +142,7 @@ fun ContactItem(context: Context) {
             )
         },
         headlineContent = { Text(text = "Contact") },
-        supportingContent = { Text(text = "Send suggestions, feedback, etc to slugmenudev@gmail.com") },
+        supportingContent = { Text(text = "Send suggestions, feedback, etc. to slugmenudev@gmail.com") },
         modifier = Modifier.clickable {
             val mail = Uri.parse("mailto:slugmenudev@gmail.com")
             val intent = Intent(Intent.ACTION_SENDTO, mail)

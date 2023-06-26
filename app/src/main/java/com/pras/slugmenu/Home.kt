@@ -94,7 +94,7 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
 
     val context = LocalContext.current
     var pressedTime: Long = 0
-    BackHandler() {
+    BackHandler {
         if (pressedTime + 2000 > System.currentTimeMillis()) {
             // if time is greater than 2 sec we are closing the application.
             (context as? Activity)?.finish()

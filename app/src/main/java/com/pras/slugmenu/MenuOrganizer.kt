@@ -17,7 +17,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -35,13 +34,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -199,42 +196,6 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
             preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrderState.value.toList()))
             resetPressed.value = false
             Log.d(TAG, "reset pressed, set preferences to default and set resetpressed to false.")
-        }
-    }
-}
-
-@Composable
-fun TestReorderableList(paddingValues: PaddingValues) {
-    // working test implementation
-    val data = remember { mutableStateOf(List(100) { "Item $it" }) }
-    val state = rememberReorderableLazyListState(onMove = { from, to ->
-        data.value = data.value.toMutableList().apply {
-            add(to.index, removeAt(from.index))
-        }
-    })
-
-
-    Column(modifier = Modifier.padding(paddingValues)) {
-        LazyColumn(
-            state = state.listState,
-            modifier = Modifier
-                .reorderable(state)
-                .detectReorderAfterLongPress(state)
-        ) {
-            items(data.value.size, { data.value[it] }) { item ->
-                ReorderableItem(state, key = item) { isDragging ->
-                    val elevation = animateDpAsState(if (isDragging) 46.dp else 0.dp)
-                    Column(
-                        modifier = Modifier
-                            .shadow(elevation.value)
-                            .background(MaterialTheme.colorScheme.surface)
-                    ) {
-                        ListItem(
-                            headlineContent = { Text(data.value[item]) }
-                        )
-                    }
-                }
-            }
         }
     }
 }

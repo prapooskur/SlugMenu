@@ -99,12 +99,11 @@ class MainActivity : ComponentActivity() {
             }
 
             SlugMenuTheme(darkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value) {
-                //SystemBarsColor(color = Color.Transparent)
 
-                
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     TransparentSystemBars()
                 } else {
+                    StatusBarColor(Color.Transparent)
                     NavigationBarColor(Color.Black)
                 }
 
@@ -115,6 +114,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Init("home", useMaterialYou, themeChoice, userSettings)
                 }
+
             }
         }
 
