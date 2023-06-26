@@ -2,10 +2,6 @@ package com.pras.slugmenu
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -21,8 +17,6 @@ import kotlinx.serialization.json.Json
 import java.time.LocalDate
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import java.time.Duration
@@ -93,7 +87,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                             val menuType = location.type
 
                             try {
-                                val menuList: Array<MutableList<String>> = when (menuType) {
+                                val menuList: List<List<String>> = when (menuType) {
                                     LocationType.Dining     -> getDiningMenuAsync(locationUrl)
                                     LocationType.NonDining  -> getSingleMenuAsync(locationUrl)
                                     LocationType.Oakes      -> getOakesMenuAsync(locationUrl)
@@ -161,9 +155,9 @@ object BackgroundDownloadScheduler {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val locationNames = listOf<String>("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
-        val locationUrls =  listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
-        val locationTypes = listOf<LocationType>(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
+        val locationNames = listOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+        val locationUrls =  listOf("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
+        val locationTypes = listOf(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
 
         val mutableLocationList = mutableListOf<LocationListItem>()
         for (i in locationNames.indices) {
@@ -199,9 +193,9 @@ object BackgroundDownloadScheduler {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val locationNames = listOf<String>("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
-        val locationUrls =  listOf<String>("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
-        val locationTypes = listOf<LocationType>(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
+        val locationNames = listOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
+        val locationUrls =  listOf("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
+        val locationTypes = listOf(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
 
         val mutableLocationList = mutableListOf<LocationListItem>()
         for (i in locationNames.indices) {
