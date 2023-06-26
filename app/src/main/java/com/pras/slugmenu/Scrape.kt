@@ -80,7 +80,11 @@ suspend fun getWebData (inputUrl: String): List<List<String>> {
                 if (items.length > 42 && items !in listItems) {
                     var cleanItem = items.substring(29, items.length - 13)
                     // correct for typos in the menu items
-                    cleanItem = cleanItem.replace("&amp;", "&").replace("Iced Match ", "Iced Matcha ").replace("Mint Condition Condition","Mint Chocolate Cookie")
+                    cleanItem = cleanItem
+                        .replace("&amp;", "&")
+                        .replace("Iced Match ", "Iced Matcha ")
+                        .replace("Mint Condition Condition","Mint Chocolate Cookie")
+                        .replace("Whiped Cream", "Whipped Cream")
 
                     if (!listItems.contains(cleanItem)) {
                         Log.d(TAG, "clean item: $cleanItem")
