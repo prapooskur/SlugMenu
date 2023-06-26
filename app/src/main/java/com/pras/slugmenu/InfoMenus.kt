@@ -4,7 +4,6 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
@@ -31,7 +30,9 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
 import java.security.cert.CertificateException
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.MonthDay
 import java.time.format.DateTimeFormatter
 import javax.net.ssl.SSLHandshakeException
 
@@ -47,7 +48,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
     val dataLoadedState = remember { mutableStateOf(false) }
 
     val waitzDao = menuDatabase.waitzDao()
-    var waitzData by remember { mutableStateOf<Array<MutableMap<String,MutableList<String>>>>(arrayOf(mutableMapOf(),mutableMapOf())) }
+    var waitzData by remember { mutableStateOf<List<Map<String,List<String>>>>(listOf(mapOf(),mapOf())) }
     var exceptionFound by remember { mutableStateOf("No Exception") }
 
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
@@ -58,7 +59,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
         withContext(Dispatchers.IO) {
             val cachedWaitzData = waitzDao.getData(currentTime)
             if (cachedWaitzData != null && cachedWaitzData.cacheTime == currentTime) {
-                waitzData = arrayOf(WaitzTypeConverters().fromWaitzString(cachedWaitzData.live),WaitzTypeConverters().fromWaitzString(cachedWaitzData.compare))
+                waitzData = listOf(WaitzTypeConverters().fromWaitzString(cachedWaitzData.live),WaitzTypeConverters().fromWaitzString(cachedWaitzData.compare))
                 dataLoadedState.value = true
             } else {
                 try {
@@ -164,295 +165,21 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
     }
 }
 
-@Composable
-fun WaitzDialogRewrite(showDialog: MutableState<Boolean>, locationName: String, menuDatabase: MenuDatabase) {
-
-    val locIndex = if (locationName == "Cowell/Stev") { "Cowell/Stevenson" } else { locationName }
-
-    val dataLoadedState = remember { mutableStateOf(false) }
-
-    val waitzDao = menuDatabase.waitzDao()
-    var waitzData by remember { mutableStateOf<Array<MutableMap<String,MutableList<String>>>>(arrayOf(mutableMapOf(),mutableMapOf())) }
-    var exceptionFound by remember { mutableStateOf("No Exception") }
-
-    if (showDialog.value) {
-        LaunchedEffect(Unit) {
-            dataLoadedState.value = false
-            val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-            val currentTime = LocalDateTime.now().format(dateFormatter).toString()
-            // Launch a coroutine to retrieve the menu from the database
-            withContext(Dispatchers.IO) {
-                val cachedWaitzData = waitzDao.getData(currentTime)
-                if (cachedWaitzData != null && cachedWaitzData.cacheTime == currentTime) {
-                    waitzData = arrayOf(WaitzTypeConverters().fromWaitzString(cachedWaitzData.live),WaitzTypeConverters().fromWaitzString(cachedWaitzData.compare))
-                    dataLoadedState.value = true
-                } else {
-                    try {
-                        waitzDao.dropWaitz()
-                        waitzData = getWaitzDataAsync()
-                        waitzDao.insertWaitz(
-                            Waitz (
-                                currentTime,
-                                WaitzTypeConverters().fromWaitzList(waitzData[0]),
-                                WaitzTypeConverters().fromWaitzList(waitzData[1])
-                            )
-                        )
-                        //TODO: unify these into one catch block?
-                    } catch (e: UnresolvedAddressException) {
-                        exceptionFound = "No Internet connection"
-                    } catch (e: SocketTimeoutException) {
-                        exceptionFound = "Connection timed out"
-                    } catch (e: UnknownHostException) {
-                        exceptionFound = "Failed to resolve URL"
-                    } catch (e: CertificateException) {
-                        exceptionFound = "Website's SSL certificate is invalid"
-                    } catch (e: SSLHandshakeException) {
-                        exceptionFound = "SSL handshake failed"
-                    } catch (e: Exception) {
-                        exceptionFound = "Exception: $e"
-                    }
-                    dataLoadedState.value = true
-                }
-
-            }
-        }
-
-        val locationData = waitzData[0][locIndex]
-        val compareData = waitzData[1][locIndex]
-
-        if (!dataLoadedState.value) {
-            AlertDialog(
-                onDismissRequest = {
-                    // Dismiss the dialog when the user clicks outside the dialog or on the back
-                    // button. If you want to disable that functionality, simply use an empty
-                    // onDismissRequest.
-                    showDialog.value = false
-                },
-                title = {
-                    Text(text = "⚫ Waitz: $locationName")
-                },
-                text = {
-                    CircularProgressIndicator()
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            showDialog.value = false
-                        }
-                    ) {
-                        Text("Close")
-                    }
-
-                }
-            )
-        } else {
-            AlertDialog(
-                onDismissRequest = {
-                    // Dismiss the dialog when the user clicks outside the dialog or on the back
-                    // button. If you want to disable that functionality, simply use an empty
-                    // onDismissRequest.
-                    showDialog.value = false
-                },
-                title = {
-                    if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 4 || compareData.size < 4 || locationData[3] == "false") {
-                        Text(text = "⚫ Waitz: $locationName")
-                    } else if (locationData[0].toInt() <= 45) {
-                        Text(text = "🟢 Waitz: $locationName")
-                    } else if (locationData[0].toInt() <= 80) {
-                        Text(text = "🟡 Waitz: $locationName")
-                    } else {
-                        Text(text = "🔴 Waitz: $locationName")
-                    }
-                },
-                text = {
-                    if (exceptionFound != "No Exception") {
-                        Text(
-                            text = exceptionFound,
-                            fontSize = 16.sp
-                        )
-                    } else if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 4 || compareData.size < 4 || locationData[3] == "false") {
-                        Text(
-                            text = "No data available.",
-                            fontSize = 16.sp
-                        )
-                    } else {
-                        if (compareData[3] == "only one location") {
-                            Text(
-                                text = "Busyness: ${locationData[0]}%\n" +
-                                        "People: ${locationData[1]}/${locationData[2]}\n" +
-                                        "Next hour: ${compareData[0].substring(18)}\n" +
-                                        "Today: ${compareData[1].substring(9)}\n" +
-                                        "Peak hours: ${compareData[2].substring(15)}",
-                                fontSize = 16.sp
-                            )
-                        } else {
-                            Text(
-                                text = "Busyness: ${locationData[0]}%\n" +
-                                        "People: ${locationData[1]}/${locationData[2]}\n" +
-                                        "Next hour: ${compareData[0].substring(18)}\n" +
-                                        "Today: ${compareData[1].substring(9)}\n" +
-                                        "Peak hours: ${compareData[2].substring(15)}\n" +
-                                        "Best location: ${compareData[3].substringBefore(" is best right now")}",
-                                fontSize = 16.sp
-                            )
-                        }
-                    }
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            showDialog.value = false
-                        }
-                    ) {
-                        Text("Close")
-                    }
-
-                }
-            )
-        }
-
-
-    }
-}
-
-@Composable
-fun WaitzOneDialogRewrite(showDialog: MutableState<Boolean>, locationName: String, menuDatabase: MenuDatabase) {
-
-    val locIndex = if (locationName == "Cowell/Stev") { "Cowell/Stevenson" } else { locationName }
-
-    val dataLoadedState = remember { mutableStateOf(false) }
-
-    val waitzDao = menuDatabase.waitzDao()
-    var waitzData by remember { mutableStateOf<Array<MutableMap<String,MutableList<String>>>>(arrayOf(mutableMapOf(),mutableMapOf())) }
-    var exceptionFound by remember { mutableStateOf("No Exception") }
-
-    if (showDialog.value) {
-        LaunchedEffect(Unit) {
-            dataLoadedState.value = false
-            val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-            val currentTime = LocalDateTime.now().format(dateFormatter).toString()
-            // Launch a coroutine to retrieve the menu from the database
-            withContext(Dispatchers.IO) {
-                val cachedWaitzData = waitzDao.getData(currentTime)
-                if (cachedWaitzData != null && cachedWaitzData.cacheTime == currentTime) {
-                    waitzData = arrayOf(WaitzTypeConverters().fromWaitzString(cachedWaitzData.live),WaitzTypeConverters().fromWaitzString(cachedWaitzData.compare))
-                    dataLoadedState.value = true
-                } else {
-                    try {
-                        waitzDao.dropWaitz()
-                        waitzData = getWaitzDataAsync()
-                        waitzDao.insertWaitz(
-                            Waitz (
-                                currentTime,
-                                WaitzTypeConverters().fromWaitzList(waitzData[0]),
-                                WaitzTypeConverters().fromWaitzList(waitzData[1])
-                            )
-                        )
-                        //TODO: unify these into one catch block?
-                    } catch (e: UnresolvedAddressException) {
-                        exceptionFound = "No Internet connection"
-                    } catch (e: SocketTimeoutException) {
-                        exceptionFound = "Connection timed out"
-                    } catch (e: UnknownHostException) {
-                        exceptionFound = "Failed to resolve URL"
-                    } catch (e: CertificateException) {
-                        exceptionFound = "Website's SSL certificate is invalid"
-                    } catch (e: SSLHandshakeException) {
-                        exceptionFound = "SSL handshake failed"
-                    } catch (e: Exception) {
-                        exceptionFound = "Exception: $e"
-                    }
-                    dataLoadedState.value = true
-                }
-
-            }
-        }
-
-        val locationData = waitzData[0][locIndex]
-        val compareData = waitzData[1][locIndex]
-
-
-        AlertDialog(
-            onDismissRequest = {
-                // Dismiss the dialog when the user clicks outside the dialog or on the back
-                // button. If you want to disable that functionality, simply use an empty
-                // onDismissRequest.
-                showDialog.value = false
-            },
-            title = {
-                if (!dataLoadedState.value || locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 4 || compareData.size < 4 || locationData[3] == "false") {
-                    Text(text = "⚫ Waitz: $locationName")
-                } else if (locationData[0].toInt() <= 45) {
-                    Text(text = "🟢 Waitz: $locationName")
-                } else if (locationData[0].toInt() <= 80) {
-                    Text(text = "🟡 Waitz: $locationName")
-                } else {
-                    Text(text = "🔴 Waitz: $locationName")
-                }
-            },
-            text = {
-                if (!dataLoadedState.value) {
-                    CircularProgressIndicator()
-                    Text("\n\n\n\n\n\n\n")
-                } else if (exceptionFound != "No Exception") {
-                    Text(
-                        text = exceptionFound,
-                        fontSize = 16.sp
-                    )
-                } else if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 4 || compareData.size < 4 || locationData[3] == "false") {
-                    Text(
-                        text = "No data available.",
-                        fontSize = 16.sp
-                    )
-                } else {
-                    if (compareData[3] == "only one location") {
-                        Text(
-                            text = "Busyness: ${locationData[0]}%\n" +
-                                    "People: ${locationData[1]}/${locationData[2]}\n" +
-                                    "Next hour: ${compareData[0].substring(18)}\n" +
-                                    "Today: ${compareData[1].substring(9)}\n" +
-                                    "Peak hours: ${compareData[2].substring(15)}",
-                            fontSize = 16.sp
-                        )
-                    } else {
-                        Text(
-                            text = "Busyness: ${locationData[0]}%\n" +
-                                    "People: ${locationData[1]}/${locationData[2]}\n" +
-                                    "Next hour: ${compareData[0].substring(18)}\n" +
-                                    "Today: ${compareData[1].substring(9)}\n" +
-                                    "Peak hours: ${compareData[2].substring(15)}\n" +
-                                    "Best location: ${compareData[3].substringBefore(" is best right now")}",
-                            fontSize = 16.sp
-                        )
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDialog.value = false
-                    }
-                ) {
-                    Text("Close")
-                }
-
-            }
-        )
-
-
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {
-    val nineTenHours =  arrayOf(
+    val nineTenHours = listOf(
         "Monday - Friday",
         "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM",
         "Saturday/Sunday",
         "Breakfast: 7–10 AM\nBrunch: 10 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM"
     )
-    val cowellStevHours = arrayOf(
+    val nineTenSummerHours = listOf(
+        "Monday - Friday",
+
+    )
+
+    val cowellStevHours = listOf(
         "Monday - Thursday",
         "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM",
         "Friday",
@@ -462,11 +189,21 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Sunday",
         "Breakfast: 7–10 AM\nBrunch: 10 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM"
     )
-    val crownMerrillHours = arrayOf(
+    val cowellStevSummerHours = listOf(
+        "Monday - Friday",
+        ""
+    )
+
+    val crownMerrillHours = listOf(
         "Monday - Friday",
         "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM"
     )
-    val porterKresgeHours = arrayOf(
+    val crownMerrillSummerHours = listOf(
+        "Monday-Friday",
+        ""
+    )
+
+    val porterKresgeHours = listOf(
         "Monday - Thursday",
         "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30AM\nLunch: 11:30AM–2PM\nContinuous Dining: 2–5PM\nDinner: 5–8PM\nLate Night: 8–11PM",
         "Friday",
@@ -476,54 +213,96 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Sunday",
         "Breakfast: 7–10AM\nBrunch: 10AM–2PM\nContinuous Dining: 2–5PM\nDinner: 5–8PM\nLate Night: 8–11 PM"
     )
+    val porterKresgeSummerHours = listOf(
+        "Monday - Friday",
+        ""
+    )
 
-    val perkHours = arrayOf(
+
+    val perkHours = listOf(
         "Monday - Friday",
         "Open: 8 AM - 5 PM"
     )
-    val terraFrescaHours = arrayOf(
+    val perkSummerHours = listOf(
+        "Monday - Friday",
+        "Open: 8 AM - 2:30 PM"
+    )
+
+
+    val terraFrescaHours = listOf(
         "Monday - Thursday",
         "Open: 8 AM - 5 PM",
         "Friday",
         "Open: 8 AM - 4 PM"
     )
-    val porterMarketHours = arrayOf(
+
+    val porterMarketHours = listOf(
         "Monday - Friday",
         "Open: 8 AM - 6:30 PM",
         "Saturday",
         "Open: 10 AM - 5 PM",
     )
-    val stevCoffeeHours = arrayOf(
+
+    val stevCoffeeHours = listOf(
         "Monday - Friday",
         "Open: 8 AM - 5 PM",
     )
-    val globalVillageHours = arrayOf(
+
+    val globalVillageHours = listOf(
         "Monday - Thursday",
         "Open: 8 AM - 8:30 PM",
         "Friday",
         "Open: 8 AM - 5 PM"
     )
+    val globalVillageSummerHours = listOf(
+        "Monday - Friday",
+        "Open: 8 AM - 2:30 PM"
+    )
 
-    val oakesCafeHours = arrayOf(
+
+    val oakesCafeHours = listOf(
         "Monday - Thursday",
         "Open: 8 AM - 8 PM",
         "Friday",
         "Open: 9 AM - 7 PM"
     )
 
-    val hoursDictionary = mapOf(
-        "Nine/Lewis" to nineTenHours,
-        "Cowell/Stevenson" to cowellStevHours,
-        "Cowell/Stev" to cowellStevHours,
-        "Crown/Merrill" to crownMerrillHours,
-        "Porter/Kresge" to porterKresgeHours,
-        "Perk Coffee Bars" to perkHours,
-        "Terra Fresca" to terraFrescaHours,
-        "Porter Market" to porterMarketHours,
-        "Stevenson Coffee House" to stevCoffeeHours,
-        "Global Village Cafe" to globalVillageHours,
-        "Oakes Cafe" to oakesCafeHours
-    )
+    val currentDate = MonthDay.from(LocalDate.now())
+    val summerStartDate = MonthDay.of(6,25)
+    val summerEndDate = MonthDay.of(9,2)
+
+    val isSummer = (currentDate.isAfter(summerStartDate) && currentDate.isBefore(summerEndDate))
+
+    val hoursDictionary: Map<String, List<String>> = if (!isSummer)
+        {
+            mapOf(
+                "Nine/Lewis" to nineTenHours,
+                "Cowell/Stevenson" to cowellStevHours,
+                "Cowell/Stev" to cowellStevHours,
+                "Crown/Merrill" to crownMerrillHours,
+                "Porter/Kresge" to porterKresgeHours,
+                "Perk Coffee Bars" to perkHours,
+                "Terra Fresca" to terraFrescaHours,
+                "Porter Market" to porterMarketHours,
+                "Stevenson Coffee House" to stevCoffeeHours,
+                "Global Village Cafe" to globalVillageHours,
+                "Oakes Cafe" to oakesCafeHours
+            )
+        } else {
+            mapOf(
+                "Nine/Lewis" to nineTenSummerHours,
+                "Cowell/Stevenson" to cowellStevSummerHours,
+                "Cowell/Stev" to cowellStevSummerHours,
+                "Crown/Merrill" to crownMerrillSummerHours,
+                "Porter/Kresge" to porterKresgeSummerHours,
+                "Perk Coffee Bars" to perkSummerHours,
+                "Terra Fresca" to terraFrescaHours,
+                "Porter Market" to porterMarketHours,
+                "Stevenson Coffee House" to stevCoffeeHours,
+                "Global Village Cafe" to globalVillageSummerHours,
+                "Oakes Cafe" to oakesCafeHours
+            )
+        }
 
     if (openBottomSheet.value) {
         ModalBottomSheet(
@@ -533,7 +312,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
             ListItem(
                 headlineContent = {
                     Text(
-                        text = "Hours for $locationName",
+                        text = if (!isSummer) { "Hours for $locationName" } else { "Summer Hours for $locationName" },
                         fontWeight = FontWeight.ExtraBold,
                         fontSize = 18.sp
                     )
@@ -545,9 +324,9 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
             )
 
             LazyColumn {
-                items(hoursDictionary.getOrDefault(locationName, arrayOf()).size) { item ->
-                    val element = hoursDictionary.getOrDefault(locationName, arrayOf())[item]
-                    val maxElement = hoursDictionary.getOrDefault(locationName, arrayOf()).size
+                items(hoursDictionary.getOrDefault(locationName, listOf()).size) { item ->
+                    val element = hoursDictionary.getOrDefault(locationName, listOf())[item]
+                    val maxElement = hoursDictionary.getOrDefault(locationName, listOf()).size
                     val isTitle = !element.contains(":")
                     if (isTitle && item != 0) {
                         Divider()

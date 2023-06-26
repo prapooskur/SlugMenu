@@ -41,7 +41,7 @@ data class Compare(
     val string: String = "only one location"
 )
 
-suspend fun scrapeWaitzData(): Array<String> {
+suspend fun scrapeWaitzData(): List<String> {
     val client = HttpClient(CIO)
     val liveResponse: HttpResponse = client.get("https://waitz.io/live/ucsc")
     val liveBody: String = liveResponse.body()
@@ -50,10 +50,10 @@ suspend fun scrapeWaitzData(): Array<String> {
     val compareBody: String = compareResponse.body()
 
     client.close()
-    return arrayOf(liveBody,compareBody)
+    return listOf(liveBody,compareBody)
 }
 
-suspend fun getWaitzData(): Array<MutableMap<String, MutableList<String>>> {
+suspend fun getWaitzData(): List<Map<String, List<String>>> {
     val jsonResponse = scrapeWaitzData()
     val liveBody = jsonResponse[0]
     val compareBody = jsonResponse[1]
@@ -63,7 +63,7 @@ suspend fun getWaitzData(): Array<MutableMap<String, MutableList<String>>> {
     val locationData: LocationData = json.decodeFromString(liveBody)
     val compareData: CompareData = json.decodeFromString(compareBody.replace("<strong>","").replace("</strong>",""))
 
-    val allLocationDictionary = mutableMapOf<String, MutableList<String>>()
+    val allLocationDictionary = mutableMapOf<String, List<String>>()
     locationData.data.forEach { location ->
         val locationName = location.name.replace(" / ","/").replace("College 9","Nine").replace("John R Lewis","Lewis").replace(" Dining Hall","").replace("Cafe Main","Cafe")
         val currentLocation = mutableListOf<String>()
@@ -71,11 +71,11 @@ suspend fun getWaitzData(): Array<MutableMap<String, MutableList<String>>> {
         currentLocation.add(location.people.toString())
         currentLocation.add(location.capacity.toString())
         currentLocation.add(location.isAvailable.toString())
-        allLocationDictionary[locationName] = currentLocation
+        allLocationDictionary[locationName] = currentLocation.toList()
     }
 
 
-    val allCompareDictionary = mutableMapOf<String, MutableList<String>>()
+    val allCompareDictionary = mutableMapOf<String, List<String>>()
     compareData.data.forEach { comparison ->
         if (comparison.comparison != null && comparison.name != "null") {
             val locationName = comparison.name.replace(" / ","/").replace("College 9","Nine").replace("John R Lewis","Lewis").replace(" Dining Hall","").replace("Cafe Main","Cafe")
@@ -83,14 +83,14 @@ suspend fun getWaitzData(): Array<MutableMap<String, MutableList<String>>> {
             comparison.comparison.forEach { item ->
                 currentCompare.add(item.string)
             }
-            allCompareDictionary[locationName] = currentCompare
+            allCompareDictionary[locationName] = currentCompare.toList()
         }
     }
 
 
-    return arrayOf(allLocationDictionary,allCompareDictionary)
+    return listOf(allLocationDictionary.toMap(),allCompareDictionary.toMap())
 }
 
-suspend fun getWaitzDataAsync(): Array<MutableMap<String, MutableList<String>>> = withContext(Dispatchers.IO) {
+suspend fun getWaitzDataAsync(): List<Map<String, List<String>>> = withContext(Dispatchers.IO) {
     getWaitzData()
 }

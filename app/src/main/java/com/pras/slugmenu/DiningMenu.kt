@@ -56,7 +56,7 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
     val menuDao = menuDatabase.menuDao()
 
     // Define a state to hold the retrieved Menu object
-    var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf(), mutableListOf())) }
+    var menuList by remember { mutableStateOf<List<List<String>>>(listOf(listOf(), listOf())) }
 
     // Define a state to hold a flag indicating whether the data has been loaded from the cache
     val dataLoadedState = remember { mutableStateOf(false) }
@@ -283,7 +283,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
 
     val showBottomSheet = remember { mutableStateOf(false) }
 
-    var menuList: Array<MutableList<String>> by remember { mutableStateOf(arrayOf(mutableListOf(), mutableListOf(), mutableListOf(), mutableListOf())) }
+    var menuList: List<List<String>> by remember { mutableStateOf(listOf(listOf(), listOf(), listOf(), listOf())) }
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database

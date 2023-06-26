@@ -65,7 +65,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
     val currentDate = LocalDate.now().toString()
     val menuDao = menuDatabase.menuDao()
 
-    var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf(),mutableListOf())) }
+    var menuList by remember { mutableStateOf<List<List<String>>>(listOf(listOf(),listOf())) }
     val dataLoadedState = remember { mutableStateOf(false) }
     var exceptionFound by remember { mutableStateOf("No Exception") }
 
@@ -126,7 +126,7 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
                     if (menuList.isNotEmpty()) {
                         PriceTabBar(menuList,padding)
                     } else {
-                        PriceTabBar(arrayOf(mutableListOf("Not Open Today"), mutableListOf()),padding)
+                        PriceTabBar(listOf(listOf("Not Open Today"), listOf()),padding)
                     }
                 },
                 //floating action button - shows hours bottom sheet on press
@@ -166,12 +166,12 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PriceTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues) {
+fun PriceTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
     val currentHour: Int = LocalDateTime.now().hour
 //    Log.d(TAG,"hour: "+currentHour)
 
 
-    val titles: List<String> = if ((menuArray[0].isEmpty() || menuArray[0] == mutableListOf("Not Open Today")) && menuArray[1].isEmpty()) {
+    val titles: List<String> = if ((menuArray[0].isEmpty() || menuArray[0] == listOf("Not Open Today")) && menuArray[1].isEmpty()) {
         listOf("Closed")
     } else {
         listOf("Breakfast", "All Day")

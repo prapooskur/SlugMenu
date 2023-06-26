@@ -46,13 +46,13 @@ interface MenuDao {
 
 class MenuTypeConverters {
     @TypeConverter
-    fun fromString(value: String): Array<MutableList<String>> {
+    fun fromString(value: String): List<List<String>> {
         Log.d(TAG,"from string value: $value")
         return(Json.decodeFromString(value))
     }
 
     @TypeConverter
-    fun fromList(value: Array<MutableList<String>>): String {
+    fun fromList(value: List<List<String>>): String {
         Log.d(TAG,"from list value: $value")
         return(Json.encodeToString(value))
     }
@@ -72,13 +72,13 @@ interface WaitzDao {
 
 class WaitzTypeConverters {
     @TypeConverter
-    fun fromWaitzString(value: String): MutableMap<String,MutableList<String>> {
+    fun fromWaitzString(value: String): Map<String,List<String>> {
         Log.d(TAG,"from string value: $value")
         return(Json.decodeFromString(value))
     }
 
     @TypeConverter
-    fun fromWaitzList(value: MutableMap<String,MutableList<String>>): String {
+    fun fromWaitzList(value: Map<String,List<String>>): String {
         Log.d(TAG,"from list value: $value")
         return(Json.encodeToString(value))
     }

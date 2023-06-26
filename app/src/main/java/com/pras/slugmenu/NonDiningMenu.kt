@@ -48,7 +48,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
     val currentDate = LocalDate.now().toString()
     val menuDao = menuDatabase.menuDao()
 
-    var menuList by remember { mutableStateOf<Array<MutableList<String>>>(arrayOf(mutableListOf())) }
+    var menuList by remember { mutableStateOf<List<List<String>>>(listOf(listOf())) }
     val dataLoadedState = remember { mutableStateOf(false) }
     var exceptionFound by remember { mutableStateOf("No Exception") }
 

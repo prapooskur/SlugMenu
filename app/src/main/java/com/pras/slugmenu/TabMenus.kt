@@ -49,7 +49,7 @@ private const val TAG = "TabMenus"
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues) {
+fun SwipableTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
     val currentHour: Int = LocalDateTime.now().hour
     val currentMinute: Int = LocalDateTime.now().minute
     val currentDay: DayOfWeek = LocalDateTime.now().dayOfWeek
@@ -179,8 +179,8 @@ fun SwipableTabBar(menuArray: Array<MutableList<String>>, padding: PaddingValues
 }
 
 @Composable
-fun PrintMenu(itemList: MutableList<String>) {
-    if (itemList.size > 0 && itemList[0] != "Not Open Today") {
+fun PrintMenu(itemList: List<String>) {
+    if (itemList.isNotEmpty() && itemList[0] != "Not Open Today") {
         LazyColumn (
             modifier = Modifier
                 .fillMaxWidth()
@@ -236,7 +236,7 @@ fun PrintMenu(itemList: MutableList<String>) {
 
 //Menus with prices - Coffee Bars, Cafes, Markets
 @Composable
-fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
+fun PrintPriceMenu(itemList: List<String>, padding: PaddingValues) {
     if (itemList.isNotEmpty()) {
         LazyColumn(modifier = Modifier.padding(padding), contentPadding = WindowInsets.navigationBars.asPaddingValues()) {
             items(itemList.size) { item ->
@@ -328,8 +328,8 @@ fun PrintPriceMenu(itemList: MutableList<String>, padding: PaddingValues) {
 
 //Menus with multiple lists of prices - Oakes
 @Composable
-fun PrintOakesMenu(itemList: MutableList<String>) {
-    if (itemList.size > 0 && itemList[0] != "Not Open Today") {
+fun PrintOakesMenu(itemList: List<String>) {
+    if (itemList.isNotEmpty() && itemList[0] != "Not Open Today") {
         LazyColumn (contentPadding = WindowInsets.navigationBars.asPaddingValues()) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]

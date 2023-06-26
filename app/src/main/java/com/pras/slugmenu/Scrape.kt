@@ -44,8 +44,8 @@ suspend fun scrapeWebData (inputUrl: String): String {
     return(stringBody)
 }
 
-suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
-    val allListItems = mutableListOf<MutableList<String>>()
+suspend fun getWebData (inputUrl: String): List<List<String>> {
+    val allListItems = mutableListOf<List<String>>()
 
     val webScrapeData = scrapeWebData(inputUrl)
 
@@ -74,7 +74,7 @@ suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
                         cleanSeparator = cleanSeparator.substring(0, cleanSeparator.length - 95)
                         cleanSeparator += " --"
                     }
-                    listItems.add(cleanSeparator)
+                    listItems.add(cleanSeparator.replace("--","—"))
                 }
 
                 if (items.length > 42 && items !in listItems) {
@@ -97,55 +97,55 @@ suspend fun getWebData (inputUrl: String): MutableList<MutableList<String>> {
 
 }
 
-suspend fun getDiningMenu(inputUrl: String): Array<MutableList<String>> {
+suspend fun getDiningMenu(inputUrl: String): List<List<String>> {
     return withContext(Dispatchers.IO) {
         val menus = getWebData(inputUrl)
 //        Log.d(TAG, "array: $menus")
         if (menus.size > 3) {
-            arrayOf(menus[0], menus[1], menus[2], menus[3])
+            listOf(menus[0], menus[1], menus[2], menus[3])
         } else if (menus.size > 2) {
-            arrayOf(menus[0], menus[1], menus[2], mutableListOf())
+            listOf(menus[0], menus[1], menus[2], mutableListOf())
         } else if (menus.size == 2) {
-            arrayOf(menus[0], menus[1], mutableListOf(), mutableListOf())
+            listOf(menus[0], menus[1], mutableListOf(), mutableListOf())
         } else {
-            arrayOf()
+            listOf()
         }
     }
 }
-suspend fun getDiningMenuAsync(locationId: String): Array<MutableList<String>> = withContext(Dispatchers.IO) {
+suspend fun getDiningMenuAsync(locationId: String): List<List<String>> = withContext(Dispatchers.IO) {
     getDiningMenu(locationId)
 }
 
-suspend fun getSingleMenu(inputUrl: String): Array<MutableList<String>> {
+suspend fun getSingleMenu(inputUrl: String): List<List<String>> {
     return withContext(Dispatchers.IO) {
         val menu = getWebData(inputUrl)
 //        Log.d(TAG, "array: $menus")
         Log.d(TAG, "array: "+menu.size)
-        if (menu.size > 0) {
-            arrayOf(menu[0])
+        if (menu.isNotEmpty()) {
+            listOf(menu[0])
         } else {
-            arrayOf()
+            listOf()
         }
 
     }
 }
-suspend fun getSingleMenuAsync(locationId: String): Array<MutableList<String>> = withContext(Dispatchers.IO) {
+suspend fun getSingleMenuAsync(locationId: String): List<List<String>> = withContext(Dispatchers.IO) {
     getSingleMenu(locationId)
 }
 
-suspend fun getOakesMenu(inputUrl: String): Array<MutableList<String>> {
+suspend fun getOakesMenu(inputUrl: String): List<List<String>> {
     return withContext(Dispatchers.IO) {
         val menus = getWebData(inputUrl)
 //        Log.d(TAG, "array: $menus")
         if (menus.size > 1) {
-            arrayOf(menus[0],menus[1])
-        } else if (menus.size > 0 ) {
-            arrayOf(menus[0], mutableListOf())
+            listOf(menus[0],menus[1])
+        } else if (menus.isNotEmpty()) {
+            listOf(menus[0], mutableListOf())
         } else {
-            arrayOf()
+            listOf()
         }
     }
 }
-suspend fun getOakesMenuAsync(locationId: String): Array<MutableList<String>> = withContext(Dispatchers.IO) {
+suspend fun getOakesMenuAsync(locationId: String): List<List<String>> = withContext(Dispatchers.IO) {
     getOakesMenu(locationId)
 }
