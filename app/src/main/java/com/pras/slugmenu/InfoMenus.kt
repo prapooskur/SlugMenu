@@ -198,9 +198,10 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Monday - Friday",
         "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM"
     )
+    // todo: update with accurate hours
     val crownMerrillSummerHours = listOf(
         "Monday-Friday",
-        ""
+        "Breakfast: 7-9 AM\nContinuous Dining: 9–11:30 AM\nLunch: 11:30 AM–1:30 PM\nContinuous Dining: 1:30–5 PM\nDinner: 5–7 PM"
     )
 
     val porterKresgeHours = listOf(
@@ -244,6 +245,10 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
     )
 
     val stevCoffeeHours = listOf(
+        "Monday - Friday",
+        "Open: 8 AM - 5 PM",
+    )
+    val stevCoffeeSummerHours = listOf(
         "Monday - Friday",
         "Open: 8 AM - 5 PM",
     )
