@@ -69,19 +69,6 @@ class MainActivity : ComponentActivity() {
             val useMaterialYou = remember { mutableStateOf(true) }
             val themeChoice = remember { mutableStateOf(0)}
 
-            /*
-            // old blocking scheduler code
-            runBlocking {
-                // Schedule background downloads if enabled
-                if (userSettings.getBackgroundUpdatePreference.first()) {
-                    Log.d(TAG, "scheduling background downloads")
-                    val backgroundDownloadScheduler = BackgroundDownloadScheduler
-                    backgroundDownloadScheduler.refreshPeriodicWork(applicationContext)
-//                    backgroundDownloadScheduler.runSingleDownload(applicationContext)
-                }
-            }
-             */
-
             // necessary to do this first, since otherwise ui takes a second to update
             runBlocking {
                 useMaterialYou.value = userSettings.getMaterialYouPreference.first()
@@ -585,61 +572,3 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
 
     }
 }
-
-
-
-/*
-fun NavGraphBuilder.addScreens(navController: NavHostController, context: Context) {
-
-    val menuDb = MenuDatabase.getInstance(context)
-
-    composable("home",) {
-        HomeScreen(navController),
-    }
-    composable("settings") {
-        SettingsScreen(navController)
-    }
-
-    composable("ninelewis") {
-        DiningMenuRoom(navController, "Nine/Lewis","40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1",menuDb)
-    }
-    composable("cowellstev") {
-        DiningMenuRoom(navController, "Cowell/Stevenson","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1",menuDb)
-    }
-    composable("crownmerrill") {
-        DiningMenuRoom(navController, "Crown/Merrill","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1",menuDb)
-    }
-    composable("porterkresge") {
-        DiningMenuRoom(navController, "Porter/Kresge","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1",menuDb)
-    }
-
-    composable("perkcoffee") {
-        NonDiningMenuRoom(navController, "Perk Coffee Bars","22&locationName=Perk+Coffee+Bars&naFlag=1",menuDb)
-    }
-    composable("terrafresca") {
-        NonDiningMenuRoom(navController, "Terra Fresca","45&locationName=UCen+Coffee+Bar&naFlag=1",menuDb)
-    }
-    composable("portermarket") {
-        NonDiningMenuRoom(navController, "Porter Market","50&locationName=Porter+Market&naFlag=1",menuDb)
-    }
-    composable("stevcoffee") {
-        NonDiningMenuRoom(navController, "Stevenson Coffee House","26&locationName=Stevenson+Coffee+House&naFlag=1",menuDb)
-    }
-    composable("globalvillage") {
-        NonDiningMenuRoom(navController, "Global Village Cafe","46&locationName=Global+Village+Cafe&naFlag=1",menuDb)
-    }
-
-    composable("oakescafe") {
-            OakesCafeMenuRoom(navController, "Oakes Cafe","23&locationName=Oakes+Cafe&naFlag=1",menuDb)
-    }
-}
-
- */
-
-/*
-@Preview
-@Composable
-fun DefaultPreview() {
-    Init("home")
-}
- */

@@ -107,7 +107,6 @@ fun MenuOrganizer(navController: NavController, preferencesDataStore: Preference
         },
         content = { paddingValues ->
             ReorderableLocationList(locationOrderInput = locationOrder, preferencesDataStore = preferencesDataStore, paddingValues = paddingValues, resetPressed = resetPressed)
-//            TestReorderableList(paddingValues = paddingValues)
         }
     )
 }

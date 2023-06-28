@@ -52,9 +52,6 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
     val dataLoadedState = remember { mutableStateOf(false) }
     var exceptionFound by remember { mutableStateOf("No Exception") }
 
-//    val knownExceptionList = mapOf<String,String>("UnresolvedAddressException" to "No Internet connection")
-
-
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
         withContext(Dispatchers.IO) {

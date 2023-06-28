@@ -31,6 +31,8 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "TopBars"
 
+// todo: collapsing and regular top bars are kind of bloated, clean them up somehow?
+
 // A large top bar that collapses into a small one
 // Intended for use on main and settings screens
 @OptIn(ExperimentalMaterial3Api::class)

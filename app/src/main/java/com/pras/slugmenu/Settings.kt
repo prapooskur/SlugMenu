@@ -73,7 +73,6 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
     val useCollapsingTopBar = remember { mutableStateOf(false) }
 
     val updateInBackground = remember { mutableStateOf(false) }
-//    val showSelector = remember { mutableStateOf(false) }
 
     val appVersion = BuildConfig.VERSION_NAME
     val newVersion = remember { mutableStateOf(appVersion) }
