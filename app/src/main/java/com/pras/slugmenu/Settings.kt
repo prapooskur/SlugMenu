@@ -103,6 +103,10 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
             .fillMaxSize()
     }
 
+
+    val clickable = remember { mutableStateOf(true) }
+    TouchBlocker(navController = navController, delay = FADETIME.toLong(), clickable = clickable)
+
     Surface(
         modifier = scaffoldModifier,
         color = MaterialTheme.colorScheme.background
@@ -112,9 +116,9 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
             contentWindowInsets = WindowInsets(0.dp),
             topBar = {
                 if (useCollapsingTopBar.value) {
-                    CollapsingLargeTopBar(titleText = "Settings", navController = navController, scrollBehavior = scrollBehavior, isHome = false)
+                    CollapsingLargeTopBar(titleText = "Settings", navController = navController, scrollBehavior = scrollBehavior, isHome = false, isClickable = clickable, delay = FADETIME.toLong())
                 } else {
-                    TopBar("Settings", navController = navController, isHome = false)
+                    TopBar("Settings", navController = navController, isHome = false, isClickable = clickable, delay = FADETIME.toLong())
                 }
             },
             content = { innerPadding ->

@@ -5,12 +5,15 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -21,14 +24,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.zIndex
 import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -36,6 +43,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.pras.slugmenu.ui.theme.SlugMenuTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -146,6 +154,36 @@ fun TransparentSystemBars() {
         )
 
         onDispose {}
+    }
+}
+// blocks touches while navigating back
+// not sure where to put this atm, temp in mainactivity
+@Composable
+fun TouchBlocker(navController: NavController, delay: Long, clickable: MutableState<Boolean>) {
+    val coroutineScope = rememberCoroutineScope()
+    BackHandler {
+        if (clickable.value) {
+            clickable.value = false
+        }
+        navController.navigateUp()
+    }
+
+    if (!clickable.value) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(remember { MutableInteractionSource() }, null) {
+                    // No-op: Block clicks
+                    // using pointerinput instead of clickable stops the ripple effect from appearing
+                }
+                .background(color = Color.Transparent)
+                .zIndex(Float.MAX_VALUE - 1)
+        )
+        coroutineScope.launch {
+            // length of the animation
+            delay(delay)
+            clickable.value = true
+        }
     }
 }
 

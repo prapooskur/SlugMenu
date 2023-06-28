@@ -58,13 +58,16 @@ fun AboutScreen(navController: NavController, preferencesDataStore: PreferencesD
     val appVersion = BuildConfig.VERSION_NAME
     val context = LocalContext.current
 
+    val clickable = remember { mutableStateOf(true) }
+    TouchBlocker(navController = navController, delay = FADETIME.toLong(), clickable = clickable)
+
     Scaffold(
         modifier = scaffoldModifier,
         // custom insets necessary to render behind nav bar
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             if (useCollapsingTopBar.value) {
-                CollapsingLargeTopBar(titleText = "About", navController = navController, scrollBehavior = scrollBehavior)
+                CollapsingLargeTopBar(titleText = "About", navController = navController, scrollBehavior = scrollBehavior, isClickable = clickable, delay = FADETIME.toLong())
             } else {
                 Surface(shadowElevation = 4.dp) {
                     TopBar(titleText = "About", navController = navController)
