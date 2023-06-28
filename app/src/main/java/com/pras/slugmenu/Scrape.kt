@@ -61,7 +61,6 @@ suspend fun getWebData (inputUrl: String): List<List<String>> {
             val rows: Elements = table[i].select("tr")
             val trs: Elements = rows.select("tr")
 
-            // TODO: consider replacing -- with —
             for (j in trs) {
                 val separators: String = j.select("span[style=\"color: #000000\"]").toString()
                 val items: String = j.select("span[style=\"color: #585858\"]").toString()
