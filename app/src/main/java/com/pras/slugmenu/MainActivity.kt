@@ -150,6 +150,8 @@ fun TransparentSystemBars() {
 }
 
 
+const val TWEENTIME = 350
+const val FADETIME = 200
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, userSettings: PreferencesDatastore) {
@@ -158,8 +160,6 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
     val context = LocalContext.current
 
     val menuDb = MenuDatabase.getInstance(context)
-    
-    val tweenAmount = 350
 
     /*
     NavHost(
@@ -182,7 +182,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideIntoContainer(
                             AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -193,7 +193,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideOutOfContainer(
                             AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -214,7 +214,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideIntoContainer(
                             AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -225,7 +225,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideOutOfContainer(
                             AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -246,7 +246,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideIntoContainer(
                             AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -257,7 +257,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideOutOfContainer(
                             AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -278,7 +278,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideIntoContainer(
                             AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -289,7 +289,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideOutOfContainer(
                             AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -312,7 +312,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideIntoContainer(
                             AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -323,7 +323,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideOutOfContainer(
                             AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -344,7 +344,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideIntoContainer(
                             AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -355,7 +355,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideOutOfContainer(
                             AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -376,7 +376,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideIntoContainer(
                             AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -387,7 +387,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideOutOfContainer(
                             AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -408,7 +408,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideIntoContainer(
                             AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -419,7 +419,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideOutOfContainer(
                             AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -440,7 +440,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideIntoContainer(
                             AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -451,7 +451,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideOutOfContainer(
                             AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -474,7 +474,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideIntoContainer(
                             AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -485,7 +485,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
                     "home" ->
                         slideOutOfContainer(
                             AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(tweenAmount)
+                            animationSpec = tween(TWEENTIME)
                         )
 
                     else -> null
@@ -503,8 +503,8 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
         //settings menu
         composable(
             "settings",
-            enterTransition = {fadeIn(animationSpec = tween(200))},
-            exitTransition = {fadeOut(animationSpec = tween(200))}
+            enterTransition = {fadeIn(animationSpec = tween(FADETIME))},
+            exitTransition = {fadeOut(animationSpec = tween(FADETIME))}
 
         ) {
             SettingsScreen(
@@ -519,16 +519,16 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
         //about menu
         composable(
             "about",
-            enterTransition = {fadeIn(animationSpec = tween(200))},
-            exitTransition = {fadeOut(animationSpec = tween(200))}
+            enterTransition = {fadeIn(animationSpec = tween(FADETIME))},
+            exitTransition = {fadeOut(animationSpec = tween(FADETIME))}
         ) {
             AboutScreen(navController, userSettings)
         }
 
         composable(
             "menuorganizer",
-            enterTransition = {fadeIn(animationSpec = tween(200))},
-            exitTransition = {fadeOut(animationSpec = tween(200))}
+            enterTransition = {fadeIn(animationSpec = tween(FADETIME))},
+            exitTransition = {fadeOut(animationSpec = tween(FADETIME))}
         ) {
             MenuOrganizer(navController, userSettings)
         }
