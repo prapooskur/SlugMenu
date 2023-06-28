@@ -146,7 +146,7 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues, loca
                         navController.navigate(location)
                         coroutineScope.launch {
                             // tween time set in mainactivity.kt
-                            delay(350)
+                            delay(TWEENTIME.toLong())
                             clickable = true
                         }
                     }
