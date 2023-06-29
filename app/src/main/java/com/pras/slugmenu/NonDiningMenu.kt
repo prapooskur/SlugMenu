@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -26,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
@@ -114,7 +113,7 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
                         onClick = { showBottomSheet.value = !showBottomSheet.value },
                         modifier = Modifier.systemBarsPadding()
                     ) {
-                        Icon(Icons.Outlined.Info, "Info")
+                        Icon(painterResource(R.drawable.schedule), "Hours")
                     }
                 },
                 floatingActionButtonPosition = FabPosition.End

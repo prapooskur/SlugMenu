@@ -82,11 +82,9 @@ fun AboutScreen(navController: NavController, preferencesDataStore: PreferencesD
                 item {
                     GithubItem(context = context)
                 }
-                /*
                 item {
                     ContactItem(context = context)
                 }
-                 */
             }
         }
     )
@@ -145,7 +143,7 @@ fun ContactItem(context: Context) {
             )
         },
         headlineContent = { Text(text = "Contact") },
-        supportingContent = { Text(text = "Send suggestions, feedback, etc. to slugmenudev@gmail.com") },
+        supportingContent = { Text(text = "Send bugs, suggestions, and other feedback to slugmenudev@gmail.com") },
         modifier = Modifier.clickable {
             val mail = Uri.parse("mailto:slugmenudev@gmail.com")
             val intent = Intent(Intent.ACTION_SENDTO, mail)
