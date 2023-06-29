@@ -732,6 +732,8 @@ fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState
                 withContext(Dispatchers.Main) {
                     if (exceptionFound.isNotEmpty()) {
                         ShortToast(exceptionFound, context)
+                    } else if (appVersion == "selfbuilt") {
+                        ShortToast("You are on a self-built version, check for updates manually.", context)
                     } else if (latestVersion != appVersion) {
                         updateAvailable.value = true
                         newVersion.value = latestVersion
