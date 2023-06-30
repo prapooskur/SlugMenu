@@ -1,6 +1,7 @@
 package com.pras.slugmenu
 
 import android.content.Context
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
@@ -110,7 +111,10 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
                 showDialog.value = false
             },
             title = {
-                if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 4 || compareData.size < 4 || locationData[3] == "false") {
+                //todo: figure out emojicompat
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    Text(text = "Waitz: $locationName")
+                } else if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 4 || compareData.size < 4 || locationData[3] == "false") {
                     Text(text = "⚫ Waitz: $locationName")
                 } else if (locationData[0].toInt() <= 45){
                     Text(text = "🟢 Waitz: $locationName")
