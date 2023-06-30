@@ -151,6 +151,11 @@ fun TouchBlocker(navController: NavController, delay: Long, clickable: MutableSt
     BackHandler {
         if (clickable.value) {
             clickable.value = false
+            coroutineScope.launch {
+                // length of the animation
+                delay(delay)
+                clickable.value = true
+            }
         }
         navController.navigateUp()
     }
@@ -166,11 +171,6 @@ fun TouchBlocker(navController: NavController, delay: Long, clickable: MutableSt
                 .background(color = Color.Transparent)
                 .zIndex(Float.MAX_VALUE - 1)
         )
-        coroutineScope.launch {
-            // length of the animation
-            delay(delay)
-            clickable.value = true
-        }
     }
 }
 
