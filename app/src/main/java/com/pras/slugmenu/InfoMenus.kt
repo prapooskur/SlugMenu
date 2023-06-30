@@ -180,7 +180,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
     // in summer dining halls all use same hours, so unified them here
     // todo: update with accurate hours? atm this is just a best guess
     val summerDiningHours = listOf(
-        "Monday-Friday",
+        "Monday-Sunday",
         "Breakfast: 7-9 AM\nContinuous Dining: 9–11:30 AM\nLunch: 11:30 AM–1:30 PM\nContinuous Dining: 1:30–5 PM\nDinner: 5–7 PM"
     )
 
