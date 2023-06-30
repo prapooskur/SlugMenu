@@ -123,14 +123,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
             content = { innerPadding ->
                 LazyColumn(Modifier.padding(innerPadding),contentPadding = WindowInsets.navigationBars.asPaddingValues()) {
                     item {
-                        ListItem(
-                            headlineContent = {
-                                Text(
-                                    text = "App Theme:",
-                                    style = MaterialTheme.typography.titleMedium,
-                                )
-                            }
-                        )
+                        SectionText("Theme")
                     }
                     item {
                         ThemeSwitcher(
@@ -150,14 +143,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         Divider()
                     }
                     item {
-                        ListItem(
-                            headlineContent = {
-                                Text(
-                                    text = "App Layout:",
-                                    style = MaterialTheme.typography.titleMedium,
-                                )
-                            }
-                        )
+                        SectionText("Layout")
                     }
                     item {
                         LayoutSwitcher(preferencesDataStore = preferencesDataStore)
@@ -173,6 +159,9 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                     }
                     item {
                         Divider()
+                    }
+                    item {
+                        SectionText("Downloads")
                     }
                     item {
                         BackgroundUpdateSwitcher(updateInBackground = updateInBackground, preferencesDataStore = preferencesDataStore, context = context)
@@ -216,8 +205,22 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
         )
 //        BackgroundDownloadSelector(showSelector = showSelector, preferencesDataStore = preferencesDataStore)
     }
-
     UpdateDialog(updateAvailable = updateAvailable, newVersion = newVersion, context = context)
+}
+
+// function to display header text for each section
+// could this be replaced with a text style?
+@Composable
+fun SectionText(text: String) {
+    ListItem(
+        headlineContent = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+    )
 }
 
 
@@ -253,7 +256,7 @@ fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: Mutab
                         Text(
                             text = text,
                             style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 16.dp)
+
                         )
                     },
                     trailingContent = {
@@ -296,7 +299,6 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
                 Text(
                     text = "Enable Material You Theming",
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(start = 16.dp)
                 )
             },
             trailingContent = {
@@ -333,7 +335,6 @@ fun AmoledSwitcher(useAmoledBlack: MutableState<Boolean>,preferencesDataStore: P
                 Text(
                     text = "Enable AMOLED Theme",
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(start = 16.dp)
                 )
             },
             trailingContent = {
@@ -396,7 +397,6 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
                         Text(
                             text = text,
                             style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 16.dp)
                         )
                     },
                     trailingContent = {
@@ -461,13 +461,11 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
                 Text(
                     text = "Use Collapsing Top Bar",
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(start = 16.dp)
                 )
             },
             supportingContent = {
                 Text(
                     text = "Currently buggy, use with caution.",
-                    modifier = Modifier.padding(start = 16.dp)
                 )
             },
             trailingContent = {
@@ -506,7 +504,6 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
                 Text(
                     text = "Download Menus in Background",
                     style = MaterialTheme.typography.bodyLarge,
-//                    modifier = Modifier.padding(start = 16.dp)
                 )
             },
             supportingContent = {
