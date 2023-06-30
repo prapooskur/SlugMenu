@@ -172,6 +172,11 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {
+
+    val closedHours = listOf(
+        "Closed"
+    )
+
     val nineTenHours = listOf(
         "Monday - Friday",
         "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM",
@@ -180,7 +185,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
     )
     val nineTenSummerHours = listOf(
         "Monday - Friday",
-
+        "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM"
     )
 
     val cowellStevHours = listOf(
@@ -193,10 +198,9 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Sunday",
         "Breakfast: 7–10 AM\nBrunch: 10 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM"
     )
-    val cowellStevSummerHours = listOf(
-        "Monday - Friday",
-        ""
-    )
+    // is cowell closed? The menu site doesn't show a menu this summer, but they were open last summer
+    // crown was closed last summer, so maybe only 3 dhs are open per summer?
+    val cowellStevSummerHours = closedHours
 
     val crownMerrillHours = listOf(
         "Monday - Friday",
@@ -220,7 +224,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
     )
     val porterKresgeSummerHours = listOf(
         "Monday - Friday",
-        ""
+        "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM"
     )
 
 
@@ -240,6 +244,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Friday",
         "Open: 8 AM - 4 PM"
     )
+    val terraFrescaSummerHours = closedHours
 
     val porterMarketHours = listOf(
         "Monday - Friday",
@@ -247,15 +252,13 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Saturday",
         "Open: 10 AM - 5 PM",
     )
+    val porterMarketSummerHours = closedHours
 
     val stevCoffeeHours = listOf(
         "Monday - Friday",
         "Open: 8 AM - 5 PM",
     )
-    val stevCoffeeSummerHours = listOf(
-        "Monday - Friday",
-        "Open: 8 AM - 5 PM",
-    )
+    val stevCoffeeSummerHours = closedHours
 
     val globalVillageHours = listOf(
         "Monday - Thursday",
@@ -275,6 +278,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Friday",
         "Open: 9 AM - 7 PM"
     )
+    val oakesCafeSummerHours = closedHours
 
     val currentDate = MonthDay.from(LocalDate.now())
     val summerStartDate = MonthDay.of(6,25)
@@ -285,31 +289,31 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
     val hoursDictionary: Map<String, List<String>> = if (!isSummer)
         {
             mapOf(
-                "Nine/Lewis" to nineTenHours,
-                "Cowell/Stevenson" to cowellStevHours,
-                "Cowell/Stev" to cowellStevHours,
-                "Crown/Merrill" to crownMerrillHours,
-                "Porter/Kresge" to porterKresgeHours,
-                "Perk Coffee Bars" to perkHours,
-                "Terra Fresca" to terraFrescaHours,
-                "Porter Market" to porterMarketHours,
+                "Nine/Lewis"        to nineTenHours,
+                "Cowell/Stevenson"  to cowellStevHours,
+                "Cowell/Stev"       to cowellStevHours,
+                "Crown/Merrill"     to crownMerrillHours,
+                "Porter/Kresge"     to porterKresgeHours,
+                "Perk Coffee Bars"  to perkHours,
+                "Terra Fresca"      to terraFrescaHours,
+                "Porter Market"     to porterMarketHours,
                 "Stevenson Coffee House" to stevCoffeeHours,
                 "Global Village Cafe" to globalVillageHours,
-                "Oakes Cafe" to oakesCafeHours
+                "Oakes Cafe"        to oakesCafeHours
             )
         } else {
             mapOf(
-                "Nine/Lewis" to nineTenSummerHours,
-                "Cowell/Stevenson" to cowellStevSummerHours,
-                "Cowell/Stev" to cowellStevSummerHours,
-                "Crown/Merrill" to crownMerrillSummerHours,
-                "Porter/Kresge" to porterKresgeSummerHours,
-                "Perk Coffee Bars" to perkSummerHours,
-                "Terra Fresca" to terraFrescaHours,
-                "Porter Market" to porterMarketHours,
-                "Stevenson Coffee House" to stevCoffeeHours,
+                "Nine/Lewis"        to nineTenSummerHours,
+                "Cowell/Stevenson"  to cowellStevSummerHours,
+                "Cowell/Stev"       to cowellStevSummerHours,
+                "Crown/Merrill"     to crownMerrillSummerHours,
+                "Porter/Kresge"     to porterKresgeSummerHours,
+                "Perk Coffee Bars"  to perkSummerHours,
+                "Terra Fresca"      to terraFrescaSummerHours,
+                "Porter Market"     to porterMarketSummerHours,
+                "Stevenson Coffee House" to stevCoffeeSummerHours,
                 "Global Village Cafe" to globalVillageSummerHours,
-                "Oakes Cafe" to oakesCafeHours
+                "Oakes Cafe"        to oakesCafeSummerHours
             )
         }
 
@@ -336,7 +340,8 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                 items(hoursDictionary.getOrDefault(locationName, listOf()).size) { item ->
                     val element = hoursDictionary.getOrDefault(locationName, listOf())[item]
                     val maxElement = hoursDictionary.getOrDefault(locationName, listOf()).size
-                    val isTitle = !element.contains(":")
+                    val isClosed = element == "Closed"
+                    val isTitle = !(element.contains(":") || isClosed)
                     if (isTitle && item != 0) {
                         Divider()
                     }
@@ -344,7 +349,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                         headlineContent = {
                             Text(
                                 text = element,
-                                fontWeight = if (isTitle) {
+                                fontWeight = if (isTitle || isClosed) {
                                     FontWeight.ExtraBold
                                 } else {
                                     FontWeight.Normal
