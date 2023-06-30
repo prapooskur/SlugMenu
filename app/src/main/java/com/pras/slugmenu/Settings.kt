@@ -463,11 +463,6 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
                     style = MaterialTheme.typography.bodyLarge,
                 )
             },
-            supportingContent = {
-                Text(
-                    text = "Currently buggy, use with caution.",
-                )
-            },
             trailingContent = {
                 Switch(
                     checked = useLargeTopBar.value,
