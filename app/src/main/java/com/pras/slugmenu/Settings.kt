@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -89,7 +88,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
         updateInBackground.value = backgroundDownloadChoice
     }
 
-    val darkThemeEnabled = (isSystemInDarkTheme() && themeChoice.value == 0 || themeChoice.value == 2)
+//    val darkThemeEnabled = (isSystemInDarkTheme() && themeChoice.value == 0 || themeChoice.value == 2)
 
     //TODO: Complete collapsing top bar rewrite
 
@@ -134,18 +133,16 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                             themeChoice = themeChoice
                         )
                     }
+                    item {
+                        AmoledSwitcher(
+                            useAmoledBlack = useAmoledBlack,
+                            preferencesDataStore = preferencesDataStore
+                        )
+                    }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         item {
                             MaterialYouSwitcher(
                                 useMaterialYou = useMaterialYou,
-                                preferencesDataStore = preferencesDataStore
-                            )
-                        }
-                    }
-                    if (darkThemeEnabled) {
-                        item {
-                            AmoledSwitcher(
-                                useAmoledBlack = useAmoledBlack,
                                 preferencesDataStore = preferencesDataStore
                             )
                         }
@@ -315,14 +312,7 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
             trailingContent = {
                 Switch(
                     checked = useMaterialYou.value,
-
-                    onCheckedChange = {
-                        useMaterialYou.value = !useMaterialYou.value
-                        coroutineScope.launch {
-                            preferencesDataStore.setMaterialYouPreference(useMaterialYou.value)
-                        }
-                        Log.d(TAG, "material you toggled")
-                    }
+                    onCheckedChange = null
                 )
             }
         )
@@ -344,20 +334,14 @@ fun AmoledSwitcher(useAmoledBlack: MutableState<Boolean>,preferencesDataStore: P
         ListItem(
             headlineContent = {
                 Text(
-                    text = "Use AMOLED Black",
+                    text = "Use AMOLED Dark Theme",
                     style = MaterialTheme.typography.bodyLarge,
                 )
             },
             trailingContent = {
                 Switch(
                     checked = useAmoledBlack.value,
-                    onCheckedChange = {
-                        useAmoledBlack.value = !useAmoledBlack.value
-                        coroutineScope.launch {
-                            preferencesDataStore.setAmoledPreference(useAmoledBlack.value)
-                        }
-                        Log.d(TAG, "amoled toggled")
-                    }
+                    onCheckedChange = null
                 )
             }
         )
@@ -477,14 +461,7 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
             trailingContent = {
                 Switch(
                     checked = useLargeTopBar.value,
-                    onCheckedChange = {
-                        useLargeTopBar.value = !useLargeTopBar.value
-                        coroutineScope.launch {
-                            preferencesDataStore.setToolbarPreference(useLargeTopBar.value)
-                        }
-
-                        Log.d(TAG, "Top Bar toggled")
-                    }
+                    onCheckedChange = null
                 )
             }
         )
@@ -499,10 +476,16 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
     Row(modifier = Modifier.clickable(
         onClick = {
             updateInBackground.value = !updateInBackground.value
+            if (updateInBackground.value) {
+                Log.d(TAG, "Background Updates enabled")
+                backgroundDownloadScheduler.refreshPeriodicWork(context)
+            } else {
+                Log.d(TAG, "Background Updates disabled")
+                backgroundDownloadScheduler.cancelDownloadByTag(context, "backgroundMenuDownload")
+            }
             coroutineScope.launch {
                 preferencesDataStore.setBackgroundUpdatePreference(updateInBackground.value)
             }
-            Log.d(TAG, "Background Updates toggled")
         },
     )) {
         ListItem(
@@ -522,20 +505,7 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
             trailingContent = {
                 Switch(
                     checked = updateInBackground.value,
-                    onCheckedChange = {
-                        updateInBackground.value = !updateInBackground.value
-                        if (updateInBackground.value) {
-                            Log.d(TAG, "Background Updates enabled")
-                            backgroundDownloadScheduler.refreshPeriodicWork(context)
-                        } else {
-                            Log.d(TAG, "Background Updates disabled")
-                            backgroundDownloadScheduler.cancelDownloadByTag(context, "backgroundMenuDownload")
-                        }
-                        coroutineScope.launch {
-                            preferencesDataStore.setBackgroundUpdatePreference(updateInBackground.value)
-                        }
-
-                    }
+                    onCheckedChange = null
                 )
             }
         )
