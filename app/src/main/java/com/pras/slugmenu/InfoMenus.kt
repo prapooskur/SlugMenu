@@ -177,16 +177,20 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Closed"
     )
 
+    // in summer dining halls all use same hours, so unified them here
+    // todo: update with accurate hours? atm this is just a best guess
+    val summerDiningHours = listOf(
+        "Monday-Friday",
+        "Breakfast: 7-9 AM\nContinuous Dining: 9–11:30 AM\nLunch: 11:30 AM–1:30 PM\nContinuous Dining: 1:30–5 PM\nDinner: 5–7 PM"
+    )
+
     val nineTenHours = listOf(
         "Monday - Friday",
         "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM",
         "Saturday/Sunday",
         "Breakfast: 7–10 AM\nBrunch: 10 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM"
     )
-    val nineTenSummerHours = listOf(
-        "Monday - Friday",
-        "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM"
-    )
+    val nineTenSummerHours = summerDiningHours
 
     val cowellStevHours = listOf(
         "Monday - Thursday",
@@ -206,11 +210,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Monday - Friday",
         "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM"
     )
-    // todo: update with accurate hours
-    val crownMerrillSummerHours = listOf(
-        "Monday-Friday",
-        "Breakfast: 7-9 AM\nContinuous Dining: 9–11:30 AM\nLunch: 11:30 AM–1:30 PM\nContinuous Dining: 1:30–5 PM\nDinner: 5–7 PM"
-    )
+    val crownMerrillSummerHours = summerDiningHours
 
     val porterKresgeHours = listOf(
         "Monday - Thursday",
@@ -222,10 +222,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Sunday",
         "Breakfast: 7–10AM\nBrunch: 10AM–2PM\nContinuous Dining: 2–5PM\nDinner: 5–8PM\nLate Night: 8–11 PM"
     )
-    val porterKresgeSummerHours = listOf(
-        "Monday - Friday",
-        "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM"
-    )
+    val porterKresgeSummerHours = summerDiningHours
 
 
     val perkHours = listOf(
