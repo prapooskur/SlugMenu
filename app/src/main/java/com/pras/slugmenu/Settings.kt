@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -68,7 +69,7 @@ private const val TAG = "Settings"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
+fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, useAmoledBlack: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
     Log.d(TAG,"test $useMaterialYou")
     val useCollapsingTopBar = remember { mutableStateOf(false) }
 
@@ -87,6 +88,8 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
         val backgroundDownloadChoice = preferencesDataStore.getBackgroundUpdatePreference.first()
         updateInBackground.value = backgroundDownloadChoice
     }
+
+    val darkThemeEnabled = (isSystemInDarkTheme() && themeChoice.value == 0 || themeChoice.value == 2)
 
     //TODO: Complete collapsing top bar rewrite
 
@@ -135,6 +138,14 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         item {
                             MaterialYouSwitcher(
                                 useMaterialYou = useMaterialYou,
+                                preferencesDataStore = preferencesDataStore
+                            )
+                        }
+                    }
+                    if (darkThemeEnabled) {
+                        item {
+                            AmoledSwitcher(
+                                useAmoledBlack = useAmoledBlack,
                                 preferencesDataStore = preferencesDataStore
                             )
                         }
@@ -333,7 +344,7 @@ fun AmoledSwitcher(useAmoledBlack: MutableState<Boolean>,preferencesDataStore: P
         ListItem(
             headlineContent = {
                 Text(
-                    text = "Enable AMOLED Theme",
+                    text = "Use AMOLED Black",
                     style = MaterialTheme.typography.bodyLarge,
                 )
             },

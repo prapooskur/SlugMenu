@@ -66,13 +66,16 @@ class MainActivity : ComponentActivity() {
         userSettings = PreferencesDatastore(dataStore)
 
         setContent {
+            val themeChoice =    remember { mutableStateOf(0)}
             val useMaterialYou = remember { mutableStateOf(true) }
-            val themeChoice = remember { mutableStateOf(0)}
+            val useAmoledTheme = remember { mutableStateOf(true) }
+
 
             // necessary to do this first, since otherwise ui takes a second to update
             runBlocking {
                 useMaterialYou.value = userSettings.getMaterialYouPreference.first()
                 themeChoice.value = userSettings.getThemePreference.first()
+                useAmoledTheme.value = userSettings.getAmoledPreference.first()
             }
 
             LaunchedEffect(key1 = Unit) {
@@ -82,7 +85,6 @@ class MainActivity : ComponentActivity() {
                         Log.d(TAG, "scheduling background downloads")
                         val backgroundDownloadScheduler = BackgroundDownloadScheduler
                         backgroundDownloadScheduler.refreshPeriodicWork(applicationContext)
-//                        backgroundDownloadScheduler.runSingleDownload(applicationContext)
                     }
                 }
                 userSettings.getThemePreference.collect {
@@ -92,9 +94,7 @@ class MainActivity : ComponentActivity() {
                     useMaterialYou.value = it
                 }
             }
-
-            SlugMenuTheme(darkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value) {
-
+            SlugMenuTheme(darkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value, amoledColor = useAmoledTheme.value) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     TransparentSystemBars()
                 } else {
@@ -107,9 +107,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Init("home", useMaterialYou, themeChoice, userSettings)
+                    Init("home", themeChoice, useMaterialYou, useAmoledTheme, userSettings)
                 }
-
             }
         }
 
@@ -179,7 +178,7 @@ const val TWEENTIME = 350
 const val FADETIME = 200
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeChoice: MutableState<Int>, userSettings: PreferencesDatastore) {
+fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYou: MutableState<Boolean>, useAmoledTheme: MutableState<Boolean>, userSettings: PreferencesDatastore) {
 //    val oldNavController = rememberNavController()
     val navController = rememberAnimatedNavController()
     val context = LocalContext.current
@@ -535,6 +534,7 @@ fun Init(startDestination: String, useMaterialYou: MutableState<Boolean>, themeC
             SettingsScreen(
                 navController,
                 useMaterialYou,
+                useAmoledTheme,
                 themeChoice,
                 menuDb,
                 userSettings
