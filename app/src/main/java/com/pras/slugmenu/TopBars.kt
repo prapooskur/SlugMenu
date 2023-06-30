@@ -22,8 +22,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -46,11 +49,19 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
         0.dp
     }
 
+
     val topBarItemColor = if (scrollBehavior.state.collapsedFraction < 0.5) {
         MaterialTheme.colorScheme.onSurface
     } else {
         MaterialTheme.colorScheme.onPrimaryContainer
     }
+
+    val topBarBlendedItemColor = ColorUtils.blendARGB(
+        MaterialTheme.colorScheme.onSurface.toArgb(),
+        MaterialTheme.colorScheme.onPrimaryContainer.toArgb(),
+        scrollBehavior.state.collapsedFraction
+    )
+
 
     // make the title smaller if it's too long (organize screen title was almost hitting the other edge)
     val expandedFontSize = if (titleText.length > 15) { 30 } else { 33 }
@@ -66,7 +77,7 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
                 Text(
                     modifier = Modifier,
                     text = titleText,
-                    color = topBarItemColor,
+                    color = Color(topBarBlendedItemColor),
                     fontSize = topBarFontSize
                 )
             },
@@ -88,7 +99,7 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = topBarItemColor
+                            tint = Color(topBarBlendedItemColor)
                         )
                     }
                 }
@@ -99,7 +110,7 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
                         Icon(
                             imageVector = Icons.Outlined.Settings,
                             contentDescription = "Settings",
-                            tint = topBarItemColor
+                            tint = Color(topBarBlendedItemColor)
                         )
                     }
                 } else if (isOrganizer) {
@@ -107,13 +118,13 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
                         Icon(
                             imageVector = Icons.Outlined.Refresh,
                             contentDescription = "Reset",
-                            tint = topBarItemColor
+                            tint = Color(topBarBlendedItemColor)
                         )
                     }
                 }
             },
             scrollBehavior = scrollBehavior,
-            colors = topBarColors
+            colors = topBarColors,
         )
     }
 }
