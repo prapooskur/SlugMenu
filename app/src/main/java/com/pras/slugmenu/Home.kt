@@ -122,7 +122,7 @@ fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues, loca
     val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     // combine the padding values given by scaffold with the padding for bottom bar, so parts of
-    // the grid aren't stuck behind a transparent bottom bar
+    // the grid aren't stuck behind the bottom bar
     val paddingAmount = 10.dp
     val contentPadding = PaddingValues(start = paddingAmount, top = paddingAmount, end = paddingAmount, bottom = paddingAmount+navPadding)
 
@@ -229,8 +229,16 @@ fun CardList(navController: NavController, innerPadding: PaddingValues, location
     var clickable by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
 
+    val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+    // combine the padding values given by scaffold with the padding for bottom bar, so parts of
+    // the grid aren't stuck behind the bottom bar
+    val paddingAmount = 10.dp
+    val contentPadding = PaddingValues(start = paddingAmount, top = paddingAmount, end = paddingAmount, bottom = paddingAmount+navPadding)
+
+
     LazyColumn(
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
+        contentPadding = contentPadding,
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues = innerPadding),
