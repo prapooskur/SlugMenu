@@ -104,6 +104,22 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
             .fillMaxSize()
     }
 
+    val packageManager = context.packageManager
+    val packageName = context.packageName
+    val installerPackageName: String?
+    Log.d(TAG, "App package name: $packageName")
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        installerPackageName = packageManager.getInstallSourceInfo(packageName).installingPackageName
+        Log.d(TAG, "Installer package name: $installerPackageName")
+    } else {
+        // this is deprecated, but the replacement only supports android 11+
+        @Suppress("DEPRECATION")
+        installerPackageName = packageManager.getInstallerPackageName(packageName)
+        Log.d(TAG, "Installer package name: $installerPackageName")
+    }
+
+    val installedFromPlayStore = (installerPackageName == "com.android.vending" || installerPackageName == "com.google.android.feedback")
+
 
     val clickable = remember { mutableStateOf(true) }
     TouchBlocker(navController = navController, delay = FADETIME.toLong(), clickable = clickable)
@@ -172,7 +188,11 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         SectionText("Downloads")
                     }
                     item {
-                        BackgroundUpdateSwitcher(updateInBackground = updateInBackground, preferencesDataStore = preferencesDataStore, context = context)
+                        BackgroundUpdateSwitcher(
+                            updateInBackground = updateInBackground,
+                            preferencesDataStore = preferencesDataStore,
+                            context = context
+                        )
                     }
 
                     item {
@@ -196,8 +216,15 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         Divider()
                     }
 
-                    item {
-                        UpdateChecker(context = context, appVersion = appVersion, newVersion = newVersion, updateAvailable = updateAvailable)
+                    if (!installedFromPlayStore) {
+                        item {
+                            UpdateChecker(
+                                context = context,
+                                appVersion = appVersion,
+                                newVersion = newVersion,
+                                updateAvailable = updateAvailable
+                            )
+                        }
                     }
 
                     item {
