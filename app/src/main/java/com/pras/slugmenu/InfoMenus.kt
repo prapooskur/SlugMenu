@@ -1,7 +1,6 @@
 package com.pras.slugmenu
 
 import android.content.Context
-import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
@@ -26,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
@@ -112,13 +110,11 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
             },
             title = {
                 //todo: figure out emojicompat
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    Text(text = "Waitz: $locationName")
-                } else if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 4 || compareData.size < 4 || locationData[3] == "false") {
+                if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || (locationData.size < 4) || (compareData.size < 4) || (locationData[3] == "false")) {
                     Text(text = "⚫ Waitz: $locationName")
-                } else if (locationData[0].toInt() <= 45){
+                } else if (locationData[0].toInt() <= 45) {
                     Text(text = "🟢 Waitz: $locationName")
-                } else if (locationData[0].toInt() <= 80){
+                } else if (locationData[0].toInt() <= 80) {
                     Text(text = "🟡 Waitz: $locationName")
                 } else {
                     Text(text = "🔴 Waitz: $locationName")
