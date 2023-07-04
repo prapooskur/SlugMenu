@@ -49,14 +49,7 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
         0.dp
     }
 
-
-    val topBarItemColor = if (scrollBehavior.state.collapsedFraction < 0.5) {
-        MaterialTheme.colorScheme.onSurface
-    } else {
-        MaterialTheme.colorScheme.onPrimaryContainer
-    }
-
-    val topBarBlendedItemColor = ColorUtils.blendARGB(
+    val topBarItemColor = ColorUtils.blendARGB(
         MaterialTheme.colorScheme.onSurface.toArgb(),
         MaterialTheme.colorScheme.onPrimaryContainer.toArgb(),
         scrollBehavior.state.collapsedFraction
@@ -77,7 +70,7 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
                 Text(
                     modifier = Modifier,
                     text = titleText,
-                    color = Color(topBarBlendedItemColor),
+                    color = Color(topBarItemColor),
                     fontSize = topBarFontSize
                 )
             },
@@ -99,7 +92,7 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color(topBarBlendedItemColor)
+                            tint = Color(topBarItemColor)
                         )
                     }
                 }
@@ -110,7 +103,7 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
                         Icon(
                             imageVector = Icons.Outlined.Settings,
                             contentDescription = "Settings",
-                            tint = Color(topBarBlendedItemColor)
+                            tint = Color(topBarItemColor)
                         )
                     }
                 } else if (isOrganizer) {
@@ -118,7 +111,7 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
                         Icon(
                             imageVector = Icons.Outlined.Refresh,
                             contentDescription = "Reset",
-                            tint = Color(topBarBlendedItemColor)
+                            tint = Color(topBarItemColor)
                         )
                     }
                 }
