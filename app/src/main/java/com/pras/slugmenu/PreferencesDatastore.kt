@@ -26,26 +26,6 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         const val TAG = "UserPreferencesRepo"
     }
 
-    // generic setters
-    // TODO: update settings to use these?
-    suspend fun setBooleanPreference(key: Preferences.Key<Boolean>, userChoice: Boolean) {
-        dataStore.edit {preferences ->
-            preferences[key] = userChoice
-        }
-    }
-
-    suspend fun setIntPreference(key: Preferences.Key<Int>, userChoice: Int) {
-        dataStore.edit {preferences ->
-            preferences[key] = userChoice
-        }
-    }
-
-    suspend fun setStringPreference(key: Preferences.Key<String>, userChoice: String) {
-        dataStore.edit {preferences ->
-            preferences[key] = userChoice
-        }
-    }
-
     val getListPreference: Flow<Boolean> = dataStore.data
         .catch {
             if (it is IOException) {
