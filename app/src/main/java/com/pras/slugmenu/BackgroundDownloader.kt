@@ -125,6 +125,47 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
 // Object that automatically schedules background downloads
 object BackgroundDownloadScheduler {
 
+    private val locationNames = listOf(
+        "Nine/Lewis",
+        "Cowell/Stevenson",
+        "Crown/Merrill",
+        "Porter/Kresge",
+        "Perks",
+        "Terra Fresca",
+        "Porter Market",
+        "Stevenson Coffee House",
+        "Global Village Cafe",
+        "Oakes Cafe"
+    )
+
+    private val locationUrls = listOf(
+        "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1",
+        "05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1",
+        "20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1",
+        "25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1",
+        "22&locationName=Perk+Coffee+Bars&naFlag=1",
+        "45&locationName=UCen+Coffee+Bar&naFlag=1",
+        "50&locationName=Porter+Market&naFlag=1",
+        "26&locationName=Stevenson+Coffee+House&naFlag=1",
+        "46&locationName=Global+Village+Cafe&naFlag=1",
+        "23&locationName=Oakes+Cafe&naFlag=1"
+    )
+
+    private val locationTypes = listOf(
+        LocationType.Dining,
+        LocationType.Dining,
+        LocationType.Dining,
+        LocationType.Dining,
+        LocationType.NonDining,
+        LocationType.NonDining,
+        LocationType.NonDining,
+        LocationType.NonDining,
+        LocationType.NonDining,
+        LocationType.Oakes
+    )
+
+    private val locationList = locationNames.indices.map { LocationListItem(locationNames[it], locationUrls[it], locationTypes[it]) }
+
     fun refreshPeriodicWork(context: Context) {
         // hardcoded to PST, since that's where UCSC is
         val timeZone = ZoneId.of("America/Los_Angeles")
@@ -155,16 +196,6 @@ object BackgroundDownloadScheduler {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val locationNames = listOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perks","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
-        val locationUrls =  listOf("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
-        val locationTypes = listOf(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
-
-        val mutableLocationList = mutableListOf<LocationListItem>()
-        for (i in locationNames.indices) {
-            mutableLocationList.add(LocationListItem(locationNames[i], locationUrls[i], locationTypes[i]))
-        }
-
-        val locationList = mutableLocationList.toList()
         Log.d(TAG,"location List: $locationList")
         val serializedLocationList = Json.encodeToString(locationList)
         Log.d(TAG,"serialized Location List: $serializedLocationList")
@@ -193,16 +224,6 @@ object BackgroundDownloadScheduler {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val locationNames = listOf("Nine/Lewis","Cowell/Stevenson","Crown/Merrill","Porter/Kresge","Perk Coffee Bars","Terra Fresca","Porter Market", "Stevenson Coffee House", "Global Village Cafe", "Oakes Cafe")
-        val locationUrls =  listOf("40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1","20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1","25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1","22&locationName=Perk+Coffee+Bars&naFlag=1","45&locationName=UCen+Coffee+Bar&naFlag=1","50&locationName=Porter+Market&naFlag=1","26&locationName=Stevenson+Coffee+House&naFlag=1","46&locationName=Global+Village+Cafe&naFlag=1","23&locationName=Oakes+Cafe&naFlag=1")
-        val locationTypes = listOf(LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.Dining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.NonDining, LocationType.Oakes)
-
-        val mutableLocationList = mutableListOf<LocationListItem>()
-        for (i in locationNames.indices) {
-            mutableLocationList.add(LocationListItem(locationNames[i], locationUrls[i], locationTypes[i]))
-        }
-
-        val locationList = mutableLocationList.toList()
         Log.d(TAG,"location List: $locationList")
         val serializedLocationList = Json.encodeToString(locationList)
         Log.d(TAG,"serialized Location List: $serializedLocationList")
