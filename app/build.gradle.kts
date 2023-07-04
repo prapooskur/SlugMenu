@@ -1,13 +1,14 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
-    id "com.android.application"
-    id "org.jetbrains.kotlin.android"
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
 
     //KSP for room
-    id "com.google.devtools.ksp"
+    id("com.google.devtools.ksp")
 
     //Serialization
-    id "org.jetbrains.kotlin.plugin.serialization"
-
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -21,7 +22,7 @@ android {
         versionCode = 1
         versionName = "selfbuilt"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -30,25 +31,26 @@ android {
     buildTypes {
         release {
             // Enables code shrinking, obfuscation, and optimization for only
-            // your project"s release build type.
-            minifyEnabled = true
+            // your project's release build type.
+            isMinifyEnabled = true
 
             // Enables resource shrinking, which is performed by the
             // Android Gradle plugin.
-            shrinkResources = true
+            isShrinkResources  = true
 
             // Includes the default ProGuard rules files that are packaged with
             // the Android Gradle plugin. To learn more, go to the section about
             // R8 configuration files.
-            proguardFiles getDefaultProguardFile(
-                    "proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
+            proguardFiles (
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
     compileOptions {
         // Desugaring (allows minSdk below 26)
-        coreLibraryDesugaringEnabled = true
+        isCoreLibraryDesugaringEnabled = true
 
         //Version 17 required by KSP
         sourceCompatibility = JavaVersion.VERSION_17
@@ -63,7 +65,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.8"
     }
-    packagingOptions {
+    fun Packaging.() {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -77,16 +79,20 @@ ksp {
 
 dependencies {
 
+
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-ktx:1.7.2")
     implementation("androidx.activity:activity-compose:1.7.2")
-    implementation("androidx.compose.ui:ui:$compose_ui_version")
-    implementation("androidx.compose.ui:ui-tooling-preview:$compose_ui_version")
-    implementation("androidx.compose.material:material:$compose_ui_version")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    val compose_ui_version = "1.4.3"
+
+    implementation("androidx.compose.ui:ui:$compose_ui_version")
+    implementation("androidx.compose.ui:ui-tooling-preview:$compose_ui_version")
+    implementation("androidx.compose.material:material:$compose_ui_version")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_ui_version")
     debugImplementation("androidx.compose.ui:ui-tooling:$compose_ui_version")
     debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_ui_version")
@@ -95,17 +101,17 @@ dependencies {
     implementation("org.jsoup:jsoup:1.16.1")
 
     // ktor for http requests
-    def ktor_version = "2.3.0"
+    val ktor_version = "2.3.0"
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-websockets:$ktor_version")
 
     // Android navigation and Material 3
 
-    def nav_version = "2.6.0"
+    val nav_version = "2.6.0"
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
-    def mat3_version = "1.1.1"
+    val mat3_version = "1.1.1"
     implementation("androidx.compose.material3:material3:$mat3_version")
     implementation("androidx.compose.material3:material3-window-size-class:$mat3_version")
 
@@ -127,7 +133,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Room (caching implementation)
-    def room_version = "2.5.2"
+    val room_version = "2.5.2"
 
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
@@ -143,7 +149,7 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
     // WorkManager (allows app to download data in background)
-    def work_version = "2.8.1"
+    val work_version = "2.8.1"
     // (Java only)
     implementation("androidx.work:work-runtime:$work_version")
     // Kotlin + coroutines
@@ -153,3 +159,5 @@ dependencies {
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 
 }
+
+
