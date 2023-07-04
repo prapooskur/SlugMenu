@@ -13,13 +13,13 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.serialization.json.Json
-import java.time.LocalDate
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
@@ -46,7 +46,6 @@ enum class LocationType {
 class BackgroundDownloadWorker(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
-        // TODO: Come back to this and finish
 
         // takes a serialized List<LocationList> comprised of four-element LocationListItems
 

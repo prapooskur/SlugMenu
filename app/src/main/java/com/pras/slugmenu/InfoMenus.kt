@@ -109,7 +109,6 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
                 showDialog.value = false
             },
             title = {
-                //todo: figure out emojicompat
                 if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || (locationData.size < 4) || (compareData.size < 4) || (locationData[3] == "false")) {
                     Text(text = "⚫ Waitz: $locationName")
                 } else if (locationData[0].toInt() <= 45) {

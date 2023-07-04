@@ -88,10 +88,6 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
         updateInBackground.value = backgroundDownloadChoice
     }
 
-//    val darkThemeEnabled = (isSystemInDarkTheme() && themeChoice.value == 0 || themeChoice.value == 2)
-
-    //TODO: Complete collapsing top bar rewrite
-
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState(),
         canScroll = { true })

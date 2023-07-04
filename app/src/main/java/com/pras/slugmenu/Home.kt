@@ -58,7 +58,6 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
     }
     val cleanLocationOrder = mutableCleanLocationOrder.toList()
 
-    //TODO: Complete collapsing top bar rewrite
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState(),
         canScroll = { true })

@@ -79,7 +79,6 @@ fun MenuOrganizer(navController: NavController, preferencesDataStore: Preference
 
     Log.d(TAG,"location order: $locationOrder")
 
-    //TODO: Complete collapsing top bar rewrite
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState(),
         canScroll = { true })
