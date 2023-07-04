@@ -11,51 +11,31 @@ plugins {
 }
 
 android {
-    namespace "com.pras.slugmenu"
-    compileSdk 33
+    namespace = "com.pras.slugmenu"
+    compileSdk = 33
 
     defaultConfig {
-        applicationId "com.pras.slugmenu"
-        minSdk 24
-        targetSdk 33
-        versionCode 1
-        versionName "selfbuilt"
+        applicationId = "com.pras.slugmenu"
+        minSdk = 24
+        targetSdk = 33
+        versionCode = 1
+        versionName = "selfbuilt"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
-            useSupportLibrary true
+            useSupportLibrary = true
         }
     }
 
     buildTypes {
-        /*
-        //test for crash with logcat
-        debug {
-            // Enables code shrinking, obfuscation, and optimization for only
-            // your project's build type.
-            minifyEnabled true
-
-            // Enables resource shrinking, which is performed by the
-            // Android Gradle plugin.
-            shrinkResources true
-
-            // Includes the default ProGuard rules files that are packaged with
-            // the Android Gradle plugin. To learn more, go to the section about
-            // R8 configuration files.
-            proguardFiles getDefaultProguardFile(
-                    "proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
-        }
-
-         */
         release {
             // Enables code shrinking, obfuscation, and optimization for only
             // your project"s release build type.
-            minifyEnabled true
+            minifyEnabled = true
 
             // Enables resource shrinking, which is performed by the
             // Android Gradle plugin.
-            shrinkResources true
+            shrinkResources = true
 
             // Includes the default ProGuard rules files that are packaged with
             // the Android Gradle plugin. To learn more, go to the section about
@@ -68,20 +48,20 @@ android {
 
     compileOptions {
         // Desugaring (allows minSdk below 26)
-        coreLibraryDesugaringEnabled true
+        coreLibraryDesugaringEnabled = true
 
         //Version 17 required by KSP
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
         jvmTarget = "17"
     }
     buildFeatures {
-        compose true
+        compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "1.4.8"
+        kotlinCompilerExtensionVersion = "1.4.8"
     }
     packagingOptions {
         resources {
@@ -92,7 +72,7 @@ android {
 
 // for Room KSP
 ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.schemaLocation", "${projectDir}/schemas")
 }
 
 dependencies {
