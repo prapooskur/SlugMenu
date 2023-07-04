@@ -293,18 +293,7 @@ fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: Mutab
                     trailingContent = {
                         RadioButton(
                             selected = (text == themeOptions[themeChoice.value]),
-                            onClick = {
-                                coroutineScope.launch {
-                                    preferencesDataStore.setThemePreference(
-                                        when (text) {
-                                            themeOptions[0] -> 0
-                                            themeOptions[1] -> 1
-                                            themeOptions[2] -> 2
-                                            else -> 0
-                                        }
-                                    )
-                                }
-                            },
+                            onClick = null
                         )
                     },
                 )
@@ -426,18 +415,7 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
                                         !currentChoice.value
                                     }
                                     ),
-                            onClick = {
-                                coroutineScope.launch {
-                                    if (text == "Grid") {
-                                        preferencesDataStore.setListPreference(true)
-                                        currentChoice.value = true
-                                    } else {
-                                        preferencesDataStore.setListPreference(false)
-                                        currentChoice.value = false
-                                    }
-                                }
-                                Log.d(TAG, "layout switched")
-                            }
+                            onClick = null
                         )
                     }
                 )

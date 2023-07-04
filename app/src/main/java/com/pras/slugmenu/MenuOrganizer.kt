@@ -167,13 +167,7 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
                             trailingContent = {
                                 Checkbox(
                                     checked = isVisible,
-                                    onCheckedChange = {
-                                        isVisible = !isVisible
-                                        item.visible = isVisible
-                                        coroutineScope.launch {
-                                            preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrderState.value))
-                                        }
-                                    }
+                                    onCheckedChange = null
                                 )
                             },
                             modifier = Modifier.clickable {
