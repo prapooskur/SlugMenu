@@ -212,6 +212,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         Divider()
                     }
 
+                    // if the app was installed from the play store, it should be updated there
                     if (!installedFromPlayStore) {
                         item {
                             UpdateChecker(

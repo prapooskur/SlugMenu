@@ -116,7 +116,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
             }
         }
         .map {preferences ->
-            preferences[USE_COLLAPSING_TOOLBAR] ?: false
+            preferences[USE_COLLAPSING_TOOLBAR] ?: true
         }
 
     suspend fun setToolbarPreference(userChoice: Boolean) {
