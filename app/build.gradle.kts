@@ -88,32 +88,32 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    val compose_ui_version = "1.4.3"
+    val composeUiVersion = "1.4.3"
 
-    implementation("androidx.compose.ui:ui:$compose_ui_version")
-    implementation("androidx.compose.ui:ui-tooling-preview:$compose_ui_version")
-    implementation("androidx.compose.material:material:$compose_ui_version")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_ui_version")
-    debugImplementation("androidx.compose.ui:ui-tooling:$compose_ui_version")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_ui_version")
+    implementation("androidx.compose.ui:ui:$composeUiVersion")
+    implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
+    implementation("androidx.compose.material:material:$composeUiVersion")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeUiVersion")
+    debugImplementation("androidx.compose.ui:ui-tooling:$composeUiVersion")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeUiVersion")
 
     // jsoup HTML parser library @ https://jsoup.org/
     implementation("org.jsoup:jsoup:1.16.1")
 
     // ktor for http requests
-    val ktor_version = "2.3.0"
-    implementation("io.ktor:ktor-client-core:$ktor_version")
-    implementation("io.ktor:ktor-client-cio:$ktor_version")
-    implementation("io.ktor:ktor-client-websockets:$ktor_version")
+    val ktorVersion = "2.3.0"
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Android navigation and Material 3
 
-    val nav_version = "2.6.0"
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    val navVersion = "2.6.0"
+    implementation("androidx.navigation:navigation-compose:$navVersion")
 
-    val mat3_version = "1.1.1"
-    implementation("androidx.compose.material3:material3:$mat3_version")
-    implementation("androidx.compose.material3:material3-window-size-class:$mat3_version")
+    val mat3Version = "1.1.1"
+    implementation("androidx.compose.material3:material3:$mat3Version")
+    implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
     // Accompanist (unofficial official Google libraries)
     // swipable tabs
@@ -133,13 +133,13 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Room (caching implementation)
-    val room_version = "2.5.2"
+    val roomVersion = "2.5.2"
 
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
     // To use Kotlin Symbol Processing (KSP)
-    ksp("androidx.room:room-compiler:$room_version")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     // Flow stuff
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
@@ -149,11 +149,11 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
     // WorkManager (allows app to download data in background)
-    val work_version = "2.8.1"
+    val workVersion = "2.8.1"
     // (Java only)
-    implementation("androidx.work:work-runtime:$work_version")
+    implementation("androidx.work:work-runtime:$workVersion")
     // Kotlin + coroutines
-    implementation("androidx.work:work-runtime-ktx:$work_version")
+    implementation("androidx.work:work-runtime-ktx:$workVersion")
 
     // drag and droppable lists
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
