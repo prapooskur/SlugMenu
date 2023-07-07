@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import java.time.LocalDateTime
 //Swipable tabs
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import com.pras.slugmenu.ui.elements.pagerTabIndicatorOffset
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -100,7 +101,7 @@ fun SwipableTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
 //    Log.d(TAG,"initstate: "+initState)
 
     var state by remember { mutableStateOf(initState) }
-    val pagerState = androidx.compose.foundation.pager.rememberPagerState(initState)
+    val pagerState = rememberPagerState(initState)
     val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.padding(padding)) {

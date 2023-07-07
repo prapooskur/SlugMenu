@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -187,7 +188,7 @@ fun PriceTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
 //    Log.d(TAG,"initstate: "+initState)
 
     var state by remember { mutableStateOf(initState) }
-    val pagerState = androidx.compose.foundation.pager.rememberPagerState(initState)
+    val pagerState = rememberPagerState(initState)
     val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.padding(padding)) {
