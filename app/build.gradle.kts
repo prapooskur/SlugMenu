@@ -19,8 +19,8 @@ android {
         applicationId = "com.pras.slugmenu"
         minSdk = 24
         targetSdk = 33
-        versionCode = 1
-        versionName = "selfbuilt"
+        versionCode = 2
+        versionName = "0.205"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -116,12 +116,13 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
     // Accompanist (unofficial official Google libraries)
+    val accompanistVersion = "0.30.1"
     // swipable tabs
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.30.1")
+    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
     // changing status bar color
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
     // animations
-    implementation("com.google.accompanist:accompanist-navigation-animation:0.30.1")
+    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
 
     //kotlinx serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
