@@ -192,7 +192,6 @@ fun TwoByTwoGridWithIcons(navController: NavController, innerPadding: PaddingVal
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-
                     val imageModifier = if (icon == R.drawable.ninelewis) {
                         Modifier
                             .weight(1.8f)
@@ -204,7 +203,6 @@ fun TwoByTwoGridWithIcons(navController: NavController, innerPadding: PaddingVal
                             .aspectRatio(1f)
                     }
 
-
                     Image(
                         painter = painterResource(icon),
                         contentDescription = "Location Icon",
@@ -213,14 +211,15 @@ fun TwoByTwoGridWithIcons(navController: NavController, innerPadding: PaddingVal
                         modifier = imageModifier
                     )
 
-
                     Text(
                         text = name,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         fontSize = 18.sp,
                         // without this, long text might get too close to the sides
-                        modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 4.dp)
                     )
                 }
             }
@@ -331,8 +330,19 @@ fun CardListWithIcons(navController: NavController, innerPadding: PaddingValues,
 fun GridPreview() {
     val navController = rememberNavController()
     val innerPadding = PaddingValues()
-    val locationOrder: List<LocationOrderItem> = Json.decodeFromString("[{\"navLocation\":\"ninelewis\",\"locationName\":\"Nine/Lewis\",\"visible\":true},{\"navLocation\":\"cowellstev\",\"locationName\":\"Cowell/Stevenson\",\"visible\":true},{\"navLocation\":\"crownmerrill\",\"locationName\":\"Crown/Merrill\",\"visible\":true},{\"navLocation\":\"porterkresge\",\"locationName\":\"Porter/Kresge\",\"visible\":true},{\"navLocation\":\"perkcoffee\",\"locationName\":\"Perk Coffee Bars\",\"visible\":true},{\"navLocation\":\"terrafresca\",\"locationName\":\"Terra Fresca\",\"visible\":true},{\"navLocation\":\"portermarket\",\"locationName\":\"Porter Market\",\"visible\":true},{\"navLocation\":\"stevcoffee\",\"locationName\":\"Stevenson Coffee House\",\"visible\":true},{\"navLocation\":\"globalvillage\",\"locationName\":\"Global Village Cafe\",\"visible\":true},{\"navLocation\":\"oakescafe\",\"locationName\":\"Oakes Cafe\",\"visible\":true}]")
 
+    val locationOrder = listOf(
+        LocationOrderItem(navLocation = "ninelewis", locationName = "Nine / Lewis", visible = true),
+        LocationOrderItem(navLocation = "cowellstev", locationName = "Cowell/Stevenson", visible = true),
+        LocationOrderItem(navLocation = "crownmerrill", locationName = "Crown/Merrill", visible = true),
+        LocationOrderItem(navLocation = "porterkresge", locationName = "Porter/Kresge", visible = true),
+        LocationOrderItem(navLocation = "perkcoffee", locationName = "Perk Coffee Bars", visible = true),
+        LocationOrderItem(navLocation = "terrafresca", locationName = "Terra Fresca", visible = true),
+        LocationOrderItem(navLocation = "portermarket", locationName = "Porter Market", visible = true),
+        LocationOrderItem(navLocation = "stevcoffee", locationName = "Stevenson Coffee House", visible = true),
+        LocationOrderItem(navLocation = "globalvillage", locationName = "Global Village Cafe", visible = true),
+        LocationOrderItem(navLocation = "oakescafe", locationName = "Oakes Cafe", visible = true)
+    )
     val iconMap = mapOf(
         "ninelewis"     to R.drawable.ninelewis,
         "cowellstev"    to R.drawable.cowellstevenson,
@@ -355,8 +365,19 @@ fun GridPreview() {
 fun ListPreview() {
     val navController = rememberNavController()
     val innerPadding = PaddingValues()
-    val locationOrder: List<LocationOrderItem> = Json.decodeFromString("[{\"navLocation\":\"ninelewis\",\"locationName\":\"Nine/Lewis\",\"visible\":true},{\"navLocation\":\"cowellstev\",\"locationName\":\"Cowell/Stevenson\",\"visible\":true},{\"navLocation\":\"crownmerrill\",\"locationName\":\"Crown/Merrill\",\"visible\":true},{\"navLocation\":\"porterkresge\",\"locationName\":\"Porter/Kresge\",\"visible\":true},{\"navLocation\":\"perkcoffee\",\"locationName\":\"Perk Coffee Bars\",\"visible\":true},{\"navLocation\":\"terrafresca\",\"locationName\":\"Terra Fresca\",\"visible\":true},{\"navLocation\":\"portermarket\",\"locationName\":\"Porter Market\",\"visible\":true},{\"navLocation\":\"stevcoffee\",\"locationName\":\"Stevenson Coffee House\",\"visible\":true},{\"navLocation\":\"globalvillage\",\"locationName\":\"Global Village Cafe\",\"visible\":true},{\"navLocation\":\"oakescafe\",\"locationName\":\"Oakes Cafe\",\"visible\":true}]")
 
+    val locationOrder = listOf(
+        LocationOrderItem(navLocation = "ninelewis", locationName = "Nine / Lewis", visible = true),
+        LocationOrderItem(navLocation = "cowellstev", locationName = "Cowell/Stevenson", visible = true),
+        LocationOrderItem(navLocation = "crownmerrill", locationName = "Crown/Merrill", visible = true),
+        LocationOrderItem(navLocation = "porterkresge", locationName = "Porter/Kresge", visible = true),
+        LocationOrderItem(navLocation = "perkcoffee", locationName = "Perk Coffee Bars", visible = true),
+        LocationOrderItem(navLocation = "terrafresca", locationName = "Terra Fresca", visible = true),
+        LocationOrderItem(navLocation = "portermarket", locationName = "Porter Market", visible = true),
+        LocationOrderItem(navLocation = "stevcoffee", locationName = "Stevenson Coffee House", visible = true),
+        LocationOrderItem(navLocation = "globalvillage", locationName = "Global Village Cafe", visible = true),
+        LocationOrderItem(navLocation = "oakescafe", locationName = "Oakes Cafe", visible = true)
+    )
     val iconMap = mapOf(
         "ninelewis"     to R.drawable.ninelewis,
         "cowellstev"    to R.drawable.cowellstevenson,

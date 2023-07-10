@@ -11,6 +11,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.IOException
 
 class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
@@ -155,7 +157,19 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
             }
         }
         .map {preferences ->
-            preferences[LOCATION_ORDER] ?: "[{\"navLocation\":\"ninelewis\",\"locationName\":\"Nine/Lewis\",\"visible\":true},{\"navLocation\":\"cowellstev\",\"locationName\":\"Cowell/Stevenson\",\"visible\":true},{\"navLocation\":\"crownmerrill\",\"locationName\":\"Crown/Merrill\",\"visible\":true},{\"navLocation\":\"porterkresge\",\"locationName\":\"Porter/Kresge\",\"visible\":true},{\"navLocation\":\"perkcoffee\",\"locationName\":\"Perk Coffee Bars\",\"visible\":true},{\"navLocation\":\"terrafresca\",\"locationName\":\"Terra Fresca\",\"visible\":true},{\"navLocation\":\"portermarket\",\"locationName\":\"Porter Market\",\"visible\":true},{\"navLocation\":\"stevcoffee\",\"locationName\":\"Stevenson Coffee House\",\"visible\":true},{\"navLocation\":\"globalvillage\",\"locationName\":\"Global Village Cafe\",\"visible\":true},{\"navLocation\":\"oakescafe\",\"locationName\":\"Oakes Cafe\",\"visible\":true}]"
+            val defaultLocationOrder = listOf(
+                LocationOrderItem(navLocation = "ninelewis", locationName = "Nine/Lewis", visible = true),
+                LocationOrderItem(navLocation = "cowellstev", locationName = "Cowell/Stevenson", visible = true),
+                LocationOrderItem(navLocation = "crownmerrill", locationName = "Crown/Merrill", visible = true),
+                LocationOrderItem(navLocation = "porterkresge", locationName = "Porter/Kresge", visible = true),
+                LocationOrderItem(navLocation = "perkcoffee", locationName = "Perk Coffee Bars", visible = true),
+                LocationOrderItem(navLocation = "terrafresca", locationName = "Terra Fresca", visible = true),
+                LocationOrderItem(navLocation = "portermarket", locationName = "Porter Market", visible = true),
+                LocationOrderItem(navLocation = "stevcoffee", locationName = "Stevenson Coffee House", visible = true),
+                LocationOrderItem(navLocation = "globalvillage", locationName = "Global Village Cafe", visible = true),
+                LocationOrderItem(navLocation = "oakescafe", locationName = "Oakes Cafe", visible = true)
+            )
+            preferences[LOCATION_ORDER] ?: Json.encodeToString(defaultLocationOrder)
         }
 
     suspend fun setLocationOrder(userChoice: String) {
