@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
@@ -70,8 +71,7 @@ private const val TAG = "Settings"
 @Composable
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, useAmoledBlack: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
     Log.d(TAG,"test $useMaterialYou")
-    val useCollapsingTopBar = remember { mutableStateOf(false) }
-
+    val useCollapsingTopBar = remember { mutableStateOf(true) }
     val updateInBackground = remember { mutableStateOf(false) }
 
     val appVersion = BuildConfig.VERSION_NAME
@@ -82,10 +82,8 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
     val context = LocalContext.current
 
     runBlocking {
-        val collapsingTopBarChoice = preferencesDataStore.getToolbarPreference.first()
-        useCollapsingTopBar.value = collapsingTopBarChoice
-        val backgroundDownloadChoice = preferencesDataStore.getBackgroundUpdatePreference.first()
-        updateInBackground.value = backgroundDownloadChoice
+        useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
+        updateInBackground.value = preferencesDataStore.getBackgroundUpdatePreference.first()
     }
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -174,6 +172,14 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                             useLargeTopBar = useCollapsingTopBar
                         )
                     }
+                    /*
+                    item {
+                        IconPrefSwitcher(
+                            preferencesDataStore = preferencesDataStore,
+                            showIcons = showLocationIcons
+                        )
+                    }
+                     */
                     item {
                         MenuOrganizerNavigator(navController = navController)
                     }
@@ -244,14 +250,13 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
 // could this be replaced with a text style?
 @Composable
 fun SectionText(text: String) {
-    ListItem(
-        headlineContent = {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleMedium,
+        color = MaterialTheme.colorScheme.primary,
+        fontSize = 15.sp,
+        fontWeight = FontWeight.SemiBold,
+        modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
     )
 }
 
@@ -469,6 +474,37 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
         )
     }
 }
+
+/*
+@Composable
+fun IconPrefSwitcher(preferencesDataStore: PreferencesDatastore, showIcons: MutableState<Boolean>) {
+    val coroutineScope = rememberCoroutineScope()
+    Row(modifier = Modifier.clickable(
+        onClick = {
+            showIcons.value = !showIcons.value
+            coroutineScope.launch {
+                preferencesDataStore.setIconPreference(showIcons.value)
+            }
+            Log.d(TAG, "Icon choice toggled")
+        },
+    )) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = "Show Location Icons",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            trailingContent = {
+                Switch(
+                    checked = showIcons.value,
+                    onCheckedChange = null
+                )
+            }
+        )
+    }
+}
+ */
 
 // currently not yet tested
 @Composable

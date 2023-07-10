@@ -23,6 +23,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         val USE_COLLAPSING_TOOLBAR = booleanPreferencesKey("use_collapsing_toolbar")
         val ENABLE_BACKGROUND_UPDATES = booleanPreferencesKey("enable_background_updates")
         val LOCATION_ORDER = stringPreferencesKey("location_order")
+//        val ICON_PREF = booleanPreferencesKey("icon_pref")
         const val TAG = "UserPreferencesRepo"
     }
 
@@ -154,7 +155,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
             }
         }
         .map {preferences ->
-            preferences[LOCATION_ORDER] ?: "[{\"navLocation\":\"ninelewis\",\"locationName\":\"Nine/Lewis\",\"visible\":true},{\"navLocation\":\"cowellstev\",\"locationName\":\"Cowell/Stevenson\",\"visible\":true},{\"navLocation\":\"crownmerrill\",\"locationName\":\"Crown/Merrill\",\"visible\":true},{\"navLocation\":\"porterkresge\",\"locationName\":\"Porter/Kresge\",\"visible\":true},{\"navLocation\":\"perkcoffee\",\"locationName\":\"Perks\",\"visible\":true},{\"navLocation\":\"terrafresca\",\"locationName\":\"Terra Fresca\",\"visible\":true},{\"navLocation\":\"portermarket\",\"locationName\":\"Porter Market\",\"visible\":true},{\"navLocation\":\"stevcoffee\",\"locationName\":\"Stevenson Coffee House\",\"visible\":true},{\"navLocation\":\"globalvillage\",\"locationName\":\"Global Village Cafe\",\"visible\":true},{\"navLocation\":\"oakescafe\",\"locationName\":\"Oakes Cafe\",\"visible\":true}]"
+            preferences[LOCATION_ORDER] ?: "[{\"navLocation\":\"ninelewis\",\"locationName\":\"Nine / Lewis\",\"visible\":true},{\"navLocation\":\"cowellstev\",\"locationName\":\"Cowell / Stevenson\",\"visible\":true},{\"navLocation\":\"crownmerrill\",\"locationName\":\"Crown / Merrill\",\"visible\":true},{\"navLocation\":\"porterkresge\",\"locationName\":\"Porter / Kresge\",\"visible\":true},{\"navLocation\":\"perkcoffee\",\"locationName\":\"Perk Coffee Bars\",\"visible\":true},{\"navLocation\":\"terrafresca\",\"locationName\":\"Terra Fresca\",\"visible\":true},{\"navLocation\":\"portermarket\",\"locationName\":\"Porter Market\",\"visible\":true},{\"navLocation\":\"stevcoffee\",\"locationName\":\"Stevenson Coffee House\",\"visible\":true},{\"navLocation\":\"globalvillage\",\"locationName\":\"Global Village Cafe\",\"visible\":true},{\"navLocation\":\"oakescafe\",\"locationName\":\"Oakes Cafe\",\"visible\":true}]"
         }
 
     suspend fun setLocationOrder(userChoice: String) {
@@ -162,6 +163,27 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
             preferences[LOCATION_ORDER] = userChoice
         }
     }
+
+    /*
+    val getIconPreference: Flow<Boolean> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading Icon preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map {preferences ->
+            preferences[ICON_PREF] ?: true
+        }
+
+    suspend fun setIconPreference(userChoice: Boolean) {
+        dataStore.edit {preferences ->
+            preferences[ICON_PREF] = userChoice
+        }
+    }
+     */
 
 }
 
