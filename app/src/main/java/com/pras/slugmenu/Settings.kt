@@ -231,7 +231,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                     }
 
                     item {
-                        AboutNavigator(navController = navController)
+                        AboutNavigator(navController = navController, installedFromPlayStore = installedFromPlayStore, appVersion = BuildConfig.VERSION_NAME)
                     }
                     /*
                     item {
@@ -692,9 +692,8 @@ fun ClearCache(menuDb: MenuDatabase, context: Context) {
     )
 }
 
-//Not currently necessary, since the update checker already shows the version number
 @Composable
-fun AboutNavigator(navController: NavController) {
+fun AboutNavigator(navController: NavController, installedFromPlayStore: Boolean = false, appVersion: String = BuildConfig.VERSION_NAME) {
     ListItem(
         leadingContent = {
             Icon(
@@ -704,6 +703,12 @@ fun AboutNavigator(navController: NavController) {
         },
         headlineContent = {
             Text(text = "About Slug Menu")
+        },
+        // if the app wasn't installed from the play store, update checker already shows version code
+        supportingContent = {
+            if (installedFromPlayStore) {
+                Text(text = "Version $appVersion")
+            }
         },
         modifier = Modifier.clickable { navController.navigate("about") }
     )
