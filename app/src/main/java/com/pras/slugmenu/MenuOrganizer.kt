@@ -191,22 +191,22 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
             locationOrderState.value = listOf(
                 LocationOrderItem(
                     navLocation = "ninelewis",
-                    locationName = "Nine / Lewis",
+                    locationName = "Nine/Lewis",
                     visible = true
                 ),
                 LocationOrderItem(
                     navLocation = "cowellstev",
-                    locationName = "Cowell / Stevenson",
+                    locationName = "Cowell/Stevenson",
                     visible = true
                 ),
                 LocationOrderItem(
                     navLocation = "crownmerrill",
-                    locationName = "Crown / Merrill",
+                    locationName = "Crown/Merrill",
                     visible = true
                 ),
                 LocationOrderItem(
                     navLocation = "porterkresge",
-                    locationName = "Porter / Kresge",
+                    locationName = "Porter/Kresge",
                     visible = true
                 ),
                 LocationOrderItem(
