@@ -248,7 +248,7 @@ fun CardListWithIcons(navController: NavController, innerPadding: PaddingValues,
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues = innerPadding),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(locationOrder.size) { index ->
             val location: String = locationOrder[index].navLocation
@@ -272,8 +272,8 @@ fun CardListWithIcons(navController: NavController, innerPadding: PaddingValues,
                 },
                 shape = MaterialTheme.shapes.small,
                 modifier = Modifier
-                    // don't let cards get too tall
-                    .heightIn(0.dp, 120.dp)
+                    // todo get this to work properly and not cut off width
+//                    .heightIn(max = 120.dp)
                     .aspectRatio(4f)
                     .fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
@@ -348,6 +348,29 @@ fun GridPreview() {
 
     TwoByTwoGridWithIcons(navController = navController, innerPadding = innerPadding, locationOrder = locationOrder, iconMap = iconMap)
     //CardListWithIcons(navController = navController, innerPadding = innerPadding, locationOrder = locationOrder, iconMap = iconMap)
+}
+
+@Preview
+@Composable
+fun ListPreview() {
+    val navController = rememberNavController()
+    val innerPadding = PaddingValues()
+    val locationOrder: List<LocationOrderItem> = Json.decodeFromString("[{\"navLocation\":\"ninelewis\",\"locationName\":\"Nine/Lewis\",\"visible\":true},{\"navLocation\":\"cowellstev\",\"locationName\":\"Cowell/Stevenson\",\"visible\":true},{\"navLocation\":\"crownmerrill\",\"locationName\":\"Crown/Merrill\",\"visible\":true},{\"navLocation\":\"porterkresge\",\"locationName\":\"Porter/Kresge\",\"visible\":true},{\"navLocation\":\"perkcoffee\",\"locationName\":\"Perk Coffee Bars\",\"visible\":true},{\"navLocation\":\"terrafresca\",\"locationName\":\"Terra Fresca\",\"visible\":true},{\"navLocation\":\"portermarket\",\"locationName\":\"Porter Market\",\"visible\":true},{\"navLocation\":\"stevcoffee\",\"locationName\":\"Stevenson Coffee House\",\"visible\":true},{\"navLocation\":\"globalvillage\",\"locationName\":\"Global Village Cafe\",\"visible\":true},{\"navLocation\":\"oakescafe\",\"locationName\":\"Oakes Cafe\",\"visible\":true}]")
+
+    val iconMap = mapOf(
+        "ninelewis"     to R.drawable.ninelewis,
+        "cowellstev"    to R.drawable.cowellstevenson,
+        "crownmerrill"  to R.drawable.crownmerrill,
+        "porterkresge"  to R.drawable.porterkresge,
+        "perkcoffee"    to R.drawable.perkcoffeebars,
+        "terrafresca"   to R.drawable.terrafresca,
+        "portermarket"  to R.drawable.portermarket,
+        "stevcoffee"    to R.drawable.stevensoncoffeehouse,
+        "globalvillage" to R.drawable.globalvillagecafe,
+        "oakescafe"     to R.drawable.oakescafe
+    )
+
+    CardListWithIcons(navController = navController, innerPadding = innerPadding, locationOrder = locationOrder, iconMap = iconMap)
 }
 
 // old, iconless home screens
