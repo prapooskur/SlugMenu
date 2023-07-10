@@ -19,8 +19,8 @@ android {
         applicationId = "com.pras.slugmenu"
         minSdk = 24
         targetSdk = 33
-        versionCode = 2
-        versionName = "0.205"
+        versionCode = 1
+        versionName = "selfbuilt"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
