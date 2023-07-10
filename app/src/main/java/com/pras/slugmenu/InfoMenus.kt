@@ -179,13 +179,13 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         "Breakfast: 7-9 AM\nContinuous Dining: 9–11:30 AM\nLunch: 11:30 AM–1:30 PM\nContinuous Dining: 1:30–5 PM\nDinner: 5–7 PM"
     )
 
-    val nineTenHours = listOf(
+    val nineLewisHours = listOf(
         "Monday - Friday",
         "Breakfast: 7-11 AM\nContinuous Dining: 11–11:30 AM\nLunch: 11:30 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM",
         "Saturday/Sunday",
         "Breakfast: 7–10 AM\nBrunch: 10 AM–2 PM\nContinuous Dining: 2–5 PM\nDinner: 5–8 PM\nLate Night: 8–11 PM"
     )
-    val nineTenSummerHours = summerDiningHours
+    val nineLewisSummerHours = summerDiningHours
 
     val cowellStevHours = listOf(
         "Monday - Thursday",
@@ -281,7 +281,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
     val hoursDictionary: Map<String, List<String>> = if (!isSummer)
         {
             mapOf(
-                "Nine/Lewis"        to nineTenHours,
+                "Nine/Lewis"        to nineLewisHours,
                 "Cowell/Stevenson"  to cowellStevHours,
                 "Cowell/Stev"       to cowellStevHours,
                 "Crown/Merrill"     to crownMerrillHours,
@@ -295,7 +295,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
             )
         } else {
             mapOf(
-                "Nine/Lewis"        to nineTenSummerHours,
+                "Nine/Lewis"        to nineLewisSummerHours,
                 "Cowell/Stevenson"  to cowellStevSummerHours,
                 "Cowell/Stev"       to cowellStevSummerHours,
                 "Crown/Merrill"     to crownMerrillSummerHours,

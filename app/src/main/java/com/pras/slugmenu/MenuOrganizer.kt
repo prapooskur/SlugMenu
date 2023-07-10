@@ -187,7 +187,59 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
     }
     if (resetPressed.value) {
         LaunchedEffect(Unit) {
-            locationOrderState.value = Json.decodeFromString("[{\"navLocation\":\"ninelewis\",\"locationName\":\"Nine/Lewis\",\"visible\":true},{\"navLocation\":\"cowellstev\",\"locationName\":\"Cowell/Stevenson\",\"visible\":true},{\"navLocation\":\"crownmerrill\",\"locationName\":\"Crown/Merrill\",\"visible\":true},{\"navLocation\":\"porterkresge\",\"locationName\":\"Porter/Kresge\",\"visible\":true},{\"navLocation\":\"perkcoffee\",\"locationName\":\"Perks\",\"visible\":true},{\"navLocation\":\"terrafresca\",\"locationName\":\"Terra Fresca\",\"visible\":true},{\"navLocation\":\"portermarket\",\"locationName\":\"Porter Market\",\"visible\":true},{\"navLocation\":\"stevcoffee\",\"locationName\":\"Stevenson Coffee House\",\"visible\":true},{\"navLocation\":\"globalvillage\",\"locationName\":\"Global Village Cafe\",\"visible\":true},{\"navLocation\":\"oakescafe\",\"locationName\":\"Oakes Cafe\",\"visible\":true}]")
+            // default values
+            locationOrderState.value = listOf(
+                LocationOrderItem(
+                    navLocation = "ninelewis",
+                    locationName = "Nine / Lewis",
+                    visible = true
+                ),
+                LocationOrderItem(
+                    navLocation = "cowellstev",
+                    locationName = "Cowell / Stevenson",
+                    visible = true
+                ),
+                LocationOrderItem(
+                    navLocation = "crownmerrill",
+                    locationName = "Crown / Merrill",
+                    visible = true
+                ),
+                LocationOrderItem(
+                    navLocation = "porterkresge",
+                    locationName = "Porter / Kresge",
+                    visible = true
+                ),
+                LocationOrderItem(
+                    navLocation = "perkcoffee",
+                    locationName = "Perk Coffee Bars",
+                    visible = true
+                ),
+                LocationOrderItem(
+                    navLocation = "terrafresca",
+                    locationName = "Terra Fresca",
+                    visible = true
+                ),
+                LocationOrderItem(
+                    navLocation = "portermarket",
+                    locationName = "Porter Market",
+                    visible = true
+                ),
+                LocationOrderItem(
+                    navLocation = "stevcoffee",
+                    locationName = "Stevenson Coffee House",
+                    visible = true
+                ),
+                LocationOrderItem(
+                    navLocation = "globalvillage",
+                    locationName = "Global Village Cafe",
+                    visible = true
+                ),
+                LocationOrderItem(
+                    navLocation = "oakescafe",
+                    locationName = "Oakes Cafe",
+                    visible = true
+                )
+            )
             preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrderState.value.toList()))
             resetPressed.value = false
             Log.d(TAG, "reset pressed, set preferences to default and set resetpressed to false.")

@@ -129,7 +129,7 @@ object BackgroundDownloadScheduler {
         "Cowell/Stevenson",
         "Crown/Merrill",
         "Porter/Kresge",
-        "Perks",
+        "Perk Coffee Bars",
         "Terra Fresca",
         "Porter Market",
         "Stevenson Coffee House",
