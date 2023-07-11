@@ -1,6 +1,7 @@
 package com.pras.slugmenu
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
@@ -34,6 +36,8 @@ import java.time.LocalDateTime
 import java.time.MonthDay
 import java.time.format.DateTimeFormatter
 import javax.net.ssl.SSLHandshakeException
+
+private const val TAG = "InfoMenus"
 
 fun ShortToast(text: String, context: Context) {
     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
@@ -71,19 +75,15 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
                             WaitzTypeConverters().fromWaitzList(waitzData[1])
                         )
                     )
-                //TODO: unify these into one catch block?
-                } catch (e: UnresolvedAddressException) {
-                    exceptionFound = "No Internet connection"
-                } catch (e: SocketTimeoutException) {
-                    exceptionFound = "Connection timed out"
-                } catch (e: UnknownHostException) {
-                    exceptionFound = "Failed to resolve URL"
-                } catch (e: CertificateException) {
-                    exceptionFound = "Website's SSL certificate is invalid"
-                } catch (e: SSLHandshakeException) {
-                    exceptionFound = "SSL handshake failed"
                 } catch (e: Exception) {
-                    exceptionFound = "Exception: $e"
+                    exceptionFound = when (e) {
+                        is UnresolvedAddressException -> "No Internet connection"
+                        is SocketTimeoutException -> "Connection timed out"
+                        is UnknownHostException -> "Failed to resolve URL"
+                        is CertificateException -> "Website's SSL certificate is invalid"
+                        is SSLHandshakeException -> "SSL handshake failed"
+                        else -> "Exception: $e"
+                    }
                 }
                 dataLoadedState.value = true
             }
@@ -94,6 +94,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
     if (showDialog.value && exceptionFound != "No Exception") {
         showDialog.value = false
         ShortToast(exceptionFound, LocalContext.current)
+        Log.d(TAG, exceptionFound)
     } else if (showDialog.value && !dataLoadedState.value) {
         showDialog.value = false
         ShortToast(text = "Data not loaded yet", LocalContext.current)
@@ -156,11 +157,8 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
                 ) {
                     Text("Close")
                 }
-
             }
         )
-
-
     }
 }
 
@@ -346,14 +344,6 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                                 } else {
                                     FontWeight.Normal
                                 },
-                                /*
-                                fontSize = if (isTitle) {
-                                    16.sp
-                                } else {
-                                    14.sp
-                                },
-
-                                 */
                                 textAlign = if (isTitle) {
                                     TextAlign.Center
                                 } else {

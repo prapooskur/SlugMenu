@@ -62,18 +62,18 @@ suspend fun getWebData (inputUrl: String): List<List<String>> {
             val trs: Elements = rows.select("tr")
 
             for (j in trs) {
+
                 val separators: String = j.select("span[style=\"color: #000000\"]").toString()
                 val items: String = j.select("span[style=\"color: #585858\"]").toString()
                 if (separators.length > 29 && !separators.contains("&nbsp;")) {
                     var cleanSeparator = separators.substring(29, separators.length - 7)
-                    cleanSeparator = cleanSeparator.replace("&amp;", "&")
-                    if (cleanSeparator.contains("New City of Santa Cruz Cup Fee of \$.025 BYO and save up to \$0.50 when ordering a togo drink --")) {
-                        cleanSeparator = cleanSeparator.substring(0, cleanSeparator.length - 95)
-                    } else if (cleanSeparator.contains("Now City of Santa Cruz Cup Fee of \$.025 BYO and save up to \$0.50 when ordering a togo drink --")) {
-                        cleanSeparator = cleanSeparator.substring(0, cleanSeparator.length - 95)
-                        cleanSeparator += " --"
-                    }
-                    listItems.add(cleanSeparator.replace("--","—"))
+                    cleanSeparator = cleanSeparator
+                        .replace("&amp;", "&")
+                        .replace("New City of Santa Cruz Cup Fee of \$.025 BYO and save up to \$0.50 when ordering a togo drink --", " —")
+                        .replace("Now City of Santa Cruz Cup Fee of \$.025 BYO and save up to \$0.50 when ordering a togo drink --", " —")
+                        .replace("--","—")
+
+                    listItems.add(cleanSeparator)
                 }
 
                 if (items.length > 42 && items !in listItems) {

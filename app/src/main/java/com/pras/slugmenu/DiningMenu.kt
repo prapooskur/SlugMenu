@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import com.pras.slugmenu.ui.elements.CustomFloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -90,18 +91,15 @@ fun DiningMenuRoom(navController: NavController, locationName: String, locationU
                             currentDate.toString()
                         )
                     )
-                } catch (e: UnresolvedAddressException) {
-                    exceptionFound = "No Internet connection"
-                } catch (e: SocketTimeoutException) {
-                    exceptionFound = "Connection timed out"
-                } catch (e: UnknownHostException) {
-                    exceptionFound = "Failed to resolve URL"
-                } catch (e: CertificateException) {
-                    exceptionFound = "Website's SSL certificate is invalid"
-                } catch (e: SSLHandshakeException) {
-                    exceptionFound = "SSL handshake failed"
                 } catch (e: Exception) {
-                    exceptionFound = "Exception: $e"
+                    exceptionFound = when (e) {
+                        is UnresolvedAddressException -> "No Internet connection"
+                        is SocketTimeoutException -> "Connection timed out"
+                        is UnknownHostException -> "Failed to resolve URL"
+                        is CertificateException -> "Website's SSL certificate is invalid"
+                        is SSLHandshakeException -> "SSL handshake failed"
+                        else -> "Exception: $e"
+                    }
                 }
                 dataLoadedState.value = true
             }
@@ -269,18 +267,15 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
         withContext(Dispatchers.IO) {
             try {
                 menuList = getDiningMenuAsync(fullUrl)
-            } catch (e: UnresolvedAddressException) {
-                exceptionFound = "No Internet connection"
-            } catch (e: SocketTimeoutException) {
-                exceptionFound = "Connection timed out"
-            } catch (e: UnknownHostException) {
-                exceptionFound = "Failed to resolve URL"
-            } catch (e: CertificateException) {
-                exceptionFound = "Website's SSL certificate is invalid"
-            } catch (e: SSLHandshakeException) {
-                exceptionFound = "SSL handshake failed"
             } catch (e: Exception) {
-                exceptionFound = "Exception: $e"
+                exceptionFound = when (e) {
+                    is UnresolvedAddressException -> "No Internet connection"
+                    is SocketTimeoutException -> "Connection timed out"
+                    is UnknownHostException -> "Failed to resolve URL"
+                    is CertificateException -> "Website's SSL certificate is invalid"
+                    is SSLHandshakeException -> "SSL handshake failed"
+                    else -> "Exception: $e"
+                }
             }
             dataLoadedState.value = true
         }

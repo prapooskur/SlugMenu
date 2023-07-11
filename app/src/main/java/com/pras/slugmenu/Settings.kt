@@ -172,14 +172,6 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                             useLargeTopBar = useCollapsingTopBar
                         )
                     }
-                    /*
-                    item {
-                        IconPrefSwitcher(
-                            preferencesDataStore = preferencesDataStore,
-                            showIcons = showLocationIcons
-                        )
-                    }
-                     */
                     item {
                         MenuOrganizerNavigator(navController = navController)
                     }
@@ -196,28 +188,18 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                             context = context
                         )
                     }
-
                     item {
                         BackgroundOneTimeDownload(context)
                     }
-
-                    /*
-                    item {
-                        BackgroundSelectorToggle(showSelector = showSelector)
-                    }
-                    */
-
                     item {
                         ClearCache(
                             menuDb = menuDb,
                             context = context
                         )
                     }
-
                     item {
                         Divider()
                     }
-
                     // if the app was installed from the play store, it should be updated there
                     if (!installedFromPlayStore) {
                         item {
@@ -229,15 +211,13 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                             )
                         }
                     }
-
                     item {
-                        AboutNavigator(navController = navController, installedFromPlayStore = installedFromPlayStore, appVersion = BuildConfig.VERSION_NAME)
+                        AboutNavigator(
+                            navController = navController,
+                            installedFromPlayStore = installedFromPlayStore,
+                            appVersion = BuildConfig.VERSION_NAME
+                        )
                     }
-                    /*
-                    item {
-                        AboutItem(appVersion = appVersion)
-                    }
-                    */
                 }
             }
         )
@@ -317,7 +297,7 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
                 coroutineScope.launch {
                     preferencesDataStore.setMaterialYouPreference(useMaterialYou.value)
                 }
-                Log.d(TAG, "material you toggled")
+                Log.d(TAG, "Material You toggled")
             },
     )) {
         ListItem(
@@ -475,38 +455,6 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
     }
 }
 
-/*
-@Composable
-fun IconPrefSwitcher(preferencesDataStore: PreferencesDatastore, showIcons: MutableState<Boolean>) {
-    val coroutineScope = rememberCoroutineScope()
-    Row(modifier = Modifier.clickable(
-        onClick = {
-            showIcons.value = !showIcons.value
-            coroutineScope.launch {
-                preferencesDataStore.setIconPreference(showIcons.value)
-            }
-            Log.d(TAG, "Icon choice toggled")
-        },
-    )) {
-        ListItem(
-            headlineContent = {
-                Text(
-                    text = "Show Location Icons",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            },
-            trailingContent = {
-                Switch(
-                    checked = showIcons.value,
-                    onCheckedChange = null
-                )
-            }
-        )
-    }
-}
- */
-
-// currently not yet tested
 @Composable
 fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore, context: Context) {
     val coroutineScope = rememberCoroutineScope()
@@ -533,6 +481,8 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
                     style = MaterialTheme.typography.bodyLarge,
                 )
             },
+            // commented out for now - workmanager scheduling may cause downloads to not occur at exactly 2AM
+            /*
             supportingContent = {
                 if (updateInBackground.value) {
                     Text(
@@ -540,6 +490,7 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
                     )
                 }
             },
+             */
             trailingContent = {
                 Switch(
                     checked = updateInBackground.value,
@@ -565,125 +516,14 @@ fun BackgroundOneTimeDownload(context: Context) {
     )
 }
 
-// Background download selector
-// currently disabled, since no reason to select locatins
-/*
-@Composable
-fun BackgroundSelectorToggle (showSelector: MutableState<Boolean>) {
-    ListItem(
-        headlineContent = {
-            Text(
-                text = "Select Menus to Download",
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        },
-        modifier = Modifier.clickable {
-            showSelector.value = !showSelector.value
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BackgroundDownloadSelector(showSelector: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
-
-    //make this non-blocking?
-    var locationList by remember { mutableStateOf(mutableListOf<LocationListItem>()) }
-    runBlocking {
-        locationList = (Json.decodeFromString<List<LocationListItem>>(preferencesDataStore.getBackgroundDownloadPreference.first())).toMutableList()
-    }
-    Log.d(TAG,"location list: $locationList")
-
-    val textStyle = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 20.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.sp
-    )
-
-
-    if (showSelector.value) {
-        AlertDialog(onDismissRequest = { showSelector.value = false } ) {
-            Surface(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .wrapContentHeight(),
-                shape = AlertDialogDefaults.shape,
-                tonalElevation = AlertDialogDefaults.TonalElevation
-            ) {
-                Column(modifier = Modifier.padding(vertical = 12.dp)) {
-                    Text(
-                        text = "Select locations to download",
-                        style = textStyle,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                    )
-                    LazyColumn {
-                        items(locationList.size) { location ->
-                            var checked by remember { mutableStateOf(locationList[location].enabled) }
-                            ListItem(
-                                headlineContent = {
-                                    Text(locationList[location].name, modifier = Modifier.padding(horizontal = 16.dp))
-                                },
-                                trailingContent = {
-                                    Checkbox(
-                                        checked = checked,
-                                        onCheckedChange = {
-                                            checked = !checked
-                                            locationList[location].enabled = !locationList[location].enabled
-                                            Log.d(TAG, "item at ${locationList[location]} swapped")
-                                        }
-                                    )
-                                },
-                                modifier = Modifier
-                                    .clickable {
-                                        checked = !checked
-                                        locationList[location].enabled = !locationList[location].enabled
-                                        Log.d(TAG, "item at ${locationList[location]} swapped")
-                                    }
-                            )
-                        }
-                    }
-                    Row(horizontalArrangement = Arrangement.End, modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp)) {
-                        TextButton(
-                            onClick = {
-                                Log.d(TAG,"select operation canceled.")
-                                showSelector.value = false
-                            }
-                        ) {
-                            Text("Cancel")
-                        }
-
-                        TextButton(
-                            onClick = {
-                                runBlocking {
-                                    Log.d(TAG, "saving location list: $locationList")
-                                    preferencesDataStore.setBackgroundDownloadPreference(Json.encodeToString(locationList.toList()))
-                                }
-                                showSelector.value = false
-                            }
-                        ) {
-                            Text("Confirm")
-                        }
-                    }
-
-
-                }
-            }
-        }
-    }
-}
-*/
-
 @Composable
 fun ClearCache(menuDb: MenuDatabase, context: Context) {
     ListItem(
         headlineContent = { Text("Clear App Cache") },
-        supportingContent = { Text("Clears menu and busyness data for all locations.")},
+        supportingContent = { Text("Clears menu and busyness data for all locations.") },
         modifier = Modifier.clickable {
             CoroutineScope(Dispatchers.IO).launch {
-                menuDb.menuDao().dropMenus()
-                menuDb.waitzDao().dropWaitz()
+                menuDb.clearAllTables()
                 withContext(Dispatchers.Main) {
                     ShortToast("Cache cleared.", context)
                 }
@@ -732,18 +572,15 @@ fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     latestVersion = getLatestVersion()
-                } catch (e: UnresolvedAddressException) {
-                    exceptionFound = "No Internet connection"
-                } catch (e: SocketTimeoutException) {
-                    exceptionFound = "Connection timed out"
-                } catch (e: UnknownHostException) {
-                    exceptionFound = "Failed to resolve URL"
-                } catch (e: CertificateException) {
-                    exceptionFound = "Website's SSL certificate is invalid"
-                } catch (e: SSLHandshakeException) {
-                    exceptionFound = "SSL handshake failed"
                 } catch (e: Exception) {
-                    exceptionFound = "Exception: $e"
+                    exceptionFound = when (e) {
+                        is UnresolvedAddressException -> "No Internet connection"
+                        is SocketTimeoutException -> "Connection timed out"
+                        is UnknownHostException -> "Failed to resolve URL"
+                        is CertificateException -> "Website's SSL certificate is invalid"
+                        is SSLHandshakeException -> "SSL handshake failed"
+                        else -> "Exception: $e"
+                    }
                 }
                 withContext(Dispatchers.Main) {
                     if (exceptionFound.isNotEmpty()) {

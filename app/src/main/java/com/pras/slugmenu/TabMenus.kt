@@ -228,7 +228,7 @@ fun PrintMenu(itemList: List<String>) {
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
-                //eyeballed it, this is close enough to actual center
+                //eyeballed it, this is close enough to halfway between the tab and the FAB
                 modifier = Modifier.offset(y = (-40).dp)
             )
         }

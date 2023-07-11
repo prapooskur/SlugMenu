@@ -46,6 +46,7 @@ import com.pras.slugmenu.ui.elements.pagerTabIndicatorOffset
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
@@ -90,18 +91,15 @@ fun OakesCafeMenuRoom(navController: NavController, locationName: String, locati
                             currentDate
                         )
                     )
-                } catch (e: UnresolvedAddressException) {
-                    exceptionFound = "No Internet connection"
-                } catch (e: SocketTimeoutException) {
-                    exceptionFound = "Connection timed out"
-                } catch (e: UnknownHostException) {
-                    exceptionFound = "Failed to resolve URL"
-                } catch (e: CertificateException) {
-                    exceptionFound = "Website's SSL certificate is invalid"
-                } catch (e: SSLHandshakeException) {
-                    exceptionFound = "SSL handshake failed"
                 } catch (e: Exception) {
-                    exceptionFound = "Exception: $e"
+                    exceptionFound = when (e) {
+                        is UnresolvedAddressException -> "No Internet connection"
+                        is SocketTimeoutException -> "Connection timed out"
+                        is UnknownHostException -> "Failed to resolve URL"
+                        is CertificateException -> "Website's SSL certificate is invalid"
+                        is SSLHandshakeException -> "SSL handshake failed"
+                        else -> "Exception: $e"
+                    }
                 }
                 dataLoadedState.value = true
             }

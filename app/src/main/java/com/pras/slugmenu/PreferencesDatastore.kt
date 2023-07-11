@@ -178,26 +178,5 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         }
     }
 
-    /*
-    val getIconPreference: Flow<Boolean> = dataStore.data
-        .catch {
-            if (it is IOException) {
-                Log.e(TAG, "Error reading Icon preferences.", it)
-                emit(emptyPreferences())
-            } else {
-                throw it
-            }
-        }
-        .map {preferences ->
-            preferences[ICON_PREF] ?: true
-        }
-
-    suspend fun setIconPreference(userChoice: Boolean) {
-        dataStore.edit {preferences ->
-            preferences[ICON_PREF] = userChoice
-        }
-    }
-     */
-
 }
 

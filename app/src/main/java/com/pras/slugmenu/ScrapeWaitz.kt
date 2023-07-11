@@ -65,28 +65,36 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
 
     val allLocationDictionary = mutableMapOf<String, List<String>>()
     locationData.data.forEach { location ->
-        val locationName = location.name.replace(" / ","/").replace("College 9","Nine").replace("John R Lewis","Lewis").replace(" Dining Hall","").replace("Cafe Main","Cafe")
-        val currentLocation = mutableListOf<String>()
-        currentLocation.add(location.busyness.toString())
-        currentLocation.add(location.people.toString())
-        currentLocation.add(location.capacity.toString())
-        currentLocation.add(location.isAvailable.toString())
-        allLocationDictionary[locationName] = currentLocation.toList()
-    }
+        val locationName = location.name
+            .replace(" / ", "/")
+            .replace("College 9", "Nine")
+            .replace("John R Lewis", "Lewis")
+            .replace(" Dining Hall", "")
+            .replace("Cafe Main", "Cafe")
 
+        val currentLocation = listOf(
+            location.busyness.toString(),
+            location.people.toString(),
+            location.capacity.toString(),
+            location.isAvailable.toString()
+        )
+        allLocationDictionary[locationName] = currentLocation
+    }
 
     val allCompareDictionary = mutableMapOf<String, List<String>>()
     compareData.data.forEach { comparison ->
         if (comparison.comparison != null && comparison.name != "null") {
-            val locationName = comparison.name.replace(" / ","/").replace("College 9","Nine").replace("John R Lewis","Lewis").replace(" Dining Hall","").replace("Cafe Main","Cafe")
-            val currentCompare = mutableListOf<String>()
-            comparison.comparison.forEach { item ->
-                currentCompare.add(item.string)
-            }
-            allCompareDictionary[locationName] = currentCompare.toList()
+            val locationName = comparison.name
+                .replace(" / ","/")
+                .replace("College 9","Nine")
+                .replace("John R Lewis","Lewis")
+                .replace(" Dining Hall","")
+                .replace("Cafe Main","Cafe")
+
+            val currentCompare = comparison.comparison.map { it.string }
+            allCompareDictionary[locationName] = currentCompare
         }
     }
-
 
     return listOf(allLocationDictionary.toMap(),allCompareDictionary.toMap())
 }

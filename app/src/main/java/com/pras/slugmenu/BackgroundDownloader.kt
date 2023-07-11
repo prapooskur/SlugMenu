@@ -6,6 +6,7 @@ import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
@@ -237,9 +238,10 @@ object BackgroundDownloadScheduler {
             .addTag("backgroundMenuDownload")
             .build()
 
+        // with existingworkpolicy.keep, work won't be spammed if the button is rapidly pressed
         WorkManager
             .getInstance(context)
-            .enqueue(oneTimeWorkRequest)
+            .enqueueUniqueWork("oneTimeBackgroundMenuDownload", ExistingWorkPolicy.KEEP, oneTimeWorkRequest)
 
         Log.d(TAG,"Single download queued")
     }

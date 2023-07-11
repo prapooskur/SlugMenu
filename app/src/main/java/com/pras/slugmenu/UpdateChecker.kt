@@ -12,7 +12,7 @@ private const val TAG = "UpdateChecker"
 
 @Serializable
 data class Response(
-    val tag_name: String
+    val tagName: String
 )
 
 suspend fun getLatestVersion(): String {
@@ -25,7 +25,7 @@ suspend fun getLatestVersion(): String {
     val json = Json { ignoreUnknownKeys = true }
     val responseList: List<Response> = json.decodeFromString(responseBody)
     val response: Response = responseList[0]
-    val latestVersion = response.tag_name
+    val latestVersion = response.tagName
     Log.d(TAG, "Latest version: v$latestVersion")
     return latestVersion
 }

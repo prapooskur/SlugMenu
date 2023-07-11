@@ -69,18 +69,15 @@ fun NonDiningMenuRoom(navController: NavController, locationName: String, locati
                         )
                     )
                 //TODO: unify these into one catch block?
-                } catch (e: UnresolvedAddressException) {
-                    exceptionFound = "No Internet connection"
-                } catch (e: SocketTimeoutException) {
-                    exceptionFound = "Connection timed out"
-                } catch (e: UnknownHostException) {
-                    exceptionFound = "Failed to resolve URL"
-                } catch (e: CertificateException) {
-                    exceptionFound = "Website's SSL certificate is invalid"
-                } catch (e: SSLHandshakeException) {
-                    exceptionFound = "SSL handshake failed"
                 } catch (e: Exception) {
-                    exceptionFound = "Exception: $e"
+                    exceptionFound = when (e) {
+                        is UnresolvedAddressException -> "No Internet connection"
+                        is SocketTimeoutException -> "Connection timed out"
+                        is UnknownHostException -> "Failed to resolve URL"
+                        is CertificateException -> "Website's SSL certificate is invalid"
+                        is SSLHandshakeException -> "SSL handshake failed"
+                        else -> "Exception: $e"
+                    }
                 }
                 dataLoadedState.value = true
             }
