@@ -28,21 +28,10 @@ import java.util.concurrent.TimeUnit
 
 private const val TAG = "BackgroundDownloadWorker"
 
-/*
-// this version allows for selection of which menus to download
-// currently unused - i don't see a reason to selectively download menus
-@Serializable
-data class LocationListItem(val name: String, val url: String, val type: LocationType, var enabled: Boolean)
- */
-
 @Serializable
 data class LocationListItem(val name: String, val url: String, val type: LocationType)
 
-enum class LocationType {
-    Dining,
-    NonDining,
-    Oakes
-}
+enum class LocationType { Dining, NonDining, Oakes }
 
 class BackgroundDownloadWorker(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
 
@@ -56,27 +45,14 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
         val locationList: List<LocationListItem> = inputData.getString("locationList")
             ?.let { Json.decodeFromString(it) } ?: emptyList()
 
-        /*
-        // this version stores a serialized locationlist in datastore to allow selection of which menus to download
-        // currently not used, since it adds needless complexity and i don't see a reason to download some menus but not others.
-        val preferencesDatastore = PreferencesDatastore(applicationContext.dataStore)
-        val locationList: List<LocationListItem>
-        // find alternative to runblocking?
-        runBlocking {
-            locationList = Json.decodeFromString<List<LocationListItem>>(preferencesDatastore.getBackgroundDownloadPreference.first())
-        }
-
-         */
-
         Log.d(TAG,"location list: $locationList")
 
         return try {
             if (locationList.isNotEmpty()) {
-                // Schema: four-element class of string/string/enum/bool
+                // Schema: three-element class of string/string/enum/bool
                 // String 1: location name
                 // String 2: location URL
                 // Enum: type of menu (dining menu, non dining menu, oakes)
-                // Boolean: Whether to download the menu or not
 
                 coroutineScope {
                     // Uses coroutines to download and insert the menus asynchronously
@@ -173,6 +149,7 @@ object BackgroundDownloadScheduler {
         val currentDateTime = LocalDateTime.now()
 
 
+        // set to 2AM because workmanager may not download at the exact time
         var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(2, 0))
             .atZone(timeZone)
             .toLocalDateTime()
@@ -238,7 +215,7 @@ object BackgroundDownloadScheduler {
             .addTag("backgroundMenuDownload")
             .build()
 
-        // with existingworkpolicy.keep, work won't be spammed if the button is rapidly pressed
+        // with existingworkpolicy.keep, work won't be duplicated if the button is rapidly pressed
         WorkManager
             .getInstance(context)
             .enqueueUniqueWork("oneTimeBackgroundMenuDownload", ExistingWorkPolicy.KEEP, oneTimeWorkRequest)

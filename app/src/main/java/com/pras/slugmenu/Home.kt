@@ -160,7 +160,9 @@ fun TwoByTwoGridWithIcons(navController: NavController, innerPadding: PaddingVal
 
         items(locationOrder.size) { index ->
             val location: String = locationOrder[index].navLocation
-            val name: String = locationOrder[index].locationName.replace("/","\n").replace("Perks", "Perk Coffee Bars")
+            val name: String = locationOrder[index].locationName
+                .replace("/", "\n")
+//                .replace("Perks", "Perk Coffee Bars")
 
             // try to get icon from dictionary, default to nine/lewis icon if it isn't listed for some reason to avoid crash
             // in practice, this should never need to fall back to the default.

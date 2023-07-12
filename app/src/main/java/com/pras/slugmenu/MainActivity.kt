@@ -226,7 +226,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 }
             }
         ) {
-            DiningMenuRoom(
+            DiningMenu(
                 navController,
                 "Nine/Lewis",
                 "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1",
@@ -258,7 +258,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 }
             }
         ) {
-            DiningMenuRoom(
+            DiningMenu(
                 navController,
                 "Cowell/Stevenson",
                 "05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1",
@@ -290,7 +290,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 }
             }
         ) {
-            DiningMenuRoom(
+            DiningMenu(
                 navController,
                 "Crown/Merrill",
                 "20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1",
@@ -322,7 +322,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 }
             }
         ) {
-            DiningMenuRoom(
+            DiningMenu(
                 navController,
                 "Porter/Kresge",
                 "25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1",
@@ -356,7 +356,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 }
             }
         ) {
-            NonDiningMenuRoom(
+            NonDiningMenu(
                 navController,
                 "Perk Coffee Bars",
                 "22&locationName=Perk+Coffee+Bars&naFlag=1",
@@ -388,7 +388,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 }
             }
         ) {
-            NonDiningMenuRoom(
+            NonDiningMenu(
                 navController,
                 "Terra Fresca",
                 "45&locationName=UCen+Coffee+Bar&naFlag=1",
@@ -420,7 +420,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 }
             }
         ) {
-            NonDiningMenuRoom(
+            NonDiningMenu(
                 navController,
                 "Porter Market",
                 "50&locationName=Porter+Market&naFlag=1",
@@ -452,7 +452,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 }
             }
         ) {
-            NonDiningMenuRoom(
+            NonDiningMenu(
                 navController,
                 "Stevenson Coffee House",
                 "26&locationName=Stevenson+Coffee+House&naFlag=1",
@@ -484,7 +484,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 }
             }
         ) {
-            NonDiningMenuRoom(
+            NonDiningMenu(
                 navController,
                 "Global Village Cafe",
                 "46&locationName=Global+Village+Cafe&naFlag=1",
@@ -518,7 +518,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 }
             }
         ) {
-            OakesCafeMenuRoom(
+            OakesCafeMenu(
                 navController,
                 "Oakes Cafe",
                 "23&locationName=Oakes+Cafe&naFlag=1",

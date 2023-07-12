@@ -243,7 +243,7 @@ fun PrintPriceMenu(itemList: List<String>, padding: PaddingValues) {
             items(itemList.size) { item ->
                 val itemval = itemList[item]
 
-                if (itemval.contains("--") || itemval.contains("—")) {
+                if (itemval.contains("—")) {
                     if (item != 0) {
                         Divider(
                             thickness = 2.dp
@@ -267,7 +267,7 @@ fun PrintPriceMenu(itemList: List<String>, padding: PaddingValues) {
 
                 //swap double and single to stop them being printed out of order
                 // without the equality check, caramel latte was being swapped with cappuccino
-                if (item < itemList.size-1 && itemList[item+1].contains("Double") && itemList[item+3].contains("Single") && itemList[item+1].substringBefore(",") == itemList[item+3].substringBefore(",")) {
+                if (item < itemList.size-3 && itemList[item+1].contains("Double") && itemList[item+3].contains("Single") && itemList[item+1].substringBefore(",") == itemList[item+3].substringBefore(",")) {
                     Collections.swap(itemList,item,item+2)
                     Collections.swap(itemList,item+1,item+3)
                 }
@@ -319,7 +319,7 @@ fun PrintPriceMenu(itemList: List<String>, padding: PaddingValues) {
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    //eyeballed it, this is close enough to actual center
+                    //eyeballed it, this is close enough to halfway between the tab and the FAB
                     modifier = Modifier.offset(y = (-40).dp)
                 )
             }
@@ -389,9 +389,78 @@ fun PrintOakesMenu(itemList: List<String>) {
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
-                //eyeballed it, this is close enough to actual center
+                //eyeballed it, this is close enough to halfway between the tab and the FAB
                 modifier = Modifier.offset(y = (-40).dp)
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PriceTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
+    val currentHour: Int = LocalDateTime.now().hour
+//    Log.d(TAG,"hour: "+currentHour)
+
+
+    val titles: List<String> = if ((menuArray[0].isEmpty() || menuArray[0] == listOf("Not Open Today")) && menuArray[1].isEmpty()) {
+        listOf("Closed")
+    } else {
+        listOf("Breakfast", "All Day")
+    }
+
+    val initState: Int = when {
+        titles.size <= 1 -> 0
+        //Breakfast from 12AM-11AM
+        currentHour in 0..11 -> 0
+        // All day for rest of day
+        currentHour in 12..23 -> 1
+        // if all else fails (even though it never should), default to breakfast
+        else -> 0
+    }
+//    Log.d(TAG,"initstate: "+initState)
+
+    var state by remember { mutableStateOf(initState) }
+    val pagerState = rememberPagerState(initState)
+    val scope = rememberCoroutineScope()
+
+    Column(modifier = Modifier.padding(padding)) {
+        TabRow(
+            selectedTabIndex = state,
+            indicator = { tabPositions -> // 3.
+                TabRowDefaults.Indicator(
+                    Modifier.pagerTabIndicatorOffset(
+                        pagerState,
+                        tabPositions
+                    )
+                )
+            }
+        ) {
+            titles.forEachIndexed { index, title ->
+                Tab(
+                    selected = state == index,
+                    onClick = { state = index; scope.launch{pagerState.animateScrollToPage(index)} },
+                    text = {
+                        Text(
+                            text = title,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally),
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                )
+            }
+        }
+        HorizontalPager(
+            pageCount = titles.size,
+            state = pagerState
+        ) {state ->
+            PrintOakesMenu(itemList = menuArray[state])
         }
     }
 }

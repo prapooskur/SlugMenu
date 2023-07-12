@@ -40,7 +40,16 @@ private const val TAG = "TopBars"
 // Intended for use on main and settings screens
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrollBehavior: TopAppBarScrollBehavior, isHome: Boolean = false, isClickable: MutableState<Boolean> = remember { mutableStateOf(false) }, delay: Long = 0, isOrganizer: Boolean = false, resetPressed: MutableState<Boolean> = mutableStateOf(false)) {
+fun CollapsingLargeTopBar(
+    titleText: String,
+    navController: NavController,
+    scrollBehavior: TopAppBarScrollBehavior,
+    isHome: Boolean = false,
+    isClickable: MutableState<Boolean> = remember { mutableStateOf(false) },
+    delay: Long = 0,
+    isOrganizer: Boolean = false,
+    resetPressed: MutableState<Boolean> = mutableStateOf(false)
+) {
     val topBarColors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface, scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer)
 
     val topBarElevation = if (scrollBehavior.state.collapsedFraction > 0.99) {
@@ -124,7 +133,15 @@ fun CollapsingLargeTopBar(titleText: String, navController: NavController, scrol
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(titleText: String, navController: NavController, isHome: Boolean = false, isClickable: MutableState<Boolean> = remember { mutableStateOf(false) }, delay: Long = 0, isOrganizer: Boolean = false, resetPressed: MutableState<Boolean> = mutableStateOf(false)) {
+fun TopBar(
+    titleText: String,
+    navController: NavController,
+    isHome: Boolean = false,
+    isClickable: MutableState<Boolean> = remember { mutableStateOf(false) },
+    delay: Long = 0,
+    isOrganizer: Boolean = false,
+    resetPressed: MutableState<Boolean> = mutableStateOf(false)
+) {
 
     val coroutineScope = rememberCoroutineScope()
     Surface(shadowElevation = 4.dp) {

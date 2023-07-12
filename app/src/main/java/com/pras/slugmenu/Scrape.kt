@@ -76,7 +76,7 @@ suspend fun getWebData (inputUrl: String): List<List<String>> {
                     listItems.add(cleanSeparator)
                 }
 
-                if (items.length > 42 && items !in listItems) {
+                if (items.length > 42) {
                     var cleanItem = items.substring(29, items.length - 13)
                     // correct for typos in the menu items
                     cleanItem = cleanItem
@@ -97,7 +97,6 @@ suspend fun getWebData (inputUrl: String): List<List<String>> {
     }
     Log.d(TAG, "Parse time: "+parseTime+"ms.")
     return allListItems
-
 }
 
 suspend fun getDiningMenu(inputUrl: String): List<List<String>> {

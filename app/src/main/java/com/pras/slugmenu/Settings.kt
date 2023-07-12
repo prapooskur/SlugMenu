@@ -481,16 +481,14 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
                     style = MaterialTheme.typography.bodyLarge,
                 )
             },
-            // commented out for now - workmanager scheduling may cause downloads to not occur at exactly 2AM
-            /*
+            // don't be specific about time - workmanager scheduling may cause downloads to not occur at exactly 2AM
             supportingContent = {
                 if (updateInBackground.value) {
                     Text(
-                        text = "Downloading at 2AM Pacific Time."
+                        text = "Menus will be updated overnight."
                     )
                 }
             },
-             */
             trailingContent = {
                 Switch(
                     checked = updateInBackground.value,

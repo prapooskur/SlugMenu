@@ -49,9 +49,7 @@ private const val TAG = "DiningMenu"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiningMenuRoom(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
-    Log.d(TAG, "Hello, World from room!")
-//    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
+fun DiningMenu(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
 
     val currentDate = LocalDate.now()
     val menuDao = menuDatabase.menuDao()
