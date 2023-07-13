@@ -13,12 +13,12 @@ plugins {
 
 android {
     namespace = "com.pras.slugmenu"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.pras.slugmenu"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "selfbuilt"
 
@@ -36,7 +36,7 @@ android {
 
             // Enables resource shrinking, which is performed by the
             // Android Gradle plugin.
-            isShrinkResources  = true
+            isShrinkResources = true
 
             // Includes the default ProGuard rules files that are packaged with
             // the Android Gradle plugin. To learn more, go to the section about
