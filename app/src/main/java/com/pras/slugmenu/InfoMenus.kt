@@ -104,9 +104,6 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
 
         AlertDialog(
             onDismissRequest = {
-                // Dismiss the dialog when the user clicks outside the dialog or on the back
-                // button. If you want to disable that functionality, simply use an empty
-                // onDismissRequest.
                 showDialog.value = false
             },
             title = {
@@ -309,7 +306,9 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
 
     if (openBottomSheet.value) {
         ModalBottomSheet(
-            onDismissRequest = { openBottomSheet.value = false },
+            onDismissRequest = {
+                openBottomSheet.value = false
+            },
             sheetState = bottomSheetState,
         ) {
             ListItem(

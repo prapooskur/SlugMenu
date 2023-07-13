@@ -11,9 +11,7 @@ import kotlinx.serialization.json.Json
 private const val TAG = "UpdateChecker"
 
 @Serializable
-data class Response(
-    val tagName: String
-)
+data class Response(val tag_name: String)
 
 suspend fun getLatestVersion(): String {
     val baseUrl = "https://api.github.com/repos/prapooskur/slugmenu/releases"
@@ -25,7 +23,7 @@ suspend fun getLatestVersion(): String {
     val json = Json { ignoreUnknownKeys = true }
     val responseList: List<Response> = json.decodeFromString(responseBody)
     val response: Response = responseList[0]
-    val latestVersion = response.tagName
+    val latestVersion = response.tag_name
     Log.d(TAG, "Latest version: v$latestVersion")
     return latestVersion
 }

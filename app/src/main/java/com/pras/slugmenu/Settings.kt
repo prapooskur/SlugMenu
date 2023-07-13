@@ -48,6 +48,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
@@ -603,8 +604,14 @@ fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableStat
         AlertDialog(
             onDismissRequest = { updateAvailable.value = false },
             icon = { Icon(Icons.Default.Refresh, contentDescription = "Update") },
-            title = { Text(text = "Update Available") },
-            text = { Text(text = "A new version of Slug Menu is available. Please update to v${newVersion.value}.", fontSize = 15.sp) },
+            title = { Text(text = "Update Available", textAlign = TextAlign.Center) },
+            text = {
+                Text(
+                    text = "A new version of Slug Menu is available. Please update to v${newVersion.value}.",
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center
+                )
+            },
             confirmButton = {
                 Button(
                     onClick = {

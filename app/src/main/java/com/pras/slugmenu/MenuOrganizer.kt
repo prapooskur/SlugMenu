@@ -65,7 +65,7 @@ data class LocationOrderItem(val navLocation: String, val locationName: String, 
 fun MenuOrganizer(navController: NavController, preferencesDataStore: PreferencesDatastore) {
 
     var locationOrder: List<LocationOrderItem>
-    val useCollapsingTopBar = remember { mutableStateOf(false) }
+    val useCollapsingTopBar = remember { mutableStateOf(true) }
     runBlocking {
         locationOrder = Json.decodeFromString(preferencesDataStore.getLocationOrder.first())
         useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()

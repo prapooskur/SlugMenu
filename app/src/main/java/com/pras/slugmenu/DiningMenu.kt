@@ -54,10 +54,10 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
     val currentDate = LocalDate.now()
     val menuDao = menuDatabase.menuDao()
 
-    // Define a state to hold the retrieved Menu object
+    // Define a state to hold the retrieved Menu
     var menuList by remember { mutableStateOf<List<List<String>>>(listOf(listOf(), listOf())) }
 
-    // Define a state to hold a flag indicating whether the data has been loaded from the cache
+    // Define a state indicating whether the data has been loaded from the cache
     val dataLoadedState = remember { mutableStateOf(false) }
     var exceptionFound by remember { mutableStateOf("No Exception") }
 
@@ -155,9 +155,6 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                 val confirmEnabled = remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
                 DatePickerDialog(
                     onDismissRequest = {
-                        // Dismiss the dialog when the user clicks outside the dialog or on the back
-                        // button. If you want to disable that functionality, simply use an empty
-                        // onDismissRequest.
                         showDatePicker = false
                     },
                     confirmButton = {
@@ -322,9 +319,6 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                 val confirmEnabled = remember { derivedStateOf { datePickerState.selectedDateMillis != null } }
                 DatePickerDialog(
                     onDismissRequest = {
-                        // Dismiss the dialog when the user clicks outside the dialog or on the back
-                        // button. If you want to disable that functionality, simply use an empty
-                        // onDismissRequest.
                         showDatePicker = false
                     },
                     confirmButton = {
@@ -342,16 +336,6 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                                 val newDateUrl = date.toString().replace("-", "%2f")
 
                                 Log.d(TAG, "date url: $dateUrl")
-
-                                // this breaks the world
-                                /*
-                                DiningMenuCustomDate(
-                                    navController = navController,
-                                    locationUrl = locationUrl,
-                                    dateUrl = dateUrl,
-                                    locationName = "${locationName.substringBefore(" ")} ${date.toString()}",
-                                )
-                                 */
 
                                 val locationDateName = "${locationName.substringBefore(" ").replace("Cowell/Stevenson","Cowell/Stev")} $titleDate"
                                 Log.d(TAG, "location date name: $locationDateName")

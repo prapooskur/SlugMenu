@@ -118,16 +118,15 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
     var pressedTime: Long = 0
     BackHandler {
         if (pressedTime + 2000 > System.currentTimeMillis()) {
-            // if time is greater than 2 sec we are closing the application.
+            // if time since last back press is less than 2 sec, close application
             (context as? Activity)?.finish()
             Log.d(TAG, "back pressed twice, exiting")
         } else {
-            // in else condition displaying a toast message.
+            // show toast and update pressed time
             ShortToast("Press back again to exit", context)
             Log.d(TAG, "back pressed, toast shown")
+            pressedTime = System.currentTimeMillis()
         }
-        // on below line initializing our press time variable
-        pressedTime = System.currentTimeMillis()
     }
 
 }
@@ -174,8 +173,8 @@ fun TwoByTwoGridWithIcons(navController: NavController, innerPadding: PaddingVal
                         clickable = false
                         navController.navigate(location)
                         coroutineScope.launch {
-                            // tween time set in mainactivity.kt
-                            delay(TWEENTIME.toLong())
+                            // delay time set in mainactivity.kt
+                            delay(DELAYTIME.toLong())
                             clickable = true
                         }
                     }
@@ -194,6 +193,7 @@ fun TwoByTwoGridWithIcons(navController: NavController, innerPadding: PaddingVal
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
+                    // without this, the nine/lewis icon looks larger than the other icons
                     val imageModifier = if (icon == R.drawable.ninelewis) {
                         Modifier
                             .weight(1.8f)
@@ -205,9 +205,10 @@ fun TwoByTwoGridWithIcons(navController: NavController, innerPadding: PaddingVal
                             .aspectRatio(1f)
                     }
 
+                    // no content description provided - image is purely decorative
                     Image(
                         painter = painterResource(icon),
-                        contentDescription = "Location Icon",
+                        contentDescription = null,
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
                         alignment = Alignment.Center,
                         modifier = imageModifier
@@ -306,9 +307,10 @@ fun CardListWithIcons(navController: NavController, innerPadding: PaddingValues,
                         .weight(1f)
                         .padding(start = 8.dp)
 
+                    // no content description provided - image is purely decorative
                     Image(
                         painter = painterResource(icon),
-                        contentDescription = "Location Icon",
+                        contentDescription = null,
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
                         alignment = Alignment.Center,
                         modifier = imageModifier
@@ -394,132 +396,4 @@ fun ListPreview() {
     )
 
     CardListWithIcons(navController = navController, innerPadding = innerPadding, locationOrder = locationOrder, iconMap = iconMap)
-}
-
-// old, iconless home screens
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues, locationOrder: List<LocationOrderItem>) {
-
-    var clickable by remember { mutableStateOf(true) }
-    val coroutineScope = rememberCoroutineScope()
-
-    Log.d(TAG, "location order: $locationOrder")
-
-    val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-
-    // combine the padding values given by scaffold with the padding for bottom bar, so parts of
-    // the grid aren't stuck behind the bottom bar
-    val paddingAmount = 10.dp
-    val contentPadding = PaddingValues(start = paddingAmount, top = paddingAmount, end = paddingAmount, bottom = paddingAmount+navPadding)
-
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 140.dp),
-        contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues = innerPadding)
-    ) {
-
-        items(locationOrder.size) { index ->
-            val location: String = locationOrder[index].navLocation
-            val name: String = locationOrder[index].locationName.replace("/","\n")
-            Card(
-                onClick = {
-                    if (clickable) {
-                        clickable = false
-                        navController.navigate(location)
-                        coroutineScope.launch {
-                            // tween time set in mainactivity.kt
-                            delay(TWEENTIME.toLong())
-                            clickable = true
-                        }
-                    }
-                },
-                shape = MaterialTheme.shapes.small,
-                modifier = Modifier
-                    .aspectRatio(1f),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = name,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontSize = 18.sp
-                    )
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CardList(navController: NavController, innerPadding: PaddingValues, locationOrder: List<LocationOrderItem>) {
-
-    var clickable by remember { mutableStateOf(true) }
-    val coroutineScope = rememberCoroutineScope()
-
-    val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-
-    // combine the padding values given by scaffold with the padding for bottom bar, so parts of
-    // the grid aren't stuck behind the bottom bar
-    val paddingAmount = 10.dp
-    val contentPadding = PaddingValues(start = paddingAmount, top = paddingAmount, end = paddingAmount, bottom = paddingAmount+navPadding)
-
-
-    LazyColumn(
-        contentPadding = contentPadding,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues = innerPadding),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(locationOrder.size) { index ->
-            val location: String = locationOrder[index].navLocation
-            val name: String = locationOrder[index].locationName
-            Card(
-                onClick = {
-                    if (clickable) {
-                        clickable = false
-                        navController.navigate(location)
-                        coroutineScope.launch {
-                            // tween time set in mainactivity.kt
-                            delay(350)
-                            clickable = true
-                        }
-                    }
-                },
-                shape = MaterialTheme.shapes.small,
-                modifier = Modifier
-                    .aspectRatio(4f),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = name,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontSize = 18.sp
-                    )
-                }
-            }
-        }
-    }
 }

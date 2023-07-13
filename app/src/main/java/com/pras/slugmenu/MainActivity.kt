@@ -7,11 +7,12 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -176,25 +177,16 @@ fun TouchBlocker(navController: NavController, delay: Long, clickable: MutableSt
 }
 
 
-const val TWEENTIME = 350
+const val DELAYTIME = 350
 const val FADETIME = 200
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYou: MutableState<Boolean>, useAmoledTheme: MutableState<Boolean>, userSettings: PreferencesDatastore) {
-//    val oldNavController = rememberNavController()
     val navController = rememberAnimatedNavController()
     val context = LocalContext.current
 
     val menuDb = MenuDatabase.getInstance(context)
 
-    /*
-    NavHost(
-        navController = navController,
-        startDestination = startDestination
-    ) {
-        addScreens(navController, context)
-    }
-     */
     AnimatedNavHost(navController = navController, startDestination = startDestination) {
         composable(
             "home",
@@ -206,10 +198,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             enterTransition = {
                 when (initialState.destination.route) {
                     "home" ->
-                        slideIntoContainer(
-                            AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideInHorizontally(initialOffsetX = {it})
 
                     else -> null
                 }
@@ -217,10 +206,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
-                        slideOutOfContainer(
-                            AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideOutHorizontally( targetOffsetX = {it} )
 
                     else -> null
                 }
@@ -238,10 +224,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             enterTransition = {
                 when (initialState.destination.route) {
                     "home" ->
-                        slideIntoContainer(
-                            AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideInHorizontally(initialOffsetX = {it})
 
                     else -> null
                 }
@@ -249,10 +232,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
-                        slideOutOfContainer(
-                            AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideOutHorizontally( targetOffsetX = {it} )
 
                     else -> null
                 }
@@ -270,22 +250,14 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             enterTransition = {
                 when (initialState.destination.route) {
                     "home" ->
-                        slideIntoContainer(
-                            AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(TWEENTIME)
-                        )
-
+                        slideInHorizontally(initialOffsetX = {it})
                     else -> null
                 }
             },
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
-                        slideOutOfContainer(
-                            AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(TWEENTIME)
-                        )
-
+                        slideOutHorizontally( targetOffsetX = {it} )
                     else -> null
                 }
             }
@@ -302,22 +274,14 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             enterTransition = {
                 when (initialState.destination.route) {
                     "home" ->
-                        slideIntoContainer(
-                            AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(TWEENTIME)
-                        )
-
+                        slideInHorizontally(initialOffsetX = {it})
                     else -> null
                 }
             },
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
-                        slideOutOfContainer(
-                            AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(TWEENTIME)
-                        )
-
+                        slideOutHorizontally( targetOffsetX = {it} )
                     else -> null
                 }
             }
@@ -336,22 +300,14 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             enterTransition = {
                 when (initialState.destination.route) {
                     "home" ->
-                        slideIntoContainer(
-                            AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(TWEENTIME)
-                        )
-
+                        slideInHorizontally( initialOffsetX = {it} )
                     else -> null
                 }
             },
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
-                        slideOutOfContainer(
-                            AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(TWEENTIME)
-                        )
-
+                        slideOutHorizontally( targetOffsetX = {it} )
                     else -> null
                 }
             }
@@ -368,10 +324,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             enterTransition = {
                 when (initialState.destination.route) {
                     "home" ->
-                        slideIntoContainer(
-                            AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideInHorizontally( initialOffsetX = {it} )
 
                     else -> null
                 }
@@ -379,10 +332,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
-                        slideOutOfContainer(
-                            AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideOutHorizontally( targetOffsetX = {it} )
 
                     else -> null
                 }
@@ -400,10 +350,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             enterTransition = {
                 when (initialState.destination.route) {
                     "home" ->
-                        slideIntoContainer(
-                            AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideInHorizontally( initialOffsetX = {it} )
 
                     else -> null
                 }
@@ -411,10 +358,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
-                        slideOutOfContainer(
-                            AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideOutHorizontally( targetOffsetX = {it} )
 
                     else -> null
                 }
@@ -432,10 +376,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             enterTransition = {
                 when (initialState.destination.route) {
                     "home" ->
-                        slideIntoContainer(
-                            AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideInHorizontally( initialOffsetX = {it} )
 
                     else -> null
                 }
@@ -443,10 +384,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
-                        slideOutOfContainer(
-                            AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideOutHorizontally( targetOffsetX = {it} )
 
                     else -> null
                 }
@@ -464,10 +402,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             enterTransition = {
                 when (initialState.destination.route) {
                     "home" ->
-                        slideIntoContainer(
-                            AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideInHorizontally( initialOffsetX = {it} )
 
                     else -> null
                 }
@@ -475,10 +410,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
-                        slideOutOfContainer(
-                            AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideOutHorizontally( targetOffsetX = {it} )
 
                     else -> null
                 }
@@ -498,10 +430,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             enterTransition = {
                 when (initialState.destination.route) {
                     "home" ->
-                        slideIntoContainer(
-                            AnimatedContentScope.SlideDirection.Left,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideInHorizontally( initialOffsetX = {it} )
 
                     else -> null
                 }
@@ -509,10 +438,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
-                        slideOutOfContainer(
-                            AnimatedContentScope.SlideDirection.Right,
-                            animationSpec = tween(TWEENTIME)
-                        )
+                        slideOutHorizontally( targetOffsetX = {it} )
 
                     else -> null
                 }
