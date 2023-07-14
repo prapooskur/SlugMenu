@@ -21,19 +21,21 @@ A Material You UCSC menu app for Android.
 
 - See the times each location opens and closes during both the normal year and summer.
 
+- Select the order and visibility of each location.
+
 # Screenshots
 
-<div align="center">
+<div align="left">
 <div>
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/gridview.png" width=20% height=20%>
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/listview.png" width=20% height=20%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/gridview.png" width=30% height=30%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/listview.png" width=30% height=30%>
 
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/menu.png" width=20% height=20%>
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/datepicker.png" width=20% height=20%>
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/bottomsheet.png" width=20% height=20%>
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/busyness.png" width=20% height=20%>
-<div align="center">
-<div>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/menu.png" width=30% height=30%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/datepicker.png" width=30% height=30%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/bottomsheet.png" width=30% height=30%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/busyness.png" width=30% height=30%>
+</div>
+</div>
 
 <br>
 
