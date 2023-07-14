@@ -9,17 +9,17 @@ A Material You UCSC menu app for Android.
 
 # Features
 
-- View breakfast, lunch, dinner, and late night menus at the four dining halls.
+- View breakfast, lunch, dinner, and late night menus at campus dining halls.
 
-- Download each day's menus automatically every night.
+- Automatically download each day's menus.
 
-- Preview menus offered at future dates in advance.
+- Preview future menus in advance.
 
 - See menus and prices at UCSC-operated cafes and markets.
 
 - View how crowded each dining hall/cafe is at a given moment with Waitz live data.
 
-- See the times each location opens and closes during both the normal year and summer.
+- See when each location opens and closes during the normal year and summer.
 
 - Select the order and visibility of each location.
 
