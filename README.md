@@ -23,13 +23,13 @@ A Material You UCSC menu app for Android.
 
 # Screenshots
 
-![Grid View](assets/screenshots/gridview.png?raw=true)
-![List View](assets/screenshots/listview.png?raw=true)
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/gridview.png" width=33% height=33%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/listview.png" width=33% height=33%>
 
-![Menu](assets/screenshots/menu.png?raw=true)
-![Date Picker](assets/screenshots/datepicker.png?raw=true)
-![Hours Viewer](assets/screenshots/bottomsheet.png?raw=true)
-![Busyness Viewer](assets/screenshots/busyness.png?raw=true)
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/menu.png" width=33% height=33%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/datepicker.png" width=33% height=33%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/bottomsheet.png" width=33% height=33%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/busyness.png" width=33% height=33%>
 
 # Credits
 
