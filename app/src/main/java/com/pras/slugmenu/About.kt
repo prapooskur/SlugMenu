@@ -37,7 +37,7 @@ private const val TAG = "About"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(navController: NavController, preferencesDataStore: PreferencesDatastore) {
-    val useCollapsingTopBar = remember { mutableStateOf(false) }
+    val useCollapsingTopBar = remember { mutableStateOf(true) }
     runBlocking {
         useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
     }
@@ -84,6 +84,23 @@ fun AboutScreen(navController: NavController, preferencesDataStore: PreferencesD
                 }
                 item {
                     ContactItem(context = context)
+                }
+                item {
+                    SectionText(text = "Credits")
+                }
+                item {
+                    CreditItem(
+                        icon = R.drawable.image_icon,
+                        name = "bamboozle-jpg",
+                        description = "App Icons"
+                    )
+                }
+                item {
+                    CreditItem(
+                        icon = R.drawable.image_icon,
+                        name = "Eden Feuchtwang",
+                        description = "Location Icons"
+                    )
                 }
             }
         }
@@ -135,7 +152,6 @@ fun ContactItem(context: Context) {
 //    val packageManager = context.packageManager
     ListItem(
         leadingContent = {
-            // add email icon here
             Icon(
                 Icons.Outlined.Email,
                 contentDescription = "Mail",
@@ -157,5 +173,21 @@ fun ContactItem(context: Context) {
              */
 
         }
+    )
+}
+
+@Composable
+fun CreditItem(icon: Int, name: String, description: String) {
+    ListItem(
+        leadingContent = {
+            // no content description provided - icon is purely decorative
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+        },
+        headlineContent = { Text(name) },
+        supportingContent = { Text(description) }
     )
 }
