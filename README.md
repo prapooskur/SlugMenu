@@ -25,15 +25,17 @@ A Material You UCSC menu app for Android.
 
 <div align="center">
 <div>
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/gridview.png" width=33% height=33%>
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/listview.png" width=33% height=33%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/gridview.png" width=20% height=20%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/listview.png" width=20% height=20%>
 
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/menu.png" width=33% height=33%>
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/datepicker.png" width=33% height=33%>
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/bottomsheet.png" width=33% height=33%>
-<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/busyness.png" width=33% height=33%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/menu.png" width=20% height=20%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/datepicker.png" width=20% height=20%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/bottomsheet.png" width=20% height=20%>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/screenshots/busyness.png" width=20% height=20%>
 <div align="center">
 <div>
+
+<br>
 
 # Credits
 
