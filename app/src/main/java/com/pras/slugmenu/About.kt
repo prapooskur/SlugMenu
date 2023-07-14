@@ -130,7 +130,6 @@ fun AboutItem(appVersion: String) {
 fun GithubItem(context: Context) {
     ListItem(
         leadingContent = {
-            // add Github icon here
             Icon(
                 painterResource(R.drawable.github_icon),
                 contentDescription = "Github",
