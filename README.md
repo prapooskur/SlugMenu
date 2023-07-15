@@ -5,7 +5,7 @@ A Material You UCSC menu app for Android.
 **CI Status**
 
 ![build and sign app](https://github.com/prapooskur/SlugMenu/actions/workflows/build-app.yml/badge.svg)
-![latest release](https://img.shields.io/github/v/release/prapooskur/SlugMenu?color=teal&logo=github&sort=semver](https://img.shields.io/github/v/release/prapooskur/slugmenu?logo=github&color=teal)
+![latest release](https://img.shields.io/github/v/release/prapooskur/slugmenu?logo=github&color=teal)
 
 # Features
 
