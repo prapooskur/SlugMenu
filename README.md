@@ -2,6 +2,10 @@
 
 A Material You UCSC menu app for Android.
 
+<a href='https://play.google.com/store/apps/details?id=com.pras.slugmenu'>
+<img src="https://raw.githubusercontent.com/prapooskur/SlugMenu/master/assets/google-play-badge.png" width=20% height=20% alt="get it on google play">
+</a>
+
 **CI Status**
 
 ![build and sign app](https://github.com/prapooskur/SlugMenu/actions/workflows/build-app.yml/badge.svg)
