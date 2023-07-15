@@ -42,7 +42,6 @@ fun AboutScreen(navController: NavController, preferencesDataStore: PreferencesD
         useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
     }
 
-    //TODO: Complete collapsing top bar rewrite
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState(),
         canScroll = { true })

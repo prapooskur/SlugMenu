@@ -28,7 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.pras.slugmenu.ui.elements.CustomFloatingActionButton
+import com.pras.slugmenu.ui.elements.LongPressFloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.Exception
@@ -138,7 +138,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
 
                      */
 
-                    CustomFloatingActionButton(
+                    LongPressFloatingActionButton(
                         onClick = { showDatePicker = !showDatePicker },
                         onLongClick = { showBottomSheet.value = !showBottomSheet.value },
                         modifier = Modifier.systemBarsPadding()
@@ -240,7 +240,6 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
 
 
     Log.d(TAG, "Manually choosing date! $locationUrl $dateUrl")
-//    val nl = "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
 
     val fullUrl = "$locationUrl&WeeksMenus=UCSC+-+This+Week's+Menus&myaction=read&dtdate=$dateUrl"
 
@@ -295,7 +294,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                 //floating action button, currently shows date picker on short press and hours on long press
 
                 floatingActionButton = {
-                    CustomFloatingActionButton(
+                    LongPressFloatingActionButton(
                         onClick = { showDatePicker = !showDatePicker },
                         onLongClick = { showBottomSheet.value = !showBottomSheet.value },
                         modifier = Modifier.systemBarsPadding()

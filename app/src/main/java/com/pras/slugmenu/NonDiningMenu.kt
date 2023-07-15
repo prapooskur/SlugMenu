@@ -68,7 +68,6 @@ fun NonDiningMenu(navController: NavController, locationName: String, locationUr
                             currentDate
                         )
                     )
-                //TODO: unify these into one catch block?
                 } catch (e: Exception) {
                     exceptionFound = when (e) {
                         is UnresolvedAddressException -> "No Internet connection"

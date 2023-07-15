@@ -139,7 +139,7 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
                 .detectReorderAfterLongPress(state)
         ) {
 
-            // todo: find a workaround for the first item not animating bug
+            // todo: find a workaround for the first item not animating bug somehow?
             items(locationOrderState.value, {it.navLocation}) { item ->
                 var isVisible by remember { mutableStateOf(item.visible) }
                 ReorderableItem(state, key = item.navLocation) { isDragging ->
