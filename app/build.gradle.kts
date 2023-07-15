@@ -19,7 +19,7 @@ android {
         applicationId = "com.pras.slugmenu"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
+        versionCode = 8
         versionName = "selfbuilt"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
