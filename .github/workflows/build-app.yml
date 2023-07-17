@@ -1,6 +1,16 @@
 name: Build and Sign App
 run-name: Building and signing app
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+  push:
+    # only build if app files were modified
+    paths-ignore:
+      - '*.md'
+      - '.github/**'
+      - 'assets/**'
+      - '.gitignore'
+      - 'LICENSE'
+
 jobs:
   build-app:
     runs-on: ubuntu-latest
@@ -22,14 +32,12 @@ jobs:
         working-directory: .
         run: chmod +x ./gradlew
 
-      - name: Bump app version name
-        uses: chkfung/android-version-actions@v1.2.1
-        with:
-          gradlePath: app/build.gradle.kts # or app/build.gradle
-          #Without this, the version code gets set to the github run number
-          # keeping this at one till full release
-          versionCode: 1
-          versionName: 0.${{github.run_number}}
+#      - name: Bump app version name
+#        uses: chkfung/android-version-actions@v1.2.1
+#        with:
+#          gradlePath: app/build.gradle.kts # or app/build.gradle
+##          versionCode: 1
+#          versionName: 0.${{github.run_number}}
       
       - name: Build app
         working-directory: .
@@ -58,12 +66,12 @@ jobs:
           name: app-build
           path: app/build/outputs/apk/release/app-release.apk
       
-      - name: Upload apk to releases
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: 0.${{github.run_number}}
-          name: SlugMenu v0.${{github.run_number}}
-          files: app/build/outputs/apk/release/app-release.apk
+#      - name: Upload apk to releases
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          tag_name: 0.${{github.run_number}}
+#          name: SlugMenu v0.${{github.run_number}}
+#          files: app/build/outputs/apk/release/app-release.apk
 
 permissions:
   contents: write
