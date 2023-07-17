@@ -1,0 +1,11 @@
+A Material 3 UCSC menu viewer.
+
+- View breakfast, lunch, dinner, and late night menus at campus dining halls.
+
+- Automatically download each day's menus.
+
+- Preview future menus in advance.
+
+- See menus and prices at UCSC-operated cafes and markets.
+
+- See when each location opens and closes during the normal year and summer.

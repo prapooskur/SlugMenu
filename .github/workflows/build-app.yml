@@ -10,6 +10,7 @@ on:
       - 'assets/**'
       - '.gitignore'
       - 'LICENSE'
+      - 'metadata/**'
 
 jobs:
   build-app:
