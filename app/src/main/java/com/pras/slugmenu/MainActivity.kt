@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -23,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,10 +38,10 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import kotlinx.coroutines.delay
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            val themeChoice =    remember { mutableStateOf(0)}
+            val themeChoice =    remember { mutableIntStateOf(0) }
             val useMaterialYou = remember { mutableStateOf(true) }
             val useAmoledTheme = remember { mutableStateOf(true) }
 
@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
             // necessary to do this first, since otherwise ui takes a second to update
             runBlocking {
                 useMaterialYou.value = userSettings.getMaterialYouPreference.first()
-                themeChoice.value = userSettings.getThemePreference.first()
+                themeChoice.intValue = userSettings.getThemePreference.first()
                 useAmoledTheme.value = userSettings.getAmoledPreference.first()
             }
 
@@ -91,13 +91,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 userSettings.getThemePreference.collect {
-                    themeChoice.value = it
+                    themeChoice.intValue = it
                 }
                 userSettings.getMaterialYouPreference.collect {
                     useMaterialYou.value = it
                 }
             }
-            SlugMenuTheme(darkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value, amoledColor = useAmoledTheme.value) {
+            SlugMenuTheme(darkTheme = when (themeChoice.intValue) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value, amoledColor = useAmoledTheme.value) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     TransparentSystemBars()
                 } else {
@@ -179,15 +179,14 @@ fun TouchBlocker(navController: NavController, delay: Long, clickable: MutableSt
 
 const val DELAYTIME = 350
 const val FADETIME = 200
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYou: MutableState<Boolean>, useAmoledTheme: MutableState<Boolean>, userSettings: PreferencesDatastore) {
-    val navController = rememberAnimatedNavController()
+    val navController = rememberNavController()
     val context = LocalContext.current
 
     val menuDb = MenuDatabase.getInstance(context)
 
-    AnimatedNavHost(navController = navController, startDestination = startDestination) {
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(
             "home",
             enterTransition = { fadeIn(animationSpec = tween(0)) },

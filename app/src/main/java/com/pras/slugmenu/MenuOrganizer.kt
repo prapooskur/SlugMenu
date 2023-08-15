@@ -143,7 +143,7 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
             items(locationOrderState.value, {it.navLocation}) { item ->
                 var isVisible by remember { mutableStateOf(item.visible) }
                 ReorderableItem(state, key = item.navLocation) { isDragging ->
-                    val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp)
+                    val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp, label = "elevation")
                     if (isDragging) {
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     }

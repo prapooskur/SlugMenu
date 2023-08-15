@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
@@ -60,16 +61,16 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
         withContext(Dispatchers.IO) {
-            val cachedWaitzData = waitzDao.getData(currentTime)
+            val cachedWaitzData = waitzDao.getData("dh-oakes")
             if (cachedWaitzData != null && cachedWaitzData.cacheTime == currentTime) {
                 waitzData = listOf(WaitzTypeConverters().fromWaitzString(cachedWaitzData.live),WaitzTypeConverters().fromWaitzString(cachedWaitzData.compare))
                 dataLoadedState.value = true
             } else {
                 try {
-                    waitzDao.dropWaitz()
                     waitzData = getWaitzDataAsync()
                     waitzDao.insertWaitz(
                         Waitz (
+                            "dh-oakes",
                             currentTime,
                             WaitzTypeConverters().fromWaitzList(waitzData[0]),
                             WaitzTypeConverters().fromWaitzList(waitzData[1])
@@ -95,67 +96,87 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
         showDialog.value = false
         ShortToast(exceptionFound, LocalContext.current)
         Log.d(TAG, exceptionFound)
-    } else if (showDialog.value && !dataLoadedState.value) {
-        showDialog.value = false
-        ShortToast(text = "Data not loaded yet", LocalContext.current)
-    } else if (showDialog.value && dataLoadedState.value) {
+    } else if (showDialog.value) {
         val locationData = waitzData[0][locIndex]
         val compareData = waitzData[1][locIndex]
 
-        AlertDialog(
-            onDismissRequest = {
-                showDialog.value = false
-            },
-            title = {
-                if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || (locationData.size < 4) || (compareData.size < 4) || (locationData[3] == "false")) {
+        if (!dataLoadedState.value) {
+            AlertDialog(
+                onDismissRequest = {
+                    showDialog.value = false
+                },
+                title = {
                     Text(text = "⚫ Waitz: $locationName")
-                } else if (locationData[0].toInt() <= 45) {
-                    Text(text = "🟢 Waitz: $locationName")
-                } else if (locationData[0].toInt() <= 80) {
-                    Text(text = "🟡 Waitz: $locationName")
-                } else {
-                    Text(text = "🔴 Waitz: $locationName")
+                },
+                text = {
+                    CircularProgressIndicator()
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDialog.value = false
+                        }
+                    ) {
+                        Text("Close")
+                    }
                 }
-            },
-            text = {
-                if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 4 || compareData.size < 4 || locationData[3] == "false") {
-                    Text(
-                        text = "No data available.",
-                        fontSize = 16.sp
-                    )
-                } else {
-                    if (compareData[3] == "only one location") {
+            )
+        } else {
+            AlertDialog(
+                onDismissRequest = {
+                    showDialog.value = false
+                },
+                title = {
+                    if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || (locationData.size < 4) || (compareData.size < 4) || (locationData[3] == "false")) {
+                        Text(text = "⚫ Waitz: $locationName")
+                    } else {
+                        when {
+                            locationData[0].toInt() <= 45 -> Text(text = "🟢 Waitz: $locationName")
+                            locationData[0].toInt() <= 80 -> Text(text = "🟡 Waitz: $locationName")
+                            else -> Text(text = "🔴 Waitz: $locationName")
+                        }
+                    }
+                },
+                text = {
+                    if (locationData.isNullOrEmpty() || compareData.isNullOrEmpty() || locationData.size < 4 || compareData.size < 4 || locationData[3] == "false") {
                         Text(
-                            text = "Busyness: ${locationData[0]}%\n" +
-                                    "People: ${locationData[1]}/${locationData[2]}\n" +
-                                    "Next hour: ${compareData[0].substring(18)}\n" +
-                                    "Today: ${compareData[1].substring(9)}\n" +
-                                    "Peak hours: ${compareData[2].substring(15)}",
+                            text = "No data available.",
                             fontSize = 16.sp
                         )
                     } else {
-                        Text(
-                            text = "Busyness: ${locationData[0]}%\n" +
-                                    "People: ${locationData[1]}/${locationData[2]}\n" +
-                                    "Next hour: ${compareData[0].substring(18)}\n" +
-                                    "Today: ${compareData[1].substring(9)}\n" +
-                                    "Peak hours: ${compareData[2].substring(15)}\n" +
-                                    "Best location: ${compareData[3].substringBefore(" is best right now")}",
-                            fontSize = 16.sp
-                        )
+                        if (compareData[3] == "only one location") {
+                            Text(
+                                text = "Busyness: ${locationData[0]}%\n" +
+                                        "People: ${locationData[1]}/${locationData[2]}\n" +
+                                        "Next hour: ${compareData[0].substring(18)}\n" +
+                                        "Today: ${compareData[1].substring(9)}\n" +
+                                        "Peak hours: ${compareData[2].substring(15)}",
+                                fontSize = 16.sp
+                            )
+                        } else {
+                            Text(
+                                text = "Busyness: ${locationData[0]}%\n" +
+                                        "People: ${locationData[1]}/${locationData[2]}\n" +
+                                        "Next hour: ${compareData[0].substring(18)}\n" +
+                                        "Today: ${compareData[1].substring(9)}\n" +
+                                        "Peak hours: ${compareData[2].substring(15)}\n" +
+                                        "Best location: ${compareData[3].substringBefore(" is best right now")}",
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDialog.value = false
+                        }
+                    ) {
+                        Text("Close")
                     }
                 }
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDialog.value = false
-                    }
-                ) {
-                    Text("Close")
-                }
-            }
-        )
+            )
+        }
     }
 }
 

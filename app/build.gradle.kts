@@ -19,8 +19,8 @@ android {
         applicationId = "com.pras.slugmenu"
         minSdk = 24
         targetSdk = 34
-        versionCode = 8
-        versionName = "1.0"
+        versionCode = 9
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -89,7 +89,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    val composeUiVersion = "1.4.3"
+    val composeUiVersion = "1.5.0"
 
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
@@ -109,7 +109,7 @@ dependencies {
 
     // Android navigation and Material 3
 
-    val navVersion = "2.6.0"
+    val navVersion = "2.7.0"
     implementation("androidx.navigation:navigation-compose:$navVersion")
 
     val mat3Version = "1.1.1"
@@ -117,7 +117,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
     // Accompanist (unofficial official Google libraries)
-    val accompanistVersion = "0.30.1"
+    val accompanistVersion = "0.31.6-rc"
     // swipable tabs
     implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
     // changing status bar color

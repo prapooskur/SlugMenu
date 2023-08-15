@@ -27,7 +27,8 @@ data class Menu(
 
 @Entity(tableName = "waitz")
 data class Waitz(
-    @PrimaryKey val cacheTime: String,
+    @PrimaryKey val locationKey: String,
+    val cacheTime: String,
     val live: String,
     val compare: String,
 )
@@ -60,8 +61,8 @@ class MenuTypeConverters {
 
 @Dao
 interface WaitzDao {
-    @Query("SELECT * FROM waitz WHERE cacheTime = :cacheTime")
-    fun getData(cacheTime: String): Waitz?
+    @Query("SELECT * FROM waitz WHERE locationKey = :locationKey")
+    fun getData(locationKey: String): Waitz?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertWaitz(waitz: Waitz)
@@ -88,7 +89,7 @@ class WaitzTypeConverters {
 
 
 
-@Database(entities = [Menu::class, Waitz::class], version = 2)
+@Database(version = 3, entities = [Menu::class, Waitz::class])
 @TypeConverters(MenuTypeConverters::class, WaitzTypeConverters::class)
 abstract class MenuDatabase : RoomDatabase() {
     abstract fun menuDao(): MenuDao

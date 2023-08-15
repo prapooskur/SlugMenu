@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
@@ -23,7 +22,6 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -38,6 +36,7 @@ import java.time.LocalDateTime
 //Swipable tabs
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.mutableIntStateOf
 import com.pras.slugmenu.ui.elements.pagerTabIndicatorOffset
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -100,8 +99,14 @@ fun SwipableTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
     }
 //    Log.d(TAG,"initstate: "+initState)
 
-    var state by remember { mutableStateOf(initState) }
-    val pagerState = rememberPagerState(initState)
+    var state by remember { mutableIntStateOf(initState) }
+    val pagerState = rememberPagerState(
+        initialPage = initState,
+        initialPageOffsetFraction = 0f
+    ) {
+        // provide pageCount
+        titles.size
+    }
     val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.padding(padding)) {
@@ -160,7 +165,6 @@ fun SwipableTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
             }
         }
         HorizontalPager(
-            pageCount = titles.size,
             state = pagerState
         ) { state ->
             if (titles[0] != "No menu available" && titles[0] != "Closed") {
@@ -184,8 +188,7 @@ fun PrintMenu(itemList: List<String>) {
     if (itemList.isNotEmpty() && itemList[0] != "Not Open Today") {
         LazyColumn (
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
+                .fillMaxSize(),
             // makes it so that content isn't stuck behind the nav bar
             contentPadding = WindowInsets.navigationBars.asPaddingValues()
         ) {
@@ -222,7 +225,7 @@ fun PrintMenu(itemList: List<String>) {
         }
     } else {
         val unavailableText = itemList.getOrElse(0) { "Not Available Today" }
-        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = unavailableText,
                 fontWeight = FontWeight.SemiBold,
@@ -383,7 +386,7 @@ fun PrintOakesMenu(itemList: List<String>) {
         }
     } else {
         val unavailableText = itemList.getOrElse(0) { "Not Available Today" }
-        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = unavailableText,
                 fontWeight = FontWeight.SemiBold,
@@ -420,8 +423,14 @@ fun PriceTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
     }
 //    Log.d(TAG,"initstate: "+initState)
 
-    var state by remember { mutableStateOf(initState) }
-    val pagerState = rememberPagerState(initState)
+    var state by remember { mutableIntStateOf(initState) }
+    val pagerState = rememberPagerState(
+        initialPage = initState,
+        initialPageOffsetFraction = 0f
+    ) {
+        // provide pageCount
+        titles.size
+    }
     val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.padding(padding)) {
@@ -457,7 +466,6 @@ fun PriceTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
             }
         }
         HorizontalPager(
-            pageCount = titles.size,
             state = pagerState
         ) {state ->
             PrintOakesMenu(itemList = menuArray[state])
