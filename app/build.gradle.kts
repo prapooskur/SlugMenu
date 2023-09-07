@@ -81,15 +81,15 @@ ksp {
 dependencies {
 
 
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-ktx:1.7.2")
     implementation("androidx.activity:activity-compose:1.7.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    val composeUiVersion = "1.5.0"
+    val composeUiVersion = "1.5.1"
 
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
@@ -109,15 +109,14 @@ dependencies {
 
     // Android navigation and Material 3
 
-    val navVersion = "2.7.0"
-    implementation("androidx.navigation:navigation-compose:$navVersion")
+    implementation("androidx.navigation:navigation-compose:2.7.2")
 
     val mat3Version = "1.1.1"
     implementation("androidx.compose.material3:material3:$mat3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
     // Accompanist (unofficial official Google libraries)
-    val accompanistVersion = "0.31.6-rc"
+    val accompanistVersion = "0.32.0"
     // swipable tabs
     implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
     // changing status bar color
