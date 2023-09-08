@@ -128,16 +128,6 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                 //floating action button
                 // opens date picker on click, opens bottom sheet on long click
                 floatingActionButton = {
-
-                    /*
-                    FloatingActionButton(
-                        onClick = { showDatePicker = !showDatePicker }
-                    ) {
-                        Icon(Icons.Filled.DateRange,"Calendar")
-                    }
-
-                     */
-
                     LongPressFloatingActionButton(
                         onClick = { showDatePicker = !showDatePicker },
                         onLongClick = { showBottomSheet.value = !showBottomSheet.value },
@@ -145,7 +135,6 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                     ) {
                         Icon(Icons.Filled.DateRange,"Calendar")
                     }
-
                 },
                 floatingActionButtonPosition = FabPosition.End
             )
@@ -301,14 +290,6 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                     ) {
                         Icon(Icons.Filled.DateRange,"Calendar")
                     }
-
-                    /*
-                    FloatingActionButton(
-                        onClick = { showDatePicker = !showDatePicker },
-                    ) {
-                        Icon(Icons.Filled.DateRange,"Calendar")
-                    }
-                     */
                 },
                 floatingActionButtonPosition = FabPosition.End
             )

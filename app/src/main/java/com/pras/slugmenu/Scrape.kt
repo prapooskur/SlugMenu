@@ -16,9 +16,9 @@ import io.ktor.client.statement.*
 
 private const val TAG = "Scraper"
 
-/*
+/**
 CATEGORIES:
-- getDiningMenu: 9/10, C/S, Cr/M, P/K
+- getDiningMenu: 9/10, C/S, Cr/M, P/K, RCC/Oakes (when its menus become available)
 - getSingleMenu: Perks, Terra Fresca, Stevenson, Porter, Global Village
 - getOakesMenu: Oakes
  */

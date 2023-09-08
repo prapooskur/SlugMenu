@@ -37,7 +37,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
 
     override suspend fun doWork(): Result {
 
-        // takes a serialized List<LocationList> comprised of four-element LocationListItems
+        // takes a serialized List<LocationListItem> comprised of four-element LocationListItems
 
         val menuDatabase = MenuDatabase.getInstance(applicationContext)
         val menuDao = menuDatabase.menuDao()
