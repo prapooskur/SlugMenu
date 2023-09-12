@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_EXPRESSION")
+
 import com.android.build.api.dsl.Packaging
 
 plugins {
