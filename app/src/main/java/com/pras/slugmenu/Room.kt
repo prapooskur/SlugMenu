@@ -33,6 +33,13 @@ data class Waitz(
     val compare: String,
 )
 
+@Entity(tableName= "hours")
+data class Hours(
+    @PrimaryKey val location: String,
+    val hours: String,
+    val cacheDate: String
+)
+
 @Dao
 interface MenuDao {
     @Query("SELECT * FROM menu WHERE location = :location")
@@ -79,11 +86,36 @@ class WaitzTypeConverters {
     }
 }
 
-@Database(version = 3, entities = [Menu::class, Waitz::class])
-@TypeConverters(MenuTypeConverters::class, WaitzTypeConverters::class)
+@Dao
+interface HoursDao {
+    @Query("SELECT * FROM hours WHERE location = :location")
+    fun getHours(location: String): Hours?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertHours(hours: Hours)
+}
+
+class HoursTypeConverters {
+    @TypeConverter
+    fun fromHoursString(value: String): AllHoursList {
+        Log.d(TAG,"from string value: $value")
+        return(Json.decodeFromString(value))
+    }
+
+    @TypeConverter
+    fun fromHoursList(value: AllHoursList): String {
+        Log.d(TAG,"from list value: $value")
+        return(Json.encodeToString(value))
+    }
+}
+
+
+@Database(version = 4, entities = [Menu::class, Waitz::class, Hours::class])
+@TypeConverters(MenuTypeConverters::class, WaitzTypeConverters::class, HoursTypeConverters::class)
 abstract class MenuDatabase : RoomDatabase() {
     abstract fun menuDao(): MenuDao
     abstract fun waitzDao(): WaitzDao
+    abstract fun hoursDao(): HoursDao
 
     companion object {
 

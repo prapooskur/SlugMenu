@@ -1,14 +1,98 @@
 package com.pras.slugmenu
 
 import android.util.Log
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.request.get
+import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 
 private const val TAG = "Hours Scraper"
+/*
+Dining menus fill in both dayslist and hourslist
 
-data class DiningHoursList(val daysList: List<String>, val hoursList: List<List<String>>)
+Non dining menus fill in only dayslist and leave hourslist empty,
+since they don't have hourly submenus on the site
+*/
 
-fun getDiningHours(location: String): DiningHoursList {
-    val page = Jsoup.connect("https://dining.ucsc.edu/eat/").get()
+// this is a dumb solution, but it works and it's all i can think of atm
+// todo come back to this later, see if it can be done differently
+
+@Serializable
+data class HoursList(val daysList: List<String>, val hoursList: List<List<String>> = listOf())
+
+@Serializable
+data class AllHoursList(
+    val ninelewis: HoursList = HoursList(listOf(), listOf()),
+    val cowellstev: HoursList = HoursList(listOf(), listOf()),
+    val crownmerrill: HoursList = HoursList(listOf(), listOf()),
+    val porterkresge: HoursList = HoursList(listOf(), listOf()),
+    val carsonoakes: HoursList = HoursList(listOf(), listOf()),
+    val globalvillage: HoursList = HoursList(listOf(), listOf()),
+    val perkbe: HoursList = HoursList(listOf(), listOf()),
+    val perkpsb: HoursList = HoursList(listOf(), listOf()),
+    val perkems: HoursList = HoursList(listOf(), listOf()),
+    val terrafresca: HoursList = HoursList(listOf(), listOf()),
+    val portermarket: HoursList = HoursList(listOf(), listOf()),
+    val stevcoffee: HoursList = HoursList(listOf(), listOf()),
+    val oakescafe: HoursList = HoursList(listOf(), listOf()),
+)
+
+suspend fun scrapeHoursData(): String {
+    val url = "https://dining.ucsc.edu/eat/"
+    val client = HttpClient(CIO)
+    val pageData = client.get(url)
+    return pageData.body<String>()
+}
+
+suspend fun getHoursData(): AllHoursList {
+    val pageBody = scrapeHoursData()
+    val locationList = listOf(
+        "altnine",
+        "altcsdh",
+        "altcmdh",
+        "altpdh",
+        "altglobal",
+        "altrodh",
+        "altperkbe",
+        "altperkpsb",
+        "altperkem",
+        "altucentercafe",
+        "altportermarket",
+        "altstevenson",
+        "altoakes"
+    )
+    val tempDiningList = mutableListOf<HoursList>()
+    val tempNonDiningList = mutableListOf<List<String>>()
+    locationList.forEachIndexed { index, location ->
+        if (index < 5) {
+            tempDiningList.add(getDiningHours(location, pageBody))
+        } else {
+            tempNonDiningList.add(getNonDiningHours(location, pageBody))
+        }
+    }
+
+    Log.d(TAG, "successfully returning!")
+    return AllHoursList(
+        tempDiningList[0],
+        tempDiningList[1],
+        tempDiningList[2],
+        tempDiningList[3],
+        tempDiningList[4],
+        HoursList(tempNonDiningList[0]),
+        HoursList(tempNonDiningList[1]),
+        HoursList(tempNonDiningList[2]),
+        HoursList(tempNonDiningList[3]),
+        HoursList(tempNonDiningList[4]),
+        HoursList(tempNonDiningList[5]),
+        HoursList(tempNonDiningList[6]),
+        HoursList(tempNonDiningList[7])
+    )
+}
+
+fun getDiningHours(location: String, pageBody: String): HoursList {
+    val page = Jsoup.parse(pageBody)
 
     val days = page.select("div#${location} > p:has(strong)")
 
@@ -27,15 +111,15 @@ fun getDiningHours(location: String): DiningHoursList {
             Log.d(TAG, daysList[i])
             Log.d(TAG, hoursList[i].toString())
         }
-        DiningHoursList(daysList,hoursList)
+        HoursList(daysList,hoursList)
     } else {
         Log.d(TAG, "site syntax has changed, returning an empty list")
-        DiningHoursList(listOf(), listOf())
+        HoursList(listOf(), listOf())
     }
 }
 
-fun getNonDiningHours(location: String): List<String> {
-    val page = Jsoup.connect("https://dining.ucsc.edu/eat/").get()
+fun getNonDiningHours(location: String, pageBody: String): List<String> {
+    val page = Jsoup.parse(pageBody)
     val hours = page.select("div#${location} > table > tbody > tr > td")
 
     val hoursList = mutableListOf<String>()

@@ -117,7 +117,7 @@ fun NonDiningMenu(navController: NavController, locationName: String, locationUr
 
             val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
             Column(modifier = Modifier.fillMaxHeight()) {
-                HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
+                HoursBottomSheetNew(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
             }
         } else {
             TopBarClean(titleText = locationName, navController = navController)

@@ -3,6 +3,9 @@ package com.pras.slugmenu
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -20,9 +23,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +38,7 @@ import java.nio.channels.UnresolvedAddressException
 import java.security.cert.CertificateException
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.MonthDay
+import java.time.Period
 import java.time.format.DateTimeFormatter
 import javax.net.ssl.SSLHandshakeException
 
@@ -45,12 +49,13 @@ fun ShortToast(text: String, context: Context) {
 }
 
 @Composable
-fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDatabase: MenuDatabase) {
+fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
 
     val locIndex = if (locationName == "Cowell/Stev") { "Cowell/Stevenson" } else { locationName }
 
     val dataLoadedState = remember { mutableStateOf(false) }
 
+    val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
     val waitzDao = menuDatabase.waitzDao()
     var waitzData by remember { mutableStateOf<List<Map<String,List<String>>>>(listOf(mapOf(),mapOf())) }
     var exceptionFound by remember { mutableStateOf("No Exception") }
@@ -180,6 +185,158 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String, menuDat
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HoursBottomSheetNew(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {
+    val menuDatabase = MenuDatabase.getInstance(LocalContext.current
+    )
+    val hoursDao = menuDatabase.hoursDao()
+    val currentDate = LocalDate.now()
+
+    val dataLoadedState = remember { mutableStateOf(false) }
+    var allHoursList by remember { mutableStateOf(AllHoursList()) }
+    var exceptionFound by remember { mutableStateOf("No Exception") }
+
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            val cachedHoursData = hoursDao.getHours("tesr")
+            val cacheDate = LocalDate.parse(cachedHoursData?.cacheDate)
+            // todo change to 7(?) days
+            if (cachedHoursData != null && Period.between(cacheDate, currentDate).days < 7) {
+                allHoursList = HoursTypeConverters().fromHoursString(cachedHoursData.hours)
+                dataLoadedState.value = true
+            } else {
+                try {
+                    allHoursList = getHoursData()
+                    hoursDao.insertHours(
+                        Hours(
+                            "tesr",
+                            HoursTypeConverters().fromHoursList(allHoursList),
+                            currentDate.toString()
+                        )
+                    )
+                } catch (e: Exception) {
+                    exceptionFound = when (e) {
+                        is UnresolvedAddressException -> "No Internet connection"
+                        is SocketTimeoutException -> "Connection timed out"
+                        is UnknownHostException -> "Failed to resolve URL"
+                        is CertificateException -> "Website's SSL certificate is invalid"
+                        is SSLHandshakeException -> "SSL handshake failed"
+                        else -> "Exception: $e"
+                    }
+                }
+                dataLoadedState.value = true
+            }
+        }
+    }
+
+    if (openBottomSheet.value && exceptionFound != "No Exception") {
+        openBottomSheet.value = false
+        ShortToast("Failed to get hours, falling back to cached data", LocalContext.current)
+        Log.d(TAG, exceptionFound)
+    }
+
+    if (openBottomSheet.value) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                openBottomSheet.value = false
+            },
+            sheetState = bottomSheetState,
+        ) {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = "Hours for $locationName",
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 18.sp
+                    )
+                }
+            )
+
+            Divider(
+                thickness = 2.dp
+            )
+
+            if (dataLoadedState.value) {
+                LazyColumn {
+                    //todo add custom handling for perk, since three separate locations
+                    val locationHoursList = when(locationName) {
+                        "Nine/Lewis"        -> allHoursList.ninelewis
+                        "Cowell/Stevenson"  -> allHoursList.cowellstev
+                        "Cowell/Stev"       -> allHoursList.cowellstev
+                        "Crown/Merrill"     -> allHoursList.crownmerrill
+                        "Porter/Kresge"     -> allHoursList.porterkresge
+                        "Perk Coffee Bars"  -> allHoursList.perkbe
+                        "Terra Fresca"      -> allHoursList.terrafresca
+                        "Porter Market"     -> allHoursList.portermarket
+                        "Stevenson Coffee House" -> allHoursList.stevcoffee
+                        "Global Village Cafe" -> allHoursList.globalvillage
+                        "Oakes Cafe"        -> allHoursList.oakescafe
+                        else -> allHoursList.ninelewis
+                    }
+
+                    val daysList = locationHoursList.daysList
+                    val hoursList = locationHoursList.hoursList
+
+                    if (hoursList.isNotEmpty()) {
+                        // Dining menu
+
+
+                        items(daysList.size) {item ->
+                            val days = daysList[item]
+                            val hours = hoursList[item]
+                            Divider()
+                            ListItem(
+                                headlineContent = {
+                                    Text(
+                                        text = days,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        fontSize = 16.sp,
+                                        lineHeight = 30.sp
+                                    )
+                                }
+                            )
+                            Divider()
+                            val combinedHours = hours.joinToString("\n")
+                            ListItem(
+                                headlineContent = {
+                                    Text(
+                                        text = combinedHours,
+                                        fontWeight = FontWeight.Normal,
+                                        lineHeight = 30.sp
+                                    )
+                                }
+                            )
+                        }
+                    } else {
+                        // Non dining menu
+                        items(daysList.size) {item ->
+                            ListItem(
+                                headlineContent = {
+                                    Text(
+                                        text = daysList[item],
+                                        lineHeight = 30.sp
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 16.dp),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
+    }
+}
+
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {
@@ -386,3 +543,4 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
         }
     }
 }
+*/
