@@ -247,7 +247,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                     Text(
                         text = "Hours for $locationName",
                         fontWeight = FontWeight.ExtraBold,
-                        fontSize = 18.sp
+                        fontSize = 20.sp
                     )
                 }
             )
@@ -274,7 +274,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                                             Text(
                                                 text = locationTitle,
                                                 fontWeight = FontWeight.ExtraBold,
-                                                fontSize = 16.sp,
+                                                fontSize = 18.sp,
                                                 lineHeight = 30.sp
                                             )
                                         }
@@ -322,7 +322,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                                         Text(
                                             text = days,
                                             fontWeight = FontWeight.ExtraBold,
-                                            fontSize = 16.sp,
+                                            fontSize = 18.sp,
                                             lineHeight = 30.sp
                                         )
                                     }
@@ -366,6 +366,10 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
 
                              */
                         }
+                    }
+                    item {
+                        // add some padding to the bottom
+                        Text("")
                     }
                 }
             } else {
