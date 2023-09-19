@@ -274,7 +274,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                                             Text(
                                                 text = locationTitle,
                                                 fontWeight = FontWeight.ExtraBold,
-                                                fontSize = 18.sp,
+                                                fontSize = 17.sp,
                                                 lineHeight = 30.sp
                                             )
                                         }
@@ -322,7 +322,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                                         Text(
                                             text = days,
                                             fontWeight = FontWeight.ExtraBold,
-                                            fontSize = 18.sp,
+                                            fontSize = 17.sp,
                                             lineHeight = 30.sp
                                         )
                                     }
