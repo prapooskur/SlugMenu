@@ -194,7 +194,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
 
 
             Column(modifier = Modifier.fillMaxHeight()) {
-                HoursBottomSheetNew(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
+                HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
             }
             WaitzDialog(showDialog = showWaitzDialog, locationName = locationName.replace("Stevenson","Stev"))
 
@@ -349,7 +349,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
 
             val bottomSheetState = rememberModalBottomSheetState()
             Column(modifier = Modifier.fillMaxHeight()) {
-                HoursBottomSheetNew(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName.substringBefore(" "))
+                HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName.substringBefore(" "))
             }
 
         } else {

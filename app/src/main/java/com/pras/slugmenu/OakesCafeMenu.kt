@@ -120,7 +120,7 @@ fun OakesCafeMenu(navController: NavController, locationName: String, locationUr
             )
             val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
             Column(modifier = Modifier.fillMaxHeight()) {
-                HoursBottomSheetNew(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
+                HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
             }
         }
         else {

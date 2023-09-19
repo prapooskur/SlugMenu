@@ -187,7 +187,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HoursBottomSheetNew(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {
+fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {
     val menuDatabase = MenuDatabase.getInstance(LocalContext.current
     )
     val hoursDao = menuDatabase.hoursDao()
@@ -258,66 +258,113 @@ fun HoursBottomSheetNew(openBottomSheet: MutableState<Boolean>, bottomSheetState
 
             if (dataLoadedState.value) {
                 LazyColumn {
-                    //todo add custom handling for perk, since three separate locations
-                    val locationHoursList = when(locationName) {
-                        "Nine/Lewis"        -> allHoursList.ninelewis
-                        "Cowell/Stevenson"  -> allHoursList.cowellstev
-                        "Cowell/Stev"       -> allHoursList.cowellstev
-                        "Crown/Merrill"     -> allHoursList.crownmerrill
-                        "Porter/Kresge"     -> allHoursList.porterkresge
-                        "Perk Coffee Bars"  -> allHoursList.perkbe
-                        "Terra Fresca"      -> allHoursList.terrafresca
-                        "Porter Market"     -> allHoursList.portermarket
-                        "Stevenson Coffee House" -> allHoursList.stevcoffee
-                        "Global Village Cafe" -> allHoursList.globalvillage
-                        "Oakes Cafe"        -> allHoursList.oakescafe
-                        else -> allHoursList.ninelewis
-                    }
-
-                    val daysList = locationHoursList.daysList
-                    val hoursList = locationHoursList.hoursList
-
-                    if (hoursList.isNotEmpty()) {
-                        // Dining menu
-
-
-                        items(daysList.size) {item ->
-                            val days = daysList[item]
-                            val hours = hoursList[item]
-                            Divider()
-                            ListItem(
-                                headlineContent = {
-                                    Text(
-                                        text = days,
-                                        fontWeight = FontWeight.ExtraBold,
-                                        fontSize = 16.sp,
-                                        lineHeight = 30.sp
+                    // custom handling for perks, since three separate locations exist
+                    if (locationName == "Perk Coffee Bars") {
+                        val titlesList = listOf("Perk Baskin Engineering", "Perk Physical Sciences", "Perk Earth and Marine Sciences")
+                        val locationHoursList = listOf(allHoursList.perkbe,allHoursList.perkpsb,allHoursList.perkems)
+                        for (i in locationHoursList.indices) {
+                            val locationTitle = titlesList[i]
+                            val daysList = locationHoursList[i].daysList
+                            val combinedDays = daysList.joinToString("\n")
+                            if (daysList.isNotEmpty()) {
+                                item {
+                                    Divider()
+                                    ListItem(
+                                        headlineContent = {
+                                            Text(
+                                                text = locationTitle,
+                                                fontWeight = FontWeight.ExtraBold,
+                                                fontSize = 16.sp,
+                                                lineHeight = 30.sp
+                                            )
+                                        }
+                                    )
+                                    Divider()
+                                    ListItem(
+                                        headlineContent = {
+                                            Text(
+                                                text = combinedDays,
+                                                fontWeight = FontWeight.Normal,
+                                                lineHeight = 30.sp
+                                            )
+                                        }
                                     )
                                 }
-                            )
-                            Divider()
-                            val combinedHours = hours.joinToString("\n")
-                            ListItem(
-                                headlineContent = {
-                                    Text(
-                                        text = combinedHours,
-                                        fontWeight = FontWeight.Normal,
-                                        lineHeight = 30.sp
-                                    )
-                                }
-                            )
+                            }
                         }
                     } else {
-                        // Non dining menu
-                        items(daysList.size) {item ->
-                            ListItem(
-                                headlineContent = {
-                                    Text(
-                                        text = daysList[item],
-                                        lineHeight = 30.sp
-                                    )
-                                }
-                            )
+                        val locationHoursList = when (locationName) {
+                            "Nine/Lewis" -> allHoursList.ninelewis
+                            "Cowell/Stevenson" -> allHoursList.cowellstev
+                            "Cowell/Stev" -> allHoursList.cowellstev
+                            "Crown/Merrill" -> allHoursList.crownmerrill
+                            "Porter/Kresge" -> allHoursList.porterkresge
+                            "Terra Fresca" -> allHoursList.terrafresca
+                            "Porter Market" -> allHoursList.portermarket
+                            "Stevenson Coffee House" -> allHoursList.stevcoffee
+                            "Global Village Cafe" -> allHoursList.globalvillage
+                            "Oakes Cafe" -> allHoursList.oakescafe
+                            // fallback to nine/lewis hours if it's an unexpected location
+                            else -> allHoursList.ninelewis
+                        }
+
+                        val daysList = locationHoursList.daysList
+                        val hoursList = locationHoursList.hoursList
+
+                        if (hoursList.isNotEmpty()) {
+                            // Dining menu
+                            items(daysList.size) { item ->
+                                val days = daysList[item]
+                                val hours = hoursList[item]
+                                Divider()
+                                ListItem(
+                                    headlineContent = {
+                                        Text(
+                                            text = days,
+                                            fontWeight = FontWeight.ExtraBold,
+                                            fontSize = 16.sp,
+                                            lineHeight = 30.sp
+                                        )
+                                    }
+                                )
+                                Divider()
+                                val combinedHours = hours.joinToString("\n")
+                                ListItem(
+                                    headlineContent = {
+                                        Text(
+                                            text = combinedHours,
+                                            fontWeight = FontWeight.Normal,
+                                            lineHeight = 30.sp
+                                        )
+                                    }
+                                )
+                            }
+                        } else {
+                            val combinedHours = daysList.joinToString("\n")
+                            // Non dining menu
+                            item {
+                                ListItem(
+                                    headlineContent = {
+                                        Text(
+                                            text = combinedHours,
+                                            lineHeight = 30.sp
+                                        )
+                                    }
+                                )
+                            }
+                            /*
+                            items(daysList.size) { item ->
+                                ListItem(
+                                    headlineContent = {
+                                        Text(
+                                            text = daysList[item],
+                                            lineHeight = 30.sp
+                                        )
+                                    }
+                                )
+                            }
+
+                             */
                         }
                     }
                 }
