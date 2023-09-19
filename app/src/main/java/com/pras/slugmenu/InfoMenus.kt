@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
@@ -230,7 +231,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
     }
 
     if (openBottomSheet.value && exceptionFound != "No Exception") {
-        openBottomSheet.value = false
+//        openBottomSheet.value = false
         ShortToast("Failed to get hours, falling back to cached data", LocalContext.current)
         Log.d(TAG, exceptionFound)
     }
@@ -262,33 +263,48 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                     if (locationName == "Perk Coffee Bars") {
                         val titlesList = listOf("Perk Baskin Engineering", "Perk Physical Sciences", "Perk Earth and Marine Sciences")
                         val locationHoursList = listOf(allHoursList.perkbe,allHoursList.perkpsb,allHoursList.perkems)
-                        for (i in locationHoursList.indices) {
-                            val locationTitle = titlesList[i]
-                            val daysList = locationHoursList[i].daysList
-                            val combinedDays = daysList.joinToString("\n")
-                            if (daysList.isNotEmpty()) {
-                                item {
-                                    Divider()
-                                    ListItem(
-                                        headlineContent = {
-                                            Text(
-                                                text = locationTitle,
-                                                fontWeight = FontWeight.ExtraBold,
-                                                fontSize = 17.sp,
-                                                lineHeight = 30.sp
-                                            )
-                                        }
-                                    )
-                                    Divider()
-                                    ListItem(
-                                        headlineContent = {
-                                            Text(
-                                                text = combinedDays,
-                                                fontWeight = FontWeight.Normal,
-                                                lineHeight = 30.sp
-                                            )
-                                        }
-                                    )
+                        if (locationHoursList.all { it.daysList.isEmpty() }) {
+                            item {
+                                ListItem (
+                                    headlineContent = {
+                                        Text(
+                                            text = "No data available",
+                                            fontWeight = FontWeight.ExtraBold,
+                                            fontSize = 17.sp,
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                )
+                            }
+                        } else {
+                            for (i in locationHoursList.indices) {
+                                val locationTitle = titlesList[i]
+                                val daysList = locationHoursList[i].daysList
+                                val combinedDays = daysList.joinToString("\n")
+                                if (daysList.isNotEmpty()) {
+                                    item {
+                                        Divider()
+                                        ListItem(
+                                            headlineContent = {
+                                                Text(
+                                                    text = locationTitle,
+                                                    fontWeight = FontWeight.ExtraBold,
+                                                    fontSize = 17.sp,
+                                                    lineHeight = 30.sp
+                                                )
+                                            }
+                                        )
+                                        Divider()
+                                        ListItem(
+                                            headlineContent = {
+                                                Text(
+                                                    text = combinedDays,
+                                                    fontWeight = FontWeight.Normal,
+                                                    lineHeight = 30.sp
+                                                )
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -311,7 +327,20 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                         val daysList = locationHoursList.daysList
                         val hoursList = locationHoursList.hoursList
 
-                        if (hoursList.isNotEmpty()) {
+                        if (daysList.isEmpty() && hoursList.isEmpty()) {
+                            item {
+                                ListItem (
+                                    headlineContent = {
+                                        Text(
+                                            text = "No data available",
+                                            fontWeight = FontWeight.ExtraBold,
+                                            fontSize = 17.sp,
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                )
+                            }
+                        } else if (hoursList.isNotEmpty()) {
                             // Dining menu
                             items(daysList.size) { item ->
                                 val days = daysList[item]
