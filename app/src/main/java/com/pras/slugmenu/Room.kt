@@ -27,7 +27,7 @@ data class Menu(
 
 @Entity(tableName = "waitz")
 data class Waitz(
-    @PrimaryKey val locationKey: String,
+    @PrimaryKey val location: String,
     val cacheTime: String,
     val live: String,
     val compare: String,
@@ -40,9 +40,6 @@ interface MenuDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMenu(menu: Menu)
-
-    @Query("DELETE FROM menu")
-    fun dropMenus()
 }
 
 class MenuTypeConverters {
@@ -61,14 +58,11 @@ class MenuTypeConverters {
 
 @Dao
 interface WaitzDao {
-    @Query("SELECT * FROM waitz WHERE locationKey = :locationKey")
-    fun getData(locationKey: String): Waitz?
+    @Query("SELECT * FROM waitz WHERE location = :location")
+    fun getData(location: String): Waitz?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertWaitz(waitz: Waitz)
-
-    @Query("DELETE FROM waitz")
-    fun dropWaitz()
 }
 
 class WaitzTypeConverters {
@@ -85,10 +79,6 @@ class WaitzTypeConverters {
     }
 }
 
-
-
-
-
 @Database(version = 3, entities = [Menu::class, Waitz::class])
 @TypeConverters(MenuTypeConverters::class, WaitzTypeConverters::class)
 abstract class MenuDatabase : RoomDatabase() {
@@ -96,8 +86,21 @@ abstract class MenuDatabase : RoomDatabase() {
     abstract fun waitzDao(): WaitzDao
 
     companion object {
-        private var instance: MenuDatabase? = null
 
+        @Volatile
+        private var INSTANCE: MenuDatabase? = null
+
+        fun getInstance(context: Context): MenuDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(context.applicationContext, MenuDatabase::class.java, "menus.db")
+                    .fallbackToDestructiveMigration()
+                    .build()
+                INSTANCE = instance
+                instance
+            }
+        }
+
+        /*
         fun getInstance(context: Context): MenuDatabase {
             if (instance == null) {
                 instance = Room.databaseBuilder(context.applicationContext, MenuDatabase::class.java, "menus.db")
@@ -106,6 +109,7 @@ abstract class MenuDatabase : RoomDatabase() {
             }
             return instance as MenuDatabase
         }
+         */
 
 
     }
