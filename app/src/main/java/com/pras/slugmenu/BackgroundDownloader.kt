@@ -33,6 +33,7 @@ data class LocationListItem(val name: String, val url: String, val type: Locatio
 
 enum class LocationType { Dining, NonDining, Oakes }
 
+//todo update to also download location hours
 class BackgroundDownloadWorker(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
@@ -173,6 +174,7 @@ object BackgroundDownloadScheduler {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
+        //update location menus daily
         Log.d(TAG,"location List: $locationList")
         val serializedLocationList = Json.encodeToString(locationList)
         Log.d(TAG,"serialized Location List: $serializedLocationList")
