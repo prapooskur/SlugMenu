@@ -115,7 +115,7 @@ fun NonDiningMenu(navController: NavController, locationName: String, locationUr
                 floatingActionButtonPosition = FabPosition.End
             )
 
-            val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+            val bottomSheetState = rememberModalBottomSheetState()
             Column(modifier = Modifier.fillMaxHeight()) {
                 HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
             }
