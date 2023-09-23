@@ -104,16 +104,16 @@ dependencies {
     implementation("org.jsoup:jsoup:1.16.1")
 
     // ktor for http requests
-    val ktorVersion = "2.3.0"
+    val ktorVersion = "2.3.4"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Android navigation and Material 3
 
-    implementation("androidx.navigation:navigation-compose:2.7.2")
+    implementation("androidx.navigation:navigation-compose:2.7.3")
 
-    val mat3Version = "1.1.1"
+    val mat3Version = "1.1.2"
     implementation("androidx.compose.material3:material3:$mat3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
@@ -127,9 +127,9 @@ dependencies {
     implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
 
     //kotlinx serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
-    // Save settings?
+    // Save settings
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     // Colored Splash Screen
@@ -145,8 +145,9 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
 
     // Flow stuff
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    val coroutineVersion = "1.7.3"
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 
     // Desugaring (allows minSdk below 26)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
