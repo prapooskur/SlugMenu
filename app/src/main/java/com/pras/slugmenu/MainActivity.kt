@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -189,8 +190,8 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
     NavHost(navController = navController, startDestination = startDestination) {
         composable(
             "home",
-            enterTransition = { fadeIn(animationSpec = tween(0)) },
-//            exitTransition = { fadeOut(animationSpec = tween(0)) }
+            enterTransition = { EnterTransition.None },
+//            exitTransition = { ExitTransition.None }
         ) { HomeScreen(navController = navController, preferencesDataStore = userSettings) }
         composable(
             "ninelewis",
