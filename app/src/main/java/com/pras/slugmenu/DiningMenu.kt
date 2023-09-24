@@ -114,7 +114,6 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
     Column {
         if (dataLoadedState.value) {
             // If the data has been loaded from the cache, display the menu
-            Log.d(TAG, (System.currentTimeMillis() / 1000L).toString())
             Scaffold(
                 // custom insets necessary to render behind nav bar
                 contentWindowInsets = WindowInsets(0.dp),
