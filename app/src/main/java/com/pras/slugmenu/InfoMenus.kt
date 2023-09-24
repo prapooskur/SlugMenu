@@ -101,7 +101,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
     if (showDialog.value && exceptionFound != "No Exception") {
         showDialog.value = false
         ShortToast(exceptionFound, LocalContext.current)
-        Log.d(TAG, exceptionFound)
+        Log.d(TAG, "waitz error: $exceptionFound")
     } else if (showDialog.value) {
         val locationData = waitzData[0][locIndex]
         val compareData = waitzData[1][locIndex]
@@ -215,6 +215,9 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                         )
                     )
                 } catch (e: Exception) {
+                    if (cachedHoursData != null) {
+                        allHoursList = HoursTypeConverters().fromHoursString(cachedHoursData.hours)
+                    }
                     exceptionFound = when (e) {
                         is UnresolvedAddressException -> "No Internet connection"
                         is SocketTimeoutException -> "Connection timed out"
@@ -231,8 +234,13 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
 
     if (openBottomSheet.value && exceptionFound != "No Exception") {
 //        openBottomSheet.value = false
-        ShortToast("Failed to get hours, falling back to cached data", LocalContext.current)
-        Log.d(TAG, exceptionFound)
+        if (allHoursList != AllHoursList()) {
+            ShortToast("Failed to get hours, falling back to cached data", LocalContext.current)
+        } else {
+            ShortToast("Failed to get hours", LocalContext.current)
+        }
+
+        Log.d(TAG, "hours error: $exceptionFound")
     }
 
     if (openBottomSheet.value) {
