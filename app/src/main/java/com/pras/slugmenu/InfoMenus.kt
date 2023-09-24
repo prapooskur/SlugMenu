@@ -200,7 +200,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            val cachedHoursData = hoursDao.getHours("tesr")
+            val cachedHoursData = hoursDao.getHours("dh-nondh-oakes")
             if (cachedHoursData != null && Period.between(LocalDate.parse(cachedHoursData.cacheDate), currentDate).days < 7) {
                 allHoursList = HoursTypeConverters().fromHoursString(cachedHoursData.hours)
                 dataLoadedState.value = true
@@ -209,7 +209,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                     allHoursList = getHoursData()
                     hoursDao.insertHours(
                         Hours(
-                            "tesr",
+                            "dh-nondh-oakes",
                             HoursTypeConverters().fromHoursList(allHoursList),
                             currentDate.toString()
                         )
