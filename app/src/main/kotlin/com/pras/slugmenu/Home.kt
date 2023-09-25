@@ -59,10 +59,12 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
     val visibleLocationOrder = locationOrder.filter { it.visible }
 
     val iconMap = mapOf(
+        //since the global village menu no longer exists, i've mapped the RCC icon to it for now until I can get a proper one.
         "ninelewis"     to R.drawable.ninelewis,
         "cowellstev"    to R.drawable.cowellstevenson,
         "crownmerrill"  to R.drawable.crownmerrill,
         "porterkresge"  to R.drawable.porterkresge,
+        "carsonoakes"   to R.drawable.globalvillagecafe,
         "perkcoffee"    to R.drawable.perkcoffeebars,
         "terrafresca"   to R.drawable.terrafresca,
         "portermarket"  to R.drawable.portermarket,

@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +36,11 @@ import androidx.compose.ui.zIndex
 import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -46,9 +51,13 @@ import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
+import java.io.IOException
 
 
 private const val SETTINGS_NAME = "user_settings"
@@ -59,45 +68,55 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
 private const val TAG = "MainActivityLog"
 
 class MainActivity : ComponentActivity() {
-    private lateinit var userSettings: PreferencesDatastore
+    private lateinit var preferencesDatastore: PreferencesDatastore
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        lifecycleScope.launch {
+            // asynchronously load settings
+            dataStore.data.first()
+
+            val backgroundDownloadsEnabled = dataStore.data
+                .catch {
+                    if (it is IOException) {
+                        Log.e(TAG, "Error reading Background Update preferences.", it)
+                        emit(emptyPreferences())
+                    } else {
+                        throw it
+                    }
+                }
+                .map {preferences ->
+                    preferences[booleanPreferencesKey("enable_background_updates")] ?: false
+                }
+
+            if (backgroundDownloadsEnabled.first()) {
+                //refresh background downloads if enabled
+                Log.d(TAG, "scheduling background downloads")
+                val backgroundDownloadScheduler = BackgroundDownloadScheduler
+                backgroundDownloadScheduler.refreshPeriodicWork(applicationContext)
+            }
+        }
+
         super.onCreate(savedInstanceState)
         // Tell app to render edge to edge
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        userSettings = PreferencesDatastore(dataStore)
-
-
+        preferencesDatastore = PreferencesDatastore(dataStore)
 
         setContent {
-            val themeChoice =    remember { mutableIntStateOf(0) }
-            val useMaterialYou = remember { mutableStateOf(true) }
-            val useAmoledTheme = remember { mutableStateOf(true) }
-
+            val themeChoice = remember { mutableIntStateOf(runBlocking { preferencesDatastore.getThemePreference.first() }) }
+            val useMaterialYou = remember { mutableStateOf(runBlocking { preferencesDatastore.getMaterialYouPreference.first() }) }
+            val useAmoledTheme = remember { mutableStateOf(runBlocking { preferencesDatastore.getAmoledPreference.first() }) }
 
             // necessary to do this first, since otherwise ui takes a second to update
-            runBlocking {
-                useMaterialYou.value = userSettings.getMaterialYouPreference.first()
-                themeChoice.intValue = userSettings.getThemePreference.first()
-                useAmoledTheme.value = userSettings.getAmoledPreference.first()
-            }
 
-            LaunchedEffect(key1 = Unit) {
-                lifecycleScope.launch {
-                    // Schedule background downloads if enabled
-                    if (userSettings.getBackgroundUpdatePreference.first()) {
-                        Log.d(TAG, "scheduling background downloads")
-                        val backgroundDownloadScheduler = BackgroundDownloadScheduler
-                        backgroundDownloadScheduler.refreshPeriodicWork(applicationContext)
-                    }
-                }
-                userSettings.getThemePreference.collect {
-                    themeChoice.intValue = it
-                }
-                userSettings.getMaterialYouPreference.collect {
-                    useMaterialYou.value = it
-                }
+            /*
+            runBlocking {
+                useMaterialYou.value = preferencesDatastore.getMaterialYouPreference.first()
+                themeChoice.intValue = preferencesDatastore.getThemePreference.first()
+                useAmoledTheme.value = preferencesDatastore.getAmoledPreference.first()
             }
+             */
+
             SlugMenuTheme(darkTheme = when (themeChoice.intValue) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value, amoledColor = useAmoledTheme.value) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     TransparentSystemBars()
@@ -111,7 +130,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Init("home", themeChoice, useMaterialYou, useAmoledTheme, userSettings)
+                    Init("home", themeChoice, useMaterialYou, useAmoledTheme, preferencesDatastore)
                 }
             }
         }
@@ -290,6 +309,30 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 navController,
                 "Porter/Kresge",
                 "25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1",
+                menuDb
+            )
+        }
+        composable(
+            "carsonoakes",
+            enterTransition = {
+                when (initialState.destination.route) {
+                    "home" ->
+                        slideInHorizontally(initialOffsetX = {it})
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    "home" ->
+                        slideOutHorizontally( targetOffsetX = {it} )
+                    else -> null
+                }
+            }
+        ) {
+            DiningMenu(
+                navController,
+                "Carson/Oakes",
+                "30&locationName=Rachel+Carson%2fOakes+Dining+Hall&naFlag=1",
                 menuDb
             )
         }
