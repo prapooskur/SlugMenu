@@ -123,8 +123,6 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
     // changing status bar color
     implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
-    // animations
-    implementation("com.google.accompanist:accompanist-navigation-animation:$accompanistVersion")
 
     //kotlinx serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
