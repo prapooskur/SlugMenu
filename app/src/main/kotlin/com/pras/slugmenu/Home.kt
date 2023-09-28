@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,10 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 private const val TAG = "Home"
@@ -48,12 +52,49 @@ private const val TAG = "Home"
 fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDatastore) {
     val useGridLayout = remember { mutableStateOf(true) }
     val useCollapsingTopBar = remember { mutableStateOf(true) }
-    val locationOrder: List<LocationOrderItem>
+    var locationOrder by remember { mutableStateOf(listOf<LocationOrderItem>()) }
 
     runBlocking {
         useGridLayout.value = preferencesDataStore.getListPreference.first()
         useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
         locationOrder = Json.decodeFromString(preferencesDataStore.getLocationOrder.first())
+    }
+
+    // add rachel carson, hide global village
+    LaunchedEffect(locationOrder) {
+        if (!locationOrder.contains(
+                LocationOrderItem(
+                    navLocation = "carsonoakes",
+                    locationName = "Carson/Oakes",
+                    visible = true
+                )
+            ) && !locationOrder.contains(
+                LocationOrderItem(
+                    navLocation = "carsonoakes",
+                    locationName = "Carson/Oakes",
+                    visible = false
+                )
+            )
+        ) {
+            for (i in locationOrder) {
+                if (i.locationName == "Global Village Cafe") {
+                    i.visible = false
+                }
+            }
+            locationOrder = locationOrder.toMutableList().apply {
+                add(
+                    4,
+                    LocationOrderItem(
+                        navLocation = "carsonoakes",
+                        locationName = "Carson/Oakes",
+                        visible = true
+                    )
+                )
+            }
+            withContext(Dispatchers.IO) {
+                preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrder))
+            }
+        }
     }
 
     val visibleLocationOrder = locationOrder.filter { it.visible }

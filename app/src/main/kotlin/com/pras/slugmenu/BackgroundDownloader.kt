@@ -107,11 +107,12 @@ object BackgroundDownloadScheduler {
         "Cowell/Stevenson",
         "Crown/Merrill",
         "Porter/Kresge",
+        "Carson/Oakes",
         "Perk Coffee Bars",
         "Terra Fresca",
         "Porter Market",
         "Stevenson Coffee House",
-        "Global Village Cafe",
+//        "Global Village Cafe",
         "Oakes Cafe"
     )
 
@@ -120,11 +121,12 @@ object BackgroundDownloadScheduler {
         "05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1",
         "20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1",
         "25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1",
+        "30&locationName=Rachel+Carson%2fOakes+Dining+Hall&naFlag=1",
         "22&locationName=Perk+Coffee+Bars&naFlag=1",
         "45&locationName=UCen+Coffee+Bar&naFlag=1",
         "50&locationName=Porter+Market&naFlag=1",
         "26&locationName=Stevenson+Coffee+House&naFlag=1",
-        "46&locationName=Global+Village+Cafe&naFlag=1",
+//        "46&locationName=Global+Village+Cafe&naFlag=1",
         "23&locationName=Oakes+Cafe&naFlag=1"
     )
 
@@ -133,11 +135,12 @@ object BackgroundDownloadScheduler {
         LocationType.Dining,
         LocationType.Dining,
         LocationType.Dining,
+        LocationType.Dining,
         LocationType.NonDining,
         LocationType.NonDining,
         LocationType.NonDining,
         LocationType.NonDining,
-        LocationType.NonDining,
+//        LocationType.NonDining,
         LocationType.Oakes
     )
 
