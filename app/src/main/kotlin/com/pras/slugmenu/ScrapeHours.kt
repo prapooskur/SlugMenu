@@ -46,6 +46,8 @@ suspend fun scrapeHoursData(): String {
     return pageData.body<String>()
 }
 
+const val fallbackHoursJson = "{\"ninelewis\":{\"daysList\":[\"Monday-Friday\",\"Saturday-Sunday\"],\"hoursList\":[[\"Breakfast: 7–11AM\",\"Continuous Dining: 11–11:30AM\",\"Lunch: 11:30AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–8PM\",\"Late Night: 8–11PM\"],[\"Breakfast: 7–10AM\",\"Brunch: 10AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–8PM\",\"Late Night: 8–11PM\"]]},\"cowellstev\":{\"daysList\":[\"Monday-Thursday\",\"Friday\",\"Saturday\",\"Sunday\"],\"hoursList\":[[\"Breakfast: 7–11AM\",\"Continuous Dining: 11–11:30AM\",\"Lunch: 11:30AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–8PM\",\"Late Night: 8–11PM\"],[\"Breakfast: 7–11AM\",\"Continuous Dining: 11–11:30AM\",\"Lunch: 11:30AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–8PM\"],[\"Breakfast: 7–10AM\",\"Brunch: 10AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–8PM\"],[\"Breakfast: 7–10AM\",\"Brunch: 10AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–8PM\",\"Late Night: 8–11PM\"]]},\"crownmerrill\":{\"daysList\":[\"Monday-Friday\"],\"hoursList\":[[\"Breakfast: 7–11AM\",\"Continuous Dining: 11–11:30AM\",\"Lunch: 11:30AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–8PM\"]]},\"porterkresge\":{\"daysList\":[\"Monday-Friday\"],\"hoursList\":[[\"Breakfast: 7–11AM\",\"Continuous Dining: 11–11:30AM\",\"Lunch: 11:30AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–7PM\"]]},\"carsonoakes\":{\"daysList\":[\"Monday-Thursday\",\"Friday\",\"Saturday\",\"Sunday\"],\"hoursList\":[[\"Breakfast: 7–11AM\",\"Continuous Dining: 11–11:30AM\",\"Lunch: 11:30AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–8PM\",\"Late Night: 8–11PM\"],[\"Breakfast: 7–11AM\",\"Continuous Dining: 11–11:30AM\",\"Lunch: 11:30AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–8PM\"],[\"Breakfast: 7–10AM\",\"Brunch: 10AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–8PM\"],[\"Breakfast: 7–10AM\",\"Brunch: 10AM–2PM\",\"Continuous Dining: 2–5PM\",\"Dinner: 5–8PM\",\"Late Night: 8–11PM\"]]},\"globalvillage\":{\"daysList\":[\"Monday: 8PM–11PM\",\"Tuesday: 8PM–11PM\",\"Wednesday: 8PM–11PM\",\"Thursday: 8PM–11PM\",\"Friday: 8PM–11PM\",\"Saturday: Closed\",\"Sunday: Closed\"]},\"perkbe\":{\"daysList\":[\"Monday: 8AM–6PM\",\"Tuesday: 8AM–6PM\",\"Wednesday: 8AM–6PM\",\"Thursday: 8AM–6PM\",\"Friday: 8AM–6PM\",\"Saturday: 10AM–5PM\",\"Sunday: Closed\"]},\"perkpsb\":{\"daysList\":[\"Monday: 8AM–8PM\",\"Tuesday: 8AM–8PM\",\"Wednesday: 8AM–8PM\",\"Thursday: 8AM–8PM\",\"Friday: 8AM–5PM\",\"Saturday: Closed\",\"Sunday: Closed\"]},\"perkems\":{\"daysList\":[\"Monday: 10AM–6PM\",\"Tuesday: 10AM–6PM\",\"Wednesday: 10AM–6PM\",\"Thursday: 10AM–6PM\",\"Friday: 10AM–6PM\",\"Saturday: 10AM–5PM\",\"Sunday: Closed\"]},\"terrafresca\":{\"daysList\":[\"Monday: 8AM–8PM\",\"Tuesday: 8AM–8PM\",\"Wednesday: 8AM–8PM\",\"Thursday: 8AM–8PM\",\"Friday: 8AM–8PM\",\"Saturday: Closed\",\"Sunday: Closed\"]},\"portermarket\":{\"daysList\":[\"Monday: 8AM–6PM\",\"Tuesday: 8AM–6PM\",\"Wednesday: 8AM–6PM\",\"Thursday: 8AM–6PM\",\"Friday: 8AM–5PM\",\"Saturday: Closed\",\"Sunday: Closed\"]},\"stevcoffee\":{\"daysList\":[\"Monday: 8AM–6PM\",\"Tuesday: 8AM–6PM\",\"Wednesday: 8AM–6PM\",\"Thursday: 8AM–6PM\",\"Friday: 8AM–5PM\",\"Saturday: Closed\",\"Sunday: Closed\"]},\"oakescafe\":{\"daysList\":[\"Monday: 8AM–5PM\",\"Tuesday: 8AM–5PM\",\"Wednesday: 8AM–5PM\",\"Thursday: 8AM–5PM\",\"Friday: 8AM–5PM\",\"Saturday: Closed\",\"Sunday: Closed\"]}}"
+
 suspend fun getHoursData(): AllHoursList {
     val pageBody = scrapeHoursData()
 
@@ -89,9 +91,12 @@ suspend fun getHoursData(): AllHoursList {
     locationList.forEachIndexed { index, location ->
         if (index < 5) {
             val diningHours = getDiningHours(location,pageBody)
+            Log.d(TAG,"hours, $diningHours")
             if (diningHours.daysList.isEmpty() && diningHours.hoursList.isEmpty()) {
                 // fall back to alternate list, sometimes this might work
-                tempDiningList.add(getDiningHours(altLocationList[index],pageBody))
+                val altDiningHours = getDiningHours(altLocationList[index],pageBody)
+                Log.d(TAG,"alt hours: $altDiningHours")
+                tempDiningList.add(altDiningHours)
             } else {
                 tempDiningList.add(diningHours)
             }
@@ -99,7 +104,8 @@ suspend fun getHoursData(): AllHoursList {
             val nonDiningHours = getNonDiningHours(location, pageBody)
             if (nonDiningHours.isEmpty()) {
                 // fall back to alternate list, sometimes this might work
-                tempNonDiningList.add(getNonDiningHours(altLocationList[index], pageBody))
+                val altNonDiningHours = getNonDiningHours(altLocationList[index], pageBody)
+                tempNonDiningList.add(altNonDiningHours)
             }
             tempNonDiningList.add(nonDiningHours)
         }
@@ -121,6 +127,7 @@ suspend fun getHoursData(): AllHoursList {
         HoursList(tempNonDiningList[6]),
         HoursList(tempNonDiningList[7])
     )
+
 }
 
 fun getDiningHours(location: String, pageBody: String): HoursList {
