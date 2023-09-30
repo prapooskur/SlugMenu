@@ -1,7 +1,6 @@
 package com.pras.slugmenu
 
 import android.util.Log
-import androidx.compose.ui.platform.debugInspectorInfo
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
