@@ -237,12 +237,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
 
     if (openBottomSheet.value && exceptionFound != "No Exception") {
 //        openBottomSheet.value = false
-        if (allHoursList != AllHoursList()) {
-            ShortToast("Failed to get hours, falling back to cached data", LocalContext.current)
-        } else {
-            ShortToast("Failed to get hours", LocalContext.current)
-        }
-
+        ShortToast("Failed to get hours, falling back to cached data", LocalContext.current)
         Log.d(TAG, "hours error: $exceptionFound")
     }
 
