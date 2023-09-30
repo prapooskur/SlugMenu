@@ -1,6 +1,7 @@
 package com.pras.slugmenu
 
 import android.util.Log
+import androidx.compose.ui.platform.debugInspectorInfo
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -48,7 +49,27 @@ suspend fun scrapeHoursData(): String {
 
 suspend fun getHoursData(): AllHoursList {
     val pageBody = scrapeHoursData()
+
     val locationList = listOf(
+    "ninelewis",
+    "csdh",
+    "cmdh",
+    "porterdh",
+    "rodh",
+    "bjqm",
+    "slugstop",
+    "global",
+    "merrillmarket",
+    "oakes",
+    "perkem",
+    "perkbe",
+    "perkpsb",
+    "ucentercafe",
+    "portermarket",
+    "stevenson",
+    "terra"
+    )
+    val altLocationList = listOf(
         "altnine",
         "altcsdh",
         "altcmdh",
@@ -63,13 +84,25 @@ suspend fun getHoursData(): AllHoursList {
         "altstevenson",
         "altoakes"
     )
+
     val tempDiningList = mutableListOf<HoursList>()
     val tempNonDiningList = mutableListOf<List<String>>()
     locationList.forEachIndexed { index, location ->
         if (index < 5) {
-            tempDiningList.add(getDiningHours(location, pageBody))
+            val diningHours = getDiningHours(location,pageBody)
+            if (diningHours.daysList.isEmpty() && diningHours.hoursList.isEmpty()) {
+                // fall back to alternate list, sometimes this might work
+                tempDiningList.add(getDiningHours(altLocationList[index],pageBody))
+            } else {
+                tempDiningList.add(diningHours)
+            }
         } else {
-            tempNonDiningList.add(getNonDiningHours(location, pageBody))
+            val nonDiningHours = getNonDiningHours(location, pageBody)
+            if (nonDiningHours.isEmpty()) {
+                // fall back to alternate list, sometimes this might work
+                tempNonDiningList.add(getNonDiningHours(altLocationList[index], pageBody))
+            }
+            tempNonDiningList.add(nonDiningHours)
         }
     }
 
