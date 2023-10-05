@@ -320,6 +320,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                             "Cowell/Stev" -> allHoursList.cowellstev
                             "Crown/Merrill" -> allHoursList.crownmerrill
                             "Porter/Kresge" -> allHoursList.porterkresge
+                            "Carson/Oakes" -> allHoursList.carsonoakes
                             "Terra Fresca" -> allHoursList.terrafresca
                             "Porter Market" -> allHoursList.portermarket
                             "Stevenson Coffee House" -> allHoursList.stevcoffee
