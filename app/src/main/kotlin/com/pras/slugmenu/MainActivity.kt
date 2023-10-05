@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -112,6 +113,15 @@ class MainActivity : ComponentActivity() {
                 useAmoledTheme.value = preferencesDatastore.getAmoledPreference.first()
             }
              */
+
+            LaunchedEffect(Unit) {
+                preferencesDatastore.getThemePreference.collect {
+                    themeChoice.intValue = it
+                }
+                preferencesDatastore.getMaterialYouPreference.collect {
+                    useMaterialYou.value = it
+                }
+            }
 
             SlugMenuTheme(darkTheme = when (themeChoice.intValue) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value, amoledColor = useAmoledTheme.value) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
