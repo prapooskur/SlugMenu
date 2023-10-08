@@ -69,7 +69,11 @@ suspend fun getWebData (inputUrl: String): List<List<String>> {
                     var cleanSeparator = separators.substring(29, separators.length - 7)
                     cleanSeparator = cleanSeparator
                         .replace("&amp;", "&")
+                        // banana joe's (crown late night, atm)
+                        .replace("Banana Joes", "Banana Joe's")
+                        // perks
                         .replace("New City of Santa Cruz Cup Fee of \$.025 BYO and save up to \$0.50 when ordering a togo drink --", "")
+                        //oakes
                         .replace("Now City of Santa Cruz Cup Fee of \$.025 BYO and save up to \$0.50 when ordering a togo drink --", " —")
                         .replace("--","—")
 
