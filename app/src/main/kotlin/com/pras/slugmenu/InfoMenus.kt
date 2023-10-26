@@ -102,6 +102,8 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
 
     if (showDialog.value && currentTime != LocalDateTime.now().format(dateFormatter).toString()) {
         dataLoadedState.value = false
+        val updatedTime = LocalDateTime.now().format(dateFormatter).toString()
+
         LaunchedEffect(Unit) {
             // Launch a coroutine to update the menu
             withContext(Dispatchers.IO) {
@@ -110,7 +112,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
                     waitzDao.insertWaitz(
                         Waitz (
                             "dh-oakes",
-                            currentTime,
+                            updatedTime,
                             WaitzTypeConverters().fromWaitzList(waitzData[0]),
                             WaitzTypeConverters().fromWaitzList(waitzData[1])
                         )
@@ -127,7 +129,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
                 }
                 dataLoadedState.value = true
             }
-            currentTime = LocalDateTime.now().format(dateFormatter).toString()
+            currentTime = updatedTime
         }
     }
 
