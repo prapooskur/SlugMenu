@@ -86,7 +86,7 @@ suspend fun getWebData (inputUrl: String): List<List<String>> {
                     cleanItem = cleanItem
                         .replace("&amp;", "&")
                         .replace("Iced Match ", "Iced Matcha ")
-                        .replace("Mint Condition Condition","Mint Chocolate Cookie")
+                        .replace("Mint Condition Condition","Mint Condition Cookie")
                         .replace("Whiped Cream", "Whipped Cream")
 
                     if (!listItems.contains(cleanItem)) {
