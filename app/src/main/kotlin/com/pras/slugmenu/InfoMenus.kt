@@ -63,10 +63,11 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
     var exceptionFound by remember { mutableStateOf("No Exception") }
 
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-    val currentTime = LocalDateTime.now().format(dateFormatter).toString()
+    var currentTime by remember { mutableStateOf(LocalDateTime.now().format(dateFormatter).toString()) }
 
     LaunchedEffect(Unit) {
-        // Launch a coroutine to retrieve the menu from the database
+
+        // Launch a coroutine to retrieve the menu from the databasey
         withContext(Dispatchers.IO) {
             val cachedWaitzData = waitzDao.getData("dh-oakes")
             if (cachedWaitzData != null && cachedWaitzData.cacheTime == currentTime) {
@@ -99,11 +100,45 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
         }
     }
 
+    if (showDialog.value && currentTime != LocalDateTime.now().format(dateFormatter).toString()) {
+        dataLoadedState.value = false
+        LaunchedEffect(Unit) {
+            // Launch a coroutine to update the menu
+            withContext(Dispatchers.IO) {
+                try {
+                    waitzData = getWaitzDataAsync()
+                    waitzDao.insertWaitz(
+                        Waitz (
+                            "dh-oakes",
+                            currentTime,
+                            WaitzTypeConverters().fromWaitzList(waitzData[0]),
+                            WaitzTypeConverters().fromWaitzList(waitzData[1])
+                        )
+                    )
+                } catch (e: Exception) {
+                    exceptionFound = when (e) {
+                        is UnresolvedAddressException -> "No Internet connection"
+                        is SocketTimeoutException -> "Connection timed out"
+                        is UnknownHostException -> "Failed to resolve URL"
+                        is CertificateException -> "Website's SSL certificate is invalid"
+                        is SSLHandshakeException -> "SSL handshake failed"
+                        else -> "Exception: $e"
+                    }
+                }
+                dataLoadedState.value = true
+            }
+            currentTime = LocalDateTime.now().format(dateFormatter).toString()
+        }
+    }
+
     if (showDialog.value && exceptionFound != "No Exception") {
         showDialog.value = false
         ShortToast(exceptionFound, LocalContext.current)
         Log.d(TAG, "waitz error: $exceptionFound")
     } else if (showDialog.value) {
+        Log.d(TAG,"ily bestie")
+        Log.d(TAG,currentTime)
+        Log.d(TAG,LocalDateTime.now().format(dateFormatter).toString())
         val locationData = waitzData[0][locIndex]
         val compareData = waitzData[1][locIndex]
 
