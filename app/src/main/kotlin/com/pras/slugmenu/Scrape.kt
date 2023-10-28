@@ -31,8 +31,7 @@ suspend fun scrapeWebData (inputUrl: String): String {
     val locationCookie: String = inputUrl.substring(0,2)
 
     val client = HttpClient(CIO) {
-        // TEMPORARY FIX UNTIL I FIGURE OUT WHY WEBSITE'S BROKEN, INSECURE
-        // TODO FIX
+        // TODO FIX ONCE UCSC UNBREAKS THE SITE
         engine {
             https {
                 trustManager = object: X509TrustManager {

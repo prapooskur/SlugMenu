@@ -78,6 +78,8 @@ android {
 // for Room KSP
 ksp {
     arg("room.schemaLocation", "${projectDir}/schemas")
+    // todo figure out why this still generates java?
+    // arg("room.generateKotlin", "true")
 }
 
 dependencies {

@@ -44,8 +44,7 @@ data class AllHoursList(
 suspend fun scrapeHoursData(): String {
     val url = "https://dining.ucsc.edu/eat/"
     val client = HttpClient(CIO) {
-        // TEMPORARY FIX UNTIL I FIGURE OUT WHY WEBSITE'S BROKEN, INSECURE
-        // TODO FIX
+        // TODO FIX ONCE UCSC UNBREAKS THE SITE
         engine {
             https {
                 trustManager = object: X509TrustManager {
