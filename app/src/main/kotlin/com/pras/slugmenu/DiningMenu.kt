@@ -37,6 +37,7 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
+import java.security.cert.CertPathValidatorException
 import java.security.cert.CertificateException
 import java.time.Instant
 import java.time.LocalDate
@@ -95,6 +96,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                         is SocketTimeoutException -> "Connection timed out"
                         is UnknownHostException -> "Failed to resolve URL"
                         is CertificateException -> "Website's SSL certificate is invalid"
+                        is CertPathValidatorException -> "Website's SSL certificate is invalid"
                         is SSLHandshakeException -> "SSL handshake failed"
                         else -> "Exception: $e"
                     }
@@ -106,6 +108,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
 
     if (exceptionFound != "No Exception") {
         ShortToast(exceptionFound, LocalContext.current)
+        Log.d(TAG, exceptionFound)
     }
 
 
@@ -264,6 +267,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
     }
     if (exceptionFound != "No Exception") {
         ShortToast(exceptionFound, LocalContext.current)
+        Log.d(TAG, exceptionFound)
     }
 
 
