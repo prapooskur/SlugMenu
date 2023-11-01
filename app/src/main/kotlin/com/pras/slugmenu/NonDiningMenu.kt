@@ -90,7 +90,7 @@ fun NonDiningMenu(navController: NavController, locationName: String, locationUr
 
     val showBottomSheet = remember { mutableStateOf(false) }
 
-    val waitzList = setOf("Porter Market", "Stevenson Coffee House")
+    val waitzList = setOf("Porter Market", "Global Village Cafe", "Stevenson Coffee House")
     val useWaitz = waitzList.contains(locationName)
     val showWaitzDialog = remember { mutableStateOf(false) }
 
