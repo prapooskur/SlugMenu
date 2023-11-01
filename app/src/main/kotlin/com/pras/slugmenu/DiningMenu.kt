@@ -122,7 +122,11 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                 contentWindowInsets = WindowInsets(0.dp),
 
                 topBar = {
-                    TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
+                    if (locationName == "Carson/Oakes") {
+                        TopBarClean(titleText = locationName, navController = navController)
+                    } else {
+                        TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
+                    }
                 },
                 content = {padding ->
                     SwipableTabBar(menuArray = menuList, padding = padding)
