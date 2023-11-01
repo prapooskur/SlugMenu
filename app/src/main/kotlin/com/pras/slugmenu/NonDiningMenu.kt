@@ -90,13 +90,21 @@ fun NonDiningMenu(navController: NavController, locationName: String, locationUr
 
     val showBottomSheet = remember { mutableStateOf(false) }
 
+    val waitzList = setOf("Porter Market", "Stevenson Coffee House")
+    val useWaitz = waitzList.contains(locationName)
+    val showWaitzDialog = remember { mutableStateOf(false) }
+
     Column {
         if (dataLoadedState.value) {
             Scaffold(
                 // custom insets necessary to render behind nav bar
                 contentWindowInsets = WindowInsets(0.dp),
                 topBar = {
-                    TopBarClean(titleText = locationName, navController = navController)
+                    if (useWaitz) {
+                        TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
+                    } else {
+                        TopBarClean(titleText = locationName, navController = navController)
+                    }
                 },
                 content = { padding ->
                     if (menuList.isNotEmpty() && menuList[0].isNotEmpty()) {
@@ -118,9 +126,12 @@ fun NonDiningMenu(navController: NavController, locationName: String, locationUr
             )
 
             val bottomSheetState = rememberModalBottomSheetState()
+
             Column(modifier = Modifier.fillMaxHeight()) {
                 HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
             }
+            WaitzDialog(showDialog = showWaitzDialog, locationName = locationName)
+
         } else {
             TopBarClean(titleText = locationName, navController = navController)
             Box(

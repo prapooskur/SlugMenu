@@ -1,5 +1,6 @@
 package com.pras.slugmenu
 
+import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -10,11 +11,13 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+private const val TAG = "WaitzScraper"
 
 @Serializable
 data class LocationData(
     val data: List<Location>
 )
+
 @Serializable
 data class Location(
     val name: String,
@@ -58,6 +61,9 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
     val liveBody = jsonResponse[0]
     val compareBody = jsonResponse[1]
 
+    //Log.d(TAG,liveBody)
+    //Log.d(TAG,compareBody)
+
     val json = Json { ignoreUnknownKeys = true }
 
     val locationData: LocationData = json.decodeFromString(liveBody)
@@ -96,6 +102,7 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
         }
     }
 
+    Log.d(TAG, listOf(allLocationDictionary.toMap(),allCompareDictionary.toMap()).toString())
     return listOf(allLocationDictionary.toMap(),allCompareDictionary.toMap())
 }
 

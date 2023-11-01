@@ -194,7 +194,6 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                 }
             }
 
-
             Column(modifier = Modifier.fillMaxHeight()) {
                 HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
             }
@@ -205,7 +204,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
             // Otherwise, display a loading indicator
             Surface {
                 Column {
-                    TopBarWaitz(titleText = locationName, navController = navController)
+                    TopBarClean(titleText = locationName, navController = navController)
                 }
             }
             Box(

@@ -53,7 +53,15 @@ fun ShortToast(text: String, context: Context) {
 @Composable
 fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
 
-    val locIndex = if (locationName == "Cowell/Stev") { "Cowell/Stevenson" } else { locationName }
+    //val locIndex = if (locationName == "Cowell/Stev") { "Cowell/Stevenson" } else { locationName }
+
+    // todo change from getting general college values to dining hall values for c/s and cr/m
+    val locIndex = when (locationName) {
+        "Cowell/Stev" -> "Cowell/Stevenson College"
+        "Crown/Merrill" -> "Crown/Merrill College"
+        "Porter/Kresge" -> "Porter/Kresge College"
+        else -> locationName
+    }
 
     val dataLoadedState = remember { mutableStateOf(false) }
 
@@ -138,7 +146,6 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
         ShortToast(exceptionFound, LocalContext.current)
         Log.d(TAG, "waitz error: $exceptionFound")
     } else if (showDialog.value) {
-        Log.d(TAG,"ily bestie")
         Log.d(TAG,currentTime)
         Log.d(TAG,LocalDateTime.now().format(dateFormatter).toString())
         val locationData = waitzData[0][locIndex]
@@ -204,7 +211,8 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
                                         "Next hour: ${compareData[0].substring(18)}\n" +
                                         "Today: ${compareData[1].substring(9)}\n" +
                                         "Peak hours: ${compareData[2].substring(15)}\n" +
-                                        "Best location: ${compareData[3].substringBefore(" is best right now")}",
+                                        //"Best location: ${compareData[3].substringBefore(" is best right now")}",
+                                        "Best location: ${compareData[3].substring(0,compareData[3].length-18)}",
                                 fontSize = 16.sp
                             )
                         }

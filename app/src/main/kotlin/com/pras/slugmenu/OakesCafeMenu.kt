@@ -118,13 +118,17 @@ fun OakesCafeMenu(navController: NavController, locationName: String, locationUr
                 },
                 floatingActionButtonPosition = FabPosition.End
             )
+
             val bottomSheetState = rememberModalBottomSheetState()
             Column(modifier = Modifier.fillMaxHeight()) {
                 HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName)
             }
+
+            WaitzDialog(showDialog = showWaitzDialog, locationName = locationName)
         }
         else {
-            TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
+            //TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
+            TopBarClean(titleText = locationName, navController = navController)
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -135,6 +139,4 @@ fun OakesCafeMenu(navController: NavController, locationName: String, locationUr
             }
         }
     }
-
-    WaitzDialog(showDialog = showWaitzDialog, locationName = locationName)
 }
