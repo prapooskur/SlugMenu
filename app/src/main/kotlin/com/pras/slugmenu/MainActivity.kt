@@ -8,7 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -212,11 +212,16 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
 
     val menuDb = MenuDatabase.getInstance(context)
 
-    NavHost(navController = navController, startDestination = startDestination) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None }
+    ) {
         composable(
             "home",
-            enterTransition = { EnterTransition.None },
-//            exitTransition = { ExitTransition.None }
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
         ) { HomeScreen(navController = navController, preferencesDataStore = userSettings) }
         composable(
             "ninelewis",
@@ -225,7 +230,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideInHorizontally(initialOffsetX = {it})
 
-                    else -> null
+                    else -> fadeIn()
                 }
             },
             exitTransition = {
@@ -233,7 +238,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideOutHorizontally( targetOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeOut()
                 }
             }
         ) {
@@ -251,7 +256,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideInHorizontally(initialOffsetX = {it})
 
-                    else -> null
+                    else -> fadeIn()
                 }
             },
             exitTransition = {
@@ -259,7 +264,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideOutHorizontally( targetOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeOut()
                 }
             }
         ) {
@@ -276,14 +281,16 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 when (initialState.destination.route) {
                     "home" ->
                         slideInHorizontally(initialOffsetX = {it})
-                    else -> null
+
+                    else -> fadeIn()
                 }
             },
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
                         slideOutHorizontally( targetOffsetX = {it} )
-                    else -> null
+
+                    else -> fadeOut()
                 }
             }
         ) {
@@ -300,14 +307,16 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 when (initialState.destination.route) {
                     "home" ->
                         slideInHorizontally(initialOffsetX = {it})
-                    else -> null
+
+                    else -> fadeIn()
                 }
             },
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
                         slideOutHorizontally( targetOffsetX = {it} )
-                    else -> null
+
+                    else -> fadeOut()
                 }
             }
         ) {
@@ -324,14 +333,16 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 when (initialState.destination.route) {
                     "home" ->
                         slideInHorizontally(initialOffsetX = {it})
-                    else -> null
+
+                    else -> fadeIn()
                 }
             },
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
                         slideOutHorizontally( targetOffsetX = {it} )
-                    else -> null
+
+                    else -> fadeOut()
                 }
             }
         ) {
@@ -350,14 +361,16 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 when (initialState.destination.route) {
                     "home" ->
                         slideInHorizontally( initialOffsetX = {it} )
-                    else -> null
+
+                    else -> fadeIn()
                 }
             },
             exitTransition = {
                 when (targetState.destination.route) {
                     "home" ->
                         slideOutHorizontally( targetOffsetX = {it} )
-                    else -> null
+
+                    else -> fadeOut()
                 }
             }
         ) {
@@ -375,7 +388,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideInHorizontally( initialOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeIn()
                 }
             },
             exitTransition = {
@@ -383,7 +396,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideOutHorizontally( targetOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeOut()
                 }
             }
         ) {
@@ -401,7 +414,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideInHorizontally( initialOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeIn()
                 }
             },
             exitTransition = {
@@ -409,7 +422,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideOutHorizontally( targetOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeOut()
                 }
             }
         ) {
@@ -427,7 +440,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideInHorizontally( initialOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeIn()
                 }
             },
             exitTransition = {
@@ -435,7 +448,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideOutHorizontally( targetOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeOut()
                 }
             }
         ) {
@@ -453,7 +466,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideInHorizontally( initialOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeIn()
                 }
             },
             exitTransition = {
@@ -461,7 +474,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideOutHorizontally( targetOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeOut()
                 }
             }
         ) {
@@ -481,7 +494,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideInHorizontally( initialOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeIn()
                 }
             },
             exitTransition = {
@@ -489,7 +502,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                     "home" ->
                         slideOutHorizontally( targetOffsetX = {it} )
 
-                    else -> null
+                    else -> fadeOut()
                 }
             }
         ) {
@@ -504,8 +517,8 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
         //settings menu
         composable(
             "settings",
-            enterTransition = {fadeIn(animationSpec = tween(FADETIME))},
-            exitTransition = {fadeOut(animationSpec = tween(FADETIME))}
+            enterTransition = {fadeIn()},
+            exitTransition = {fadeOut()}
 
         ) {
             SettingsScreen(
@@ -521,16 +534,16 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
         //about menu
         composable(
             "about",
-            enterTransition = {fadeIn(animationSpec = tween(FADETIME))},
-            exitTransition = {fadeOut(animationSpec = tween(FADETIME))}
+            enterTransition = {fadeIn()},
+            exitTransition = {fadeOut()}
         ) {
             AboutScreen(navController, userSettings)
         }
 
         composable(
             "menuorganizer",
-            enterTransition = {fadeIn(animationSpec = tween(FADETIME))},
-            exitTransition = {fadeOut(animationSpec = tween(FADETIME))}
+            enterTransition = {fadeIn()},
+            exitTransition = {fadeOut()}
         ) {
             MenuOrganizer(navController, userSettings)
         }
