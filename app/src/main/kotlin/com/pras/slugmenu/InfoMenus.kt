@@ -54,7 +54,6 @@ fun ShortToast(text: String, context: Context) {
 fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
     //val locIndex = if (locationName == "Cowell/Stev") { "Cowell/Stevenson" } else { locationName }
 
-    // todo change from getting general college values to dining hall values for c/s and cr/m
     val locIndex = when (locationName) {
         "Cowell/Stev" -> "Cowell/Stevenson College"
         "Cowell/Stevenson" -> "Cowell/Stevenson College"
