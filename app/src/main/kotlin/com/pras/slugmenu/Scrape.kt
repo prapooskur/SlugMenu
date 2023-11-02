@@ -32,6 +32,7 @@ suspend fun scrapeWebData (inputUrl: String): String {
 
     val client = HttpClient(CIO) {
         // TODO FIX ONCE UCSC UNBREAKS THE SITE
+        // SSL validation is currently disabled because UCSC's webserver doesn't properly serve intermediate certs.
         engine {
             https {
                 trustManager = object: X509TrustManager {
