@@ -81,14 +81,15 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
     val compareData: CompareData = json.decodeFromString(compareBody.replace("<strong>","").replace("</strong>",""))
 
     val allLocationDictionary = mutableMapOf<String, List<String>>()
-    val sublocationList = setOf("Cowell / Stevenson College","Crown / Merrill College")
+    // val sublocationList = setOf("Cowell / Stevenson College","Crown / Merrill College")
     locationData.data.forEach { location ->
-
         // If the dining hall is stored in a sublocation, use the values from that instead.
         val useSublocation =
             (location.subLocs.isNotEmpty()
-            && (sublocationList.contains(location.name)
-            || (location.name.endsWith("College") && location.subLocs[0].name.endsWith("Dining Hall"))))
+                && (location.name.endsWith("College")
+                && location.subLocs[0].name.startsWith(location.name.substring(0,location.name.length-7).replace(" / ","/"))
+                && location.subLocs[0].name.endsWith("Dining Hall")))
+        // (sublocationList.contains(location.name)
 
         val locationName = location.name
             .replace(" / ", "/")
