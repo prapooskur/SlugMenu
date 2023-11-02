@@ -78,9 +78,12 @@ android {
 // for Room KSP
 ksp {
     arg("room.schemaLocation", "${projectDir}/schemas")
-    // todo figure out why this still generates java?
-    // arg("room.generateKotlin", "true")
+
+    // make room generate kotlin instead of java
+    arg("room.generateKotlin", "true")
 }
+
+
 
 dependencies {
 
@@ -143,6 +146,9 @@ dependencies {
 
     // To use Kotlin Symbol Processing (KSP)
     ksp("androidx.room:room-compiler:$roomVersion")
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:$roomVersion")
+
 
     // Flow stuff
     val coroutineVersion = "1.7.3"
