@@ -26,7 +26,7 @@ data class Location(
     val people: Int,
     val isAvailable: Boolean,
     val capacity: Int,
-    val subLocs: List<Sublocation>
+    val subLocs: List<Sublocation> = listOf()
 )
 
 @Serializable
@@ -83,6 +83,13 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
     val allLocationDictionary = mutableMapOf<String, List<String>>()
     val sublocationList = setOf("Cowell / Stevenson College","Crown / Merrill College")
     locationData.data.forEach { location ->
+
+        // If the dining hall is stored in a sublocation, use the values from that instead.
+        val useSublocation =
+            (location.subLocs.isNotEmpty()
+            && (sublocationList.contains(location.name)
+            || (location.name.endsWith("College") && location.subLocs[0].name.endsWith("Dining Hall"))))
+
         val locationName = location.name
             .replace(" / ", "/")
             .replace("College 9", "Nine")
@@ -90,7 +97,7 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
             .replace(" Dining Hall", "")
             .replace("Cafe Main", "Cafe")
 
-        val currentLocation = if (sublocationList.contains(location.name) && location.subLocs.isNotEmpty()) {
+        val currentLocation = if (useSublocation) {
             listOf(
                 location.subLocs[0].busyness.toString(),
                 location.subLocs[0].people.toString(),
