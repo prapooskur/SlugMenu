@@ -196,7 +196,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
                             fontSize = 16.sp
                         )
                     } else {
-                        if (compareData[3] == "only one location") {
+                        if (compareData[3] == "only one location" || compareData[3].startsWith(locationName)) {
                             Text(
                                 text = "Busyness: ${locationData[0]}%\n" +
                                         "People: ${locationData[1]}/${locationData[2]}\n" +
