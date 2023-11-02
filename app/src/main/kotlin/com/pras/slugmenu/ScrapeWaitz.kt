@@ -26,6 +26,17 @@ data class Location(
     val people: Int,
     val isAvailable: Boolean,
     val capacity: Int,
+    val subLocs: List<Sublocation>
+)
+
+@Serializable
+data class Sublocation(
+    val name: String,
+    val id: Int,
+    val busyness: Int,
+    val people: Int,
+    val isAvailable: Boolean,
+    val capacity: Int,
 )
 
 @Serializable
@@ -66,10 +77,11 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
 
     val json = Json { ignoreUnknownKeys = true }
 
-    val locationData: LocationData = json.decodeFromString(liveBody)
+    val locationData: LocationData = json.decodeFromString(liveBody.replace("\"subLocs\":false","\"subLocs\":[]"))
     val compareData: CompareData = json.decodeFromString(compareBody.replace("<strong>","").replace("</strong>",""))
 
     val allLocationDictionary = mutableMapOf<String, List<String>>()
+    val sublocationList = setOf("Cowell / Stevenson College","Crown / Merrill College")
     locationData.data.forEach { location ->
         val locationName = location.name
             .replace(" / ", "/")
@@ -78,12 +90,21 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
             .replace(" Dining Hall", "")
             .replace("Cafe Main", "Cafe")
 
-        val currentLocation = listOf(
-            location.busyness.toString(),
-            location.people.toString(),
-            location.capacity.toString(),
-            location.isAvailable.toString()
-        )
+        val currentLocation = if (sublocationList.contains(location.name) && location.subLocs.isNotEmpty()) {
+            listOf(
+                location.subLocs[0].busyness.toString(),
+                location.subLocs[0].people.toString(),
+                location.subLocs[0].capacity.toString(),
+                location.subLocs[0].isAvailable.toString()
+            )
+        } else {
+            listOf(
+                location.busyness.toString(),
+                location.people.toString(),
+                location.capacity.toString(),
+                location.isAvailable.toString()
+            )
+        }
         allLocationDictionary[locationName] = currentLocation
     }
 

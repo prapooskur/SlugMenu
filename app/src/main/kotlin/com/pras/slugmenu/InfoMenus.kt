@@ -52,12 +52,12 @@ fun ShortToast(text: String, context: Context) {
 
 @Composable
 fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
-
     //val locIndex = if (locationName == "Cowell/Stev") { "Cowell/Stevenson" } else { locationName }
 
     // todo change from getting general college values to dining hall values for c/s and cr/m
     val locIndex = when (locationName) {
         "Cowell/Stev" -> "Cowell/Stevenson College"
+        "Cowell/Stevenson" -> "Cowell/Stevenson College"
         "Crown/Merrill" -> "Crown/Merrill College"
         "Porter/Kresge" -> "Porter/Kresge College"
         "Global Village Cafe" -> "McHenry Library - Global Village Cafe"
