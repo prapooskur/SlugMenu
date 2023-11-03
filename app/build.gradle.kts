@@ -116,7 +116,7 @@ dependencies {
 
     // Android navigation and Material 3
 
-    implementation("androidx.navigation:navigation-compose:2.7.4")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
 
     val mat3Version = "1.1.2"
     implementation("androidx.compose.material3:material3:$mat3Version")
@@ -156,7 +156,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 
     // Desugaring (allows minSdk below 26)
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     // WorkManager (allows app to download data in background)
     val workVersion = "2.8.1"
