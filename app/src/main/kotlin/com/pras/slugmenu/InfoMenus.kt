@@ -239,8 +239,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {
-    val menuDatabase = MenuDatabase.getInstance(LocalContext.current
-    )
+    val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
     val hoursDao = menuDatabase.hoursDao()
     val currentDate = LocalDate.now()
 
