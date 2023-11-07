@@ -55,10 +55,14 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
     //val locIndex = if (locationName == "Cowell/Stev") { "Cowell/Stevenson" } else { locationName }
 
     val locIndex = when (locationName) {
-        "Cowell/Stev" -> "Cowell/Stevenson College"
+        "Cowell/Stev" -> "Cowell/Stevenson"
+        /*
+        "Cowell/Stev" -> "Cowell/Stevenson"
         "Cowell/Stevenson" -> "Cowell/Stevenson College"
         "Crown/Merrill" -> "Crown/Merrill College"
         "Porter/Kresge" -> "Porter/Kresge College"
+         */
+
         "Global Village Cafe" -> "McHenry Library - Global Village Cafe"
         else -> locationName
     }
@@ -148,7 +152,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
     } else if (showDialog.value) {
         Log.d(TAG,currentTime)
         Log.d(TAG,LocalDateTime.now().format(dateFormatter).toString())
-        val locationData = waitzData[0][locIndex]
+        val locationData = waitzData[0][locIndex] ?: waitzData[0]["$locIndex College"]
         val compareData = waitzData[1][locIndex]
 
         if (!dataLoadedState.value) {
