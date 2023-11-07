@@ -61,9 +61,8 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
         "Cowell/Stevenson" -> "Cowell/Stevenson College"
         "Crown/Merrill" -> "Crown/Merrill College"
         "Porter/Kresge" -> "Porter/Kresge College"
-         */
-
         "Global Village Cafe" -> "McHenry Library - Global Village Cafe"
+         */
         else -> locationName
     }
 

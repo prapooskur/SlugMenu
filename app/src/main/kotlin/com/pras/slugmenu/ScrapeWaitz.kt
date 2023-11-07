@@ -96,6 +96,7 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
             .replace("College 9", "Nine")
             .replace("John R Lewis", "Lewis")
             .replace(" Dining Hall", "")
+            .replace("McHenry Library - ","")
             .replace("Cafe Main", "Cafe")
 
         val currentLocation = if (useSublocation) {
