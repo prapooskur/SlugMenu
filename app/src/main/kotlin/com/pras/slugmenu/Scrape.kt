@@ -13,8 +13,6 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import java.security.cert.X509Certificate
-import javax.net.ssl.X509TrustManager
 
 private const val TAG = "Scraper"
 
@@ -31,19 +29,6 @@ suspend fun scrapeWebData (inputUrl: String): String {
     val locationCookie: String = inputUrl.substring(0,2)
 
     val client = HttpClient(CIO) {
-        // TODO FIX ONCE UCSC UNBREAKS THE SITE
-        // SSL validation is currently disabled because UCSC's webserver doesn't properly serve intermediate certs.
-        engine {
-            https {
-                trustManager = object: X509TrustManager {
-                    override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) { }
-
-                    override fun checkServerTrusted(p0: Array<out X509Certificate>?, p1: String?) { }
-
-                    override fun getAcceptedIssuers(): Array<X509Certificate>? = null
-                }
-            }
-        }
         install(HttpCookies) {}
     }
     val httpResponse: HttpResponse = client.get(url) {

@@ -7,8 +7,6 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
 import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
-import java.security.cert.X509Certificate
-import javax.net.ssl.X509TrustManager
 
 private const val TAG = "Hours Scraper"
 /*
@@ -43,20 +41,7 @@ data class AllHoursList(
 
 suspend fun scrapeHoursData(): String {
     val url = "https://dining.ucsc.edu/eat/"
-    val client = HttpClient(CIO) {
-        // TODO FIX ONCE UCSC UNBREAKS THE SITE
-        engine {
-            https {
-                trustManager = object: X509TrustManager {
-                    override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) { }
-
-                    override fun checkServerTrusted(p0: Array<out X509Certificate>?, p1: String?) { }
-
-                    override fun getAcceptedIssuers(): Array<X509Certificate>? = null
-                }
-            }
-        }
-    }
+    val client = HttpClient(CIO)
     val pageData = client.get(url)
     return pageData.body<String>()
 }
