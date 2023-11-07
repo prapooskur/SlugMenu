@@ -70,7 +70,7 @@ private const val TAG = "Settings"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, useAmoledBlack: MutableState<Boolean>, themeChoice: MutableState<Int>, menuDb: MenuDatabase, preferencesDataStore: PreferencesDatastore) {
+fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, useAmoledBlack: MutableState<Boolean>, themeChoice: MutableState<Int>, preferencesDataStore: PreferencesDatastore) {
     Log.d(TAG,"test $useMaterialYou")
     val useCollapsingTopBar = remember { mutableStateOf(true) }
     val updateInBackground = remember { mutableStateOf(false) }
@@ -81,6 +81,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
 
 
     val context = LocalContext.current
+    val menuDatabase = MenuDatabase.getInstance(context)
 
     runBlocking {
         useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
@@ -194,7 +195,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                     }
                     item {
                         ClearCache(
-                            menuDb = menuDb,
+                            menuDatabase = menuDatabase,
                             context = context
                         )
                     }
@@ -516,13 +517,13 @@ fun BackgroundOneTimeDownload(context: Context) {
 }
 
 @Composable
-fun ClearCache(menuDb: MenuDatabase, context: Context) {
+fun ClearCache(menuDatabase: MenuDatabase, context: Context) {
     ListItem(
         headlineContent = { Text("Clear App Cache") },
         supportingContent = { Text("Clears menu and busyness data for all locations.") },
         modifier = Modifier.clickable {
             CoroutineScope(Dispatchers.IO).launch {
-                menuDb.clearAllTables()
+                menuDatabase.clearAllTables()
                 withContext(Dispatchers.Main) {
                     ShortToast("Cache cleared.", context)
                 }

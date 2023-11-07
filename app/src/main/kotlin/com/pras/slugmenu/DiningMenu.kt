@@ -50,9 +50,11 @@ private const val TAG = "DiningMenu"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiningMenu(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
+fun DiningMenu(navController: NavController, locationName: String, locationUrl: String) {
 
     val currentDate = LocalDate.now()
+
+    val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
     val menuDao = menuDatabase.menuDao()
 
     // Define a state to hold the retrieved Menu

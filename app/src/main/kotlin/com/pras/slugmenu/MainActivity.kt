@@ -31,7 +31,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
 import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
@@ -208,9 +207,6 @@ const val FADETIME = 200
 @Composable
 fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYou: MutableState<Boolean>, useAmoledTheme: MutableState<Boolean>, userSettings: PreferencesDatastore) {
     val navController = rememberNavController()
-    val context = LocalContext.current
-
-    val menuDb = MenuDatabase.getInstance(context)
 
     NavHost(
         navController = navController,
@@ -245,8 +241,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             DiningMenu(
                 navController,
                 "Nine/Lewis",
-                "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1",
-                menuDb
+                "40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1"
             )
         }
         composable(
@@ -271,8 +266,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             DiningMenu(
                 navController,
                 "Cowell/Stevenson",
-                "05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1",
-                menuDb
+                "05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1"
             )
         }
         composable(
@@ -297,8 +291,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             DiningMenu(
                 navController,
                 "Crown/Merrill",
-                "20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1",
-                menuDb
+                "20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1"
             )
         }
         composable(
@@ -323,8 +316,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             DiningMenu(
                 navController,
                 "Porter/Kresge",
-                "25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1",
-                menuDb
+                "25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1"
             )
         }
         composable(
@@ -349,8 +341,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             DiningMenu(
                 navController,
                 "Carson/Oakes",
-                "30&locationName=Rachel+Carson%2fOakes+Dining+Hall&naFlag=1",
-                menuDb
+                "30&locationName=Rachel+Carson%2fOakes+Dining+Hall&naFlag=1"
             )
         }
         // dining halls end here
@@ -377,8 +368,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             NonDiningMenu(
                 navController,
                 "Perk Coffee Bars",
-                "22&locationName=Perk+Coffee+Bars&naFlag=1",
-                menuDb
+                "22&locationName=Perk+Coffee+Bars&naFlag=1"
             )
         }
         composable(
@@ -403,8 +393,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             NonDiningMenu(
                 navController,
                 "Terra Fresca",
-                "45&locationName=UCen+Coffee+Bar&naFlag=1",
-                menuDb
+                "45&locationName=UCen+Coffee+Bar&naFlag=1"
             )
         }
         composable(
@@ -429,8 +418,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             NonDiningMenu(
                 navController,
                 "Porter Market",
-                "50&locationName=Porter+Market&naFlag=1",
-                menuDb
+                "50&locationName=Porter+Market&naFlag=1"
             )
         }
         composable(
@@ -455,8 +443,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             NonDiningMenu(
                 navController,
                 "Stevenson Coffee House",
-                "26&locationName=Stevenson+Coffee+House&naFlag=1",
-                menuDb
+                "26&locationName=Stevenson+Coffee+House&naFlag=1"
             )
         }
         composable(
@@ -481,8 +468,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             NonDiningMenu(
                 navController,
                 "Global Village Cafe",
-                "46&locationName=Global+Village+Cafe&naFlag=1",
-                menuDb
+                "46&locationName=Global+Village+Cafe&naFlag=1"
             )
         }
         // nondiningmenus end here
@@ -509,8 +495,7 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             OakesCafeMenu(
                 navController,
                 "Oakes Cafe",
-                "23&locationName=Oakes+Cafe&naFlag=1",
-                menuDb
+                "23&locationName=Oakes+Cafe&naFlag=1"
             )
         }
 
@@ -526,7 +511,6 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 useMaterialYou,
                 useAmoledTheme,
                 themeChoice,
-                menuDb,
                 userSettings
             )
         }

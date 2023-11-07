@@ -40,10 +40,12 @@ private const val TAG = "OakesCafeMenu"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OakesCafeMenu(navController: NavController, locationName: String, locationUrl: String, menuDatabase: MenuDatabase) {
+fun OakesCafeMenu(navController: NavController, locationName: String, locationUrl: String) {
     Log.d(TAG, "Opening OakesCafeMenu with room!")
 
     val currentDate = LocalDate.now().toString()
+
+    val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
     val menuDao = menuDatabase.menuDao()
 
     var menuList by remember { mutableStateOf<List<List<String>>>(listOf(listOf(),listOf())) }
