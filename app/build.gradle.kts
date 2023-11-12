@@ -115,7 +115,7 @@ dependencies {
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Android navigation
-    implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.navigation:navigation-compose:2.7.0")
 
     // Material 3
     val mat3Version = "1.1.2"
