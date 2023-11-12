@@ -66,7 +66,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.5.4"
     }
     fun Packaging.() {
         resources {
@@ -109,7 +109,7 @@ dependencies {
     implementation("org.jsoup:jsoup:1.16.2")
 
     // ktor for http requests
-    val ktorVersion = "2.3.5"
+    val ktorVersion = "2.3.6"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
@@ -121,13 +121,6 @@ dependencies {
     val mat3Version = "1.1.2"
     implementation("androidx.compose.material3:material3:$mat3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
-
-    // Accompanist (unofficial official Google libraries)
-    val accompanistVersion = "0.32.0"
-    // swipable tabs
-    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistVersion")
-    // changing status bar color
-    implementation("com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion")
 
     //kotlinx serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
