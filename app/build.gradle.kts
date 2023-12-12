@@ -90,8 +90,8 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-ktx:1.8.0")
-    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.activity:activity-ktx:1.8.1")
+    implementation("androidx.activity:activity-compose:1.8.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -132,7 +132,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Room (caching implementation)
-    val roomVersion = "2.6.0"
+    val roomVersion = "2.6.1"
 
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
@@ -152,11 +152,11 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     // WorkManager (allows app to download data in background)
-    val workVersion = "2.8.1"
+    val workVersion = "2.9.0"
     // (Java only)
     implementation("androidx.work:work-runtime:$workVersion")
-    // Kotlin + coroutines
-    implementation("androidx.work:work-runtime-ktx:$workVersion")
+    // Kotlin + coroutines - no longer needed with workmanager 2.9.0?
+    // implementation("androidx.work:work-runtime-ktx:$workVersion")
 
     // drag and droppable lists
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
