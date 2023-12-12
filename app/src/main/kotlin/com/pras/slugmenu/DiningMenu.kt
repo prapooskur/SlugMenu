@@ -124,11 +124,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                 contentWindowInsets = WindowInsets(0.dp),
 
                 topBar = {
-                    if (locationName == "Carson/Oakes") {
-                        TopBarClean(titleText = locationName, navController = navController)
-                    } else {
-                        TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
-                    }
+                    TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
                 },
                 content = {padding ->
                     SwipableTabBar(menuArray = menuList, padding = padding)
@@ -203,9 +199,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
             Column(modifier = Modifier.fillMaxHeight()) {
                 HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
             }
-            if (locationName != "Carson/Oakes") {
-                WaitzDialog(showDialog = showWaitzDialog, locationName = locationName.replace("Stevenson", "Stev"))
-            }
+            WaitzDialog(showDialog = showWaitzDialog, locationName = locationName.replace("Stevenson", "Stev"))
 
 
         } else {

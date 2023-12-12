@@ -197,6 +197,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
                             text = "No data available.",
                             fontSize = 16.sp
                         )
+                        Log.d(TAG, "waitz error: $locationData, $compareData")
                     } else {
                         if (compareData[3] == "only one location" || compareData[3].startsWith(locationName)) {
                             Text(

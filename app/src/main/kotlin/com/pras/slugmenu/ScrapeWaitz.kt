@@ -91,13 +91,7 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
                 && location.subLocs[0].name.endsWith("Dining Hall")))
         // (sublocationList.contains(location.name)
 
-        val locationName = location.name
-            .replace(" / ", "/")
-            .replace("College 9", "Nine")
-            .replace("John R Lewis", "Lewis")
-            .replace(" Dining Hall", "")
-            .replace("McHenry Library - ","")
-            .replace("Cafe Main", "Cafe")
+        val locationName = updateLocationName(location.name)
 
         val currentLocation = if (useSublocation) {
             listOf(
@@ -120,12 +114,7 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
     val allCompareDictionary = mutableMapOf<String, List<String>>()
     compareData.data.forEach { comparison ->
         if (comparison.comparison != null && comparison.name != "null") {
-            val locationName = comparison.name
-                .replace(" / ","/")
-                .replace("College 9","Nine")
-                .replace("John R Lewis","Lewis")
-                .replace(" Dining Hall","")
-                .replace("Cafe Main","Cafe")
+            val locationName = updateLocationName(comparison.name)
 
             val currentCompare = comparison.comparison.map { it.string }
             allCompareDictionary[locationName] = currentCompare
@@ -138,4 +127,15 @@ suspend fun getWaitzData(): List<Map<String, List<String>>> {
 
 suspend fun getWaitzDataAsync(): List<Map<String, List<String>>> = withContext(Dispatchers.IO) {
     getWaitzData()
+}
+
+fun updateLocationName(locationName: String): String {
+    return locationName.replace(" / ", "/")
+        .replace("College 9", "Nine")
+        .replace("John R Lewis", "Lewis")
+        .replace("Rachel Carson Oakes", "Carson/Oakes")
+        .replace(" Dining Hall", "")
+        .replace("McHenry Library - ","")
+        .replace("Cafe Main", "Cafe")
+        .trim()
 }
