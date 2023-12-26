@@ -37,7 +37,6 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
-import java.security.cert.CertPathValidatorException
 import java.security.cert.CertificateException
 import java.time.Instant
 import java.time.LocalDate
@@ -62,7 +61,6 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
 
     // Define a state indicating whether the data has been loaded from the cache
     val dataLoadedState = remember { mutableStateOf(false) }
-    var exceptionFound by remember { mutableStateOf("No Exception") }
 
     var showDatePicker by remember { mutableStateOf(false) }
     val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy")
@@ -73,6 +71,8 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
     val showBottomSheet = remember { mutableStateOf(false) }
 
     val showWaitzDialog = remember { mutableStateOf(false) }
+
+    val toastContext = LocalContext.current
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
@@ -93,14 +93,9 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                         )
                     )
                 } catch (e: Exception) {
-                    exceptionFound = when (e) {
-                        is UnresolvedAddressException -> "No Internet connection"
-                        is SocketTimeoutException -> "Connection timed out"
-                        is UnknownHostException -> "Failed to resolve URL"
-                        is CertificateException -> "Website's SSL certificate is invalid"
-                        is CertPathValidatorException -> "Website's SSL certificate is invalid"
-                        is SSLHandshakeException -> "SSL handshake failed"
-                        else -> "Exception: $e"
+                    val exceptionFound = exceptionText(e)
+                    withContext(Dispatchers.Main) {
+                        ShortToast(exceptionFound, toastContext)
                     }
                 }
                 dataLoadedState.value = true
@@ -108,10 +103,15 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
         }
     }
 
+
+
+    /*
     if (exceptionFound != "No Exception") {
         ShortToast(exceptionFound, LocalContext.current)
         Log.d(TAG, exceptionFound)
     }
+
+     */
 
 
 
@@ -242,11 +242,12 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
     val titleDateFormat = DateTimeFormatter.ofPattern("M/dd/yy")
 
     val dataLoadedState = remember { mutableStateOf(false) }
-    var exceptionFound by remember { mutableStateOf("No Exception") }
 
     val showBottomSheet = remember { mutableStateOf(false) }
 
     var menuList: List<List<String>> by remember { mutableStateOf(listOf(listOf(), listOf(), listOf(), listOf())) }
+
+    val toastContext = LocalContext.current
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
@@ -254,23 +255,14 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
             try {
                 menuList = getDiningMenuAsync(fullUrl)
             } catch (e: Exception) {
-                exceptionFound = when (e) {
-                    is UnresolvedAddressException -> "No Internet connection"
-                    is SocketTimeoutException -> "Connection timed out"
-                    is UnknownHostException -> "Failed to resolve URL"
-                    is CertificateException -> "Website's SSL certificate is invalid"
-                    is SSLHandshakeException -> "SSL handshake failed"
-                    else -> "Exception: $e"
+                val exceptionFound = exceptionText(e)
+                withContext(Dispatchers.Main) {
+                    ShortToast(exceptionFound, toastContext)
                 }
             }
             dataLoadedState.value = true
         }
     }
-    if (exceptionFound != "No Exception") {
-        ShortToast(exceptionFound, LocalContext.current)
-        Log.d(TAG, exceptionFound)
-    }
-
 
     Column {
         if (dataLoadedState.value) {

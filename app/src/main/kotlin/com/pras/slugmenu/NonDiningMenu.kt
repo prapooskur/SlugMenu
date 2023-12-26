@@ -29,14 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.lang.Exception
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
-import java.nio.channels.UnresolvedAddressException
-import java.security.cert.CertPathValidatorException
-import java.security.cert.CertificateException
 import java.time.LocalDate
-import javax.net.ssl.SSLHandshakeException
 
 private const val TAG = "NonDiningMenu"
 
@@ -52,7 +45,8 @@ fun NonDiningMenu(navController: NavController, locationName: String, locationUr
 
     var menuList by remember { mutableStateOf<List<List<String>>>(listOf(listOf())) }
     val dataLoadedState = remember { mutableStateOf(false) }
-    var exceptionFound by remember { mutableStateOf("No Exception") }
+
+    val toastContext = LocalContext.current
 
     LaunchedEffect(Unit) {
         // Launch a coroutine to retrieve the menu from the database
@@ -72,22 +66,14 @@ fun NonDiningMenu(navController: NavController, locationName: String, locationUr
                         )
                     )
                 } catch (e: Exception) {
-                    exceptionFound = when (e) {
-                        is UnresolvedAddressException -> "No Internet connection"
-                        is SocketTimeoutException -> "Connection timed out"
-                        is UnknownHostException -> "Failed to resolve URL"
-                        is CertificateException -> "Website's SSL certificate is invalid"
-                        is CertPathValidatorException -> "Website's SSL certificate is invalid"
-                        is SSLHandshakeException -> "SSL handshake failed"
-                        else -> "Exception: $e"
+                    val exceptionFound = exceptionText(e)
+                    withContext(Dispatchers.Main) {
+                        ShortToast(exceptionFound, toastContext)
                     }
                 }
                 dataLoadedState.value = true
             }
         }
-    }
-    if (exceptionFound != "No Exception") {
-        ShortToast(exceptionFound, LocalContext.current)
     }
 
     val showBottomSheet = remember { mutableStateOf(false) }

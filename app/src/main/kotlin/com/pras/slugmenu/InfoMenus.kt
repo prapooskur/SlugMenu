@@ -37,6 +37,7 @@ import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
+import java.security.cert.CertPathValidatorException
 import java.security.cert.CertificateException
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -48,6 +49,18 @@ private const val TAG = "InfoMenus"
 
 fun ShortToast(text: String, context: Context) {
     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+}
+
+fun exceptionText(e: Exception): String {
+    return when (e) {
+        is UnresolvedAddressException -> "No Internet connection"
+        is SocketTimeoutException -> "Connection timed out"
+        is UnknownHostException -> "Failed to resolve URL"
+        is CertificateException -> "Website's SSL certificate is invalid"
+        is CertPathValidatorException -> "Website's SSL certificate is invalid"
+        is SSLHandshakeException -> "SSL handshake failed"
+        else -> "Exception: $e"
+    }
 }
 
 @Composable
