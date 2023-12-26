@@ -1,11 +1,13 @@
 package com.pras.slugmenu
 
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -60,6 +62,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -248,6 +252,11 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                             )
                         }
                     }
+                    /*
+                    item {
+                        TestNotificationButton(showNotificationDialog)
+                    }
+                    */
                     item {
                         BackgroundOneTimeDownload(context)
                     }
@@ -646,7 +655,95 @@ fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, showN
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+private const val CHANNEL_ID = "TEST"
+fun createNotificationChannel(context: Context) {
+    // Create the NotificationChannel, but only on API 26+ because
+    // the NotificationChannel class is not in the Support Library.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val name = "FAVORITES_CHANNEL"
+        val descriptionText = "Notifications for favorite items"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+            description = descriptionText
+        }
+        // Register the channel with the system. You can't change the importance
+        // or other notification behaviors after this.
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+}
+
+
+@SuppressLint("MissingPermission")
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun TestNotificationButton(showNotificationDialog: MutableState<Boolean>) {
+    val notificationPermissionState = rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier.clickable {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (
+                    !notificationPermissionState.status.shouldShowRationale &&
+                    !notificationPermissionState.status.isGranted
+                ) {
+                    showNotificationDialog.value = true
+                    Log.d(TAG,"toggling dialog")
+                } else if (notificationPermissionState.status.isGranted) {
+                    createNotificationChannel(context)
+                    val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.slugicon_notification_foreground)
+                        .setContentTitle("Test notification please ignore")
+                        .setContentText("Mint Condition Cookie at Carson/Oakes for Late Night")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    with(NotificationManagerCompat.from(context)) {
+                        // notificationId is a unique int for each notification that you must define.
+                        notify(System.currentTimeMillis().toInt(), builder.build())
+                    }
+                }
+            } else {
+                createNotificationChannel(context)
+                val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.slugicon_notification_foreground)
+                    .setContentTitle("Test notification please ignore")
+                    .setContentText("Mint Condition Cookie at Carson/Oakes for Late Night")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                with(NotificationManagerCompat.from(context)) {
+                    // notificationId is a unique int for each notification that you must define.
+                    notify(System.currentTimeMillis().toInt(), builder.build())
+                }
+            }
+        }
+    ) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = "Test notifications",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            supportingContent = {
+                if (
+                    notificationPermissionState.status.shouldShowRationale &&
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ) {
+                    Text(
+                        text = "Notification permission is requred to test notifications."
+                    )
+                } else if (
+                    (notificationPermissionState.status.isGranted &&
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                    || Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+                ) {
+                    Text(
+                        text = "press for boop"
+                    )
+                }
+            }
+        )
+    }
+}
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ItemNotificationDialog(showDialog: MutableState<Boolean>) {

@@ -98,14 +98,14 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                                 3 -> "Late Night"
                                                 else -> "Unknown?"
                                             }
-                                            for (item in favoritesList) {
+                                            for (favorite in favoritesList) {
                                                 //todo add notifications
                                                 createNotificationChannel()
 
                                                 val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-                                                    .setSmallIcon(R.mipmap.slugicon)
-                                                    .setContentTitle("Favorite found")
-                                                    .setContentText("$item at ${location.name} for $time")
+                                                    .setSmallIcon(R.drawable.slugicon_notification_foreground)
+                                                    .setContentTitle(favorite.name)
+                                                    .setContentText("${favorite.name} at ${location.name} for $time")
                                                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                                                     .setAutoCancel(true)
 
