@@ -160,6 +160,9 @@ dependencies {
     // drag and droppable lists
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 
+    // accompanist for easier permission management
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+
 }
 
 

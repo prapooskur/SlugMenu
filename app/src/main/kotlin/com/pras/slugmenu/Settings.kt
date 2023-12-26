@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -34,6 +35,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -60,6 +62,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import com.pras.slugmenu.BackgroundDownloadScheduler.runSingleDownload
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,6 +88,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
     val useCollapsingTopBar = remember { mutableStateOf(true) }
     val updateInBackground = remember { mutableStateOf(false) }
     val sendItemNotifications = remember { mutableStateOf(false) }
+    val showNotificationDialog = remember { mutableStateOf(false) }
 
     val appVersion = BuildConfig.VERSION_NAME
     val newVersion = remember { mutableStateOf(appVersion) }
@@ -234,7 +241,11 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                                 targetAlpha = 0.3f
                             )
                         ) {
-                            ItemNotificationSwitcher(sendItemNotifications = sendItemNotifications, preferencesDataStore = preferencesDataStore)
+                            ItemNotificationSwitcher(
+                                sendItemNotifications = sendItemNotifications,
+                                showNotificationDialog = showNotificationDialog,
+                                preferencesDataStore = preferencesDataStore
+                            )
                         }
                     }
                     item {
@@ -273,6 +284,9 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
 //        BackgroundDownloadSelector(showSelector = showSelector, preferencesDataStore = preferencesDataStore)
     }
     UpdateDialog(updateAvailable = updateAvailable, newVersion = newVersion, context = context)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        ItemNotificationDialog(showDialog = showNotificationDialog)
+    }
 }
 
 // function to display header text for each section
@@ -564,18 +578,31 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
+fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, showNotificationDialog: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
     val coroutineScope = rememberCoroutineScope()
-    Row(modifier = Modifier.clickable(
-        onClick = {
+    val notificationPermissionState = rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+    val favoritetext = "Send notifications when favorited items are available."
+    Row(
+        modifier = Modifier.clickable {
             sendItemNotifications.value = !sendItemNotifications.value
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && sendItemNotifications.value) {
+                if (
+                    !notificationPermissionState.status.shouldShowRationale &&
+                    !notificationPermissionState.status.isGranted
+                ) {
+                    // todo add a dialog or something here
+                    showNotificationDialog.value = true
+                    Log.d(TAG,"toggling dialog")
+                }
+            }
             coroutineScope.launch {
                 preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
             }
             Log.d(TAG, "item notifications toggled")
-        },
-    )) {
+        }
+    ) {
         ListItem(
             headlineContent = {
                 Text(
@@ -584,18 +611,73 @@ fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, prefe
                 )
             },
             supportingContent = {
-                if (sendItemNotifications.value) {
+                if (
+                    sendItemNotifications.value &&
+                    notificationPermissionState.status.shouldShowRationale &&
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ) {
                     Text(
-                        text = "Send a notification when favorited items are available."
+                        text = "Notification permission is requred to send favorite notifications."
+                    )
+                } else if (
+                    sendItemNotifications.value &&
+                    notificationPermissionState.status.isGranted &&
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                ) {
+                    Text(
+                        text = favoritetext
+                    )
+                } else if (
+                    sendItemNotifications.value &&
+                    Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+                ) {
+                    Text(
+                        text = favoritetext
                     )
                 }
             },
             trailingContent = {
                 Switch(
-                    checked = sendItemNotifications.value,
+                    checked = sendItemNotifications.value && notificationPermissionState.status.isGranted,
                     onCheckedChange = null
                 )
             }
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun ItemNotificationDialog(showDialog: MutableState<Boolean>) {
+    val notificationPermissionState = rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
+    if (showDialog.value) {
+        AlertDialog(
+            text = {
+                Text(text = "Notification permisson is required to send notifications.")
+            },
+            onDismissRequest = { showDialog.value = false },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDialog.value = false
+                        notificationPermissionState.launchPermissionRequest()
+                    },
+                ) {
+                    Text("Prompt")
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = {
+                        showDialog.value = false
+                    },
+                ) {
+                    Text("Dismiss")
+                }
+            }
+
+
         )
     }
 }

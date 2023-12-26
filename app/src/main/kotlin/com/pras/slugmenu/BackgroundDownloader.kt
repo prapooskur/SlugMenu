@@ -1,12 +1,16 @@
 package com.pras.slugmenu
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -79,7 +83,12 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                     LocationType.Oakes      -> getOakesMenuAsync(locationUrl)
                                 }
                                 if (menuList.isNotEmpty()) {
-                                    if (notifyFavorites) {
+                                    // send notifications if user has requested it, making sure to check if permissions were granted
+                                    if (notifyFavorites && ActivityCompat.checkSelfPermission(
+                                            applicationContext,
+                                            Manifest.permission.POST_NOTIFICATIONS
+                                        ) == PackageManager.PERMISSION_GRANTED
+                                    ) {
                                         for (menu in menuList.indices) {
                                             val favoritesList = favoritesDao.selectFavorites(menuList[menu].toSet())
                                             val time = when (menu) {
@@ -93,12 +102,19 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                                 //todo add notifications
                                                 createNotificationChannel()
 
-                                                var builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                                                val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                                                     .setSmallIcon(R.mipmap.slugicon)
                                                     .setContentTitle("Favorite found")
                                                     .setContentText("$item at ${location.name} for $time")
                                                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                                                     .setAutoCancel(true)
+
+                                                with(NotificationManagerCompat.from(applicationContext)) {
+                                                    // notificationId is a unique int for each notification that you must define.
+                                                    val oneTimeID = System.currentTimeMillis()
+                                                    notify(oneTimeID.toInt(), builder.build())
+                                                }
+
                                             }
                                         }
                                     }
