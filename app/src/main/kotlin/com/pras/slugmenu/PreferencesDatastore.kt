@@ -24,6 +24,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         val USE_AMOLED_BLACK = booleanPreferencesKey("use_amoled_black")
         val USE_COLLAPSING_TOOLBAR = booleanPreferencesKey("use_collapsing_toolbar")
         val ENABLE_BACKGROUND_UPDATES = booleanPreferencesKey("enable_background_updates")
+        val SEND_ITEM_NOTIFICATIONS = booleanPreferencesKey("send_item_notifications")
         val LOCATION_ORDER = stringPreferencesKey("location_order")
 //        val ICON_PREF = booleanPreferencesKey("icon_pref")
         const val TAG = "UserPreferencesRepo"
@@ -144,6 +145,25 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
     suspend fun setBackgroundUpdatePreference(userChoice: Boolean) {
         dataStore.edit {preferences ->
             preferences[ENABLE_BACKGROUND_UPDATES] = userChoice
+        }
+    }
+
+    val getNotificationPreference: Flow<Boolean> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading Notification preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map {preferences ->
+            preferences[SEND_ITEM_NOTIFICATIONS] ?: false
+        }
+
+    suspend fun setNotificationPreference(userChoice: Boolean) {
+        dataStore.edit {preferences ->
+            preferences[SEND_ITEM_NOTIFICATIONS] = userChoice
         }
     }
 

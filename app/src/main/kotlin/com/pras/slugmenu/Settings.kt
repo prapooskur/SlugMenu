@@ -5,7 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -74,6 +80,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
     Log.d(TAG,"test $useMaterialYou")
     val useCollapsingTopBar = remember { mutableStateOf(true) }
     val updateInBackground = remember { mutableStateOf(false) }
+    val sendItemNotifications = remember { mutableStateOf(false) }
 
     val appVersion = BuildConfig.VERSION_NAME
     val newVersion = remember { mutableStateOf(appVersion) }
@@ -86,6 +93,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
     runBlocking {
         useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
         updateInBackground.value = preferencesDataStore.getBackgroundUpdatePreference.first()
+        sendItemNotifications.value = preferencesDataStore.getNotificationPreference.first()
     }
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -146,10 +154,22 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         )
                     }
                     item {
-                        AmoledSwitcher(
-                            useAmoledBlack = useAmoledBlack,
-                            preferencesDataStore = preferencesDataStore
-                        )
+                        AnimatedVisibility(visible = themeChoice.value == 2 || (themeChoice.value == 0 && isSystemInDarkTheme()),
+                            enter = expandVertically(
+                                // Expand from the top.
+                                expandFrom = Alignment.Top
+                            ) + fadeIn(
+                                // Fade in with the initial alpha of 0.3f.
+                                initialAlpha = 0.3f
+                            ),
+                            exit = shrinkVertically() + fadeOut()
+                            ) {
+                            AmoledSwitcher(
+                                useAmoledBlack = useAmoledBlack,
+                                preferencesDataStore = preferencesDataStore
+                            )
+                        }
+
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         item {
@@ -189,6 +209,11 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                             preferencesDataStore = preferencesDataStore,
                             context = context
                         )
+                    }
+                    item {
+                        AnimatedVisibility(updateInBackground.value) {
+                            ItemNotificationSwitcher(sendItemNotifications = sendItemNotifications, preferencesDataStore = preferencesDataStore)
+                        }
                     }
                     item {
                         BackgroundOneTimeDownload(context)
@@ -494,6 +519,35 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
             trailingContent = {
                 Switch(
                     checked = updateInBackground.value,
+                    onCheckedChange = null
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
+    val coroutineScope = rememberCoroutineScope()
+    Row(modifier = Modifier.clickable(
+        onClick = {
+            sendItemNotifications.value = !sendItemNotifications.value
+            coroutineScope.launch {
+                preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
+            }
+            Log.d(TAG, "item notifications toggled")
+        },
+    )) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = "Send Item Notifications",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            trailingContent = {
+                Switch(
+                    checked = sendItemNotifications.value,
                     onCheckedChange = null
                 )
             }
