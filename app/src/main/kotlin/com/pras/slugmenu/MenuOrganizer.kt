@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -97,10 +98,29 @@ fun MenuOrganizer(navController: NavController, preferencesDataStore: Preference
         contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             if (useCollapsingTopBar.value) {
-                CollapsingLargeTopBar(titleText = "Organize Menu Items", navController = navController, scrollBehavior = scrollBehavior, isOrganizer = true, resetPressed = resetPressed, isClickable = clickable, delay = FADETIME.toLong())
+                CollapsingLargeTopBar(
+                    titleText = "Organize Menu Items",
+                    navController = navController,
+                    scrollBehavior = scrollBehavior,
+                    hasTrailingIcon = true,
+                    trailingIcon = Icons.Default.Refresh,
+                    iconDescription = "Reset Menu Order",
+                    iconPressed = resetPressed,
+                    isClickable = clickable,
+                    delay = FADETIME.toLong()
+                )
             } else {
                 Surface(shadowElevation = 4.dp) {
-                    TopBar(titleText = "Organize Menu Items", navController = navController, isOrganizer = true, resetPressed = resetPressed, isClickable = clickable, delay = FADETIME.toLong())
+                    TopBar(
+                        titleText = "Organize Menu Items",
+                        navController = navController,
+                        hasTrailingIcon = true,
+                        trailingIcon = Icons.Default.Refresh,
+                        iconDescription = "Reset Menu Order",
+                        iconPressed = resetPressed,
+                        isClickable = clickable,
+                        delay = FADETIME.toLong()
+                    )
                 }
             }
         },

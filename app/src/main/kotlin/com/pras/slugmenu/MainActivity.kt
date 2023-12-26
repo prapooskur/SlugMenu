@@ -514,10 +514,18 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
 
         composable(
             "menuorganizer",
-            enterTransition = {fadeIn()},
-            exitTransition = {fadeOut()}
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
         ) {
             MenuOrganizer(navController, userSettings)
+        }
+
+        composable(
+            "favoritesmenu",
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
+        ) {
+            FavoritesMenu(navController, userSettings)
         }
 
         //custom date dining menu

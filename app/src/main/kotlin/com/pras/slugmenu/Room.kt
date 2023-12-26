@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.room.Dao
 import androidx.room.Database
+import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -13,6 +14,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -33,11 +35,16 @@ data class Waitz(
     val compare: String,
 )
 
-@Entity(tableName= "hours")
+@Entity(tableName = "hours")
 data class Hours(
     @PrimaryKey val location: String,
     val hours: String,
     val cacheDate: String
+)
+
+@Entity(tableName = "favorites")
+data class Favorite(
+    @PrimaryKey val name: String
 )
 
 @Dao
@@ -109,13 +116,38 @@ class HoursTypeConverters {
     }
 }
 
+@Dao
+interface FavoritesDao {
+    @Query("SELECT * FROM favorites")
+    suspend fun getFavorites(): List<Favorite>
 
-@Database(version = 4, entities = [Menu::class, Waitz::class, Hours::class])
+    @Query("SELECT * FROM favorites")
+    fun getFavoritesFlow(): Flow<List<Favorite>>
+
+    @Query("SELECT * FROM favorites WHERE name = :item")
+    suspend fun selectFavorite(item: String): Favorite
+
+    @Query("SELECT * FROM favorites WHERE name IN (:items)")
+    suspend fun selectFavorites(items: Set<String>): List<Favorite>
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertFavorite(favorite: Favorite)
+
+    @Delete
+    suspend fun deleteFavorite(favorite: Favorite)
+
+    @Query("DELETE FROM favorites")
+    suspend fun deleteAllFavorites()
+}
+
+
+@Database(version = 5, entities = [Menu::class, Waitz::class, Hours::class, Favorite::class])
 @TypeConverters(MenuTypeConverters::class, WaitzTypeConverters::class, HoursTypeConverters::class)
 abstract class MenuDatabase : RoomDatabase() {
     abstract fun menuDao(): MenuDao
     abstract fun waitzDao(): WaitzDao
     abstract fun hoursDao(): HoursDao
+    abstract fun favoritesDao(): FavoritesDao
 
     companion object {
 

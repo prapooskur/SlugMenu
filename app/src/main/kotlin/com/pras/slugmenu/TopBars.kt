@@ -1,11 +1,10 @@
 package com.pras.slugmenu
 
 import android.util.Log
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -14,6 +13,7 @@ import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -24,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
@@ -44,11 +45,14 @@ fun CollapsingLargeTopBar(
     titleText: String,
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior,
+    // if false, show an arrow that navigates up on press
     isHome: Boolean = false,
     isClickable: MutableState<Boolean> = remember { mutableStateOf(false) },
     delay: Long = 0,
-    isOrganizer: Boolean = false,
-    resetPressed: MutableState<Boolean> = mutableStateOf(false)
+    hasTrailingIcon: Boolean = false,
+    trailingIcon: ImageVector = Icons.Default.Warning,
+    iconDescription: String = "",
+    iconPressed: MutableState<Boolean> = mutableStateOf(false)
 ) {
     val topBarColors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface, scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer)
 
@@ -115,11 +119,11 @@ fun CollapsingLargeTopBar(
                             tint = Color(topBarItemColor)
                         )
                     }
-                } else if (isOrganizer) {
-                    IconButton(onClick = { resetPressed.value = true }) {
+                } else if (hasTrailingIcon) {
+                    IconButton(onClick = { iconPressed.value = true }) {
                         Icon(
-                            imageVector = Icons.Outlined.Refresh,
-                            contentDescription = "Reset",
+                            imageVector = trailingIcon,
+                            contentDescription = iconDescription,
                             tint = Color(topBarItemColor)
                         )
                     }
@@ -139,8 +143,10 @@ fun TopBar(
     isHome: Boolean = false,
     isClickable: MutableState<Boolean> = remember { mutableStateOf(false) },
     delay: Long = 0,
-    isOrganizer: Boolean = false,
-    resetPressed: MutableState<Boolean> = mutableStateOf(false)
+    hasTrailingIcon: Boolean = false,
+    trailingIcon: ImageVector = Icons.Default.Warning,
+    iconDescription: String = "",
+    iconPressed: MutableState<Boolean> = mutableStateOf(false)
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -180,11 +186,11 @@ fun TopBar(
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
-                } else if (isOrganizer) {
-                    IconButton(onClick = { resetPressed.value = true }) {
+                } else if (hasTrailingIcon) {
+                    IconButton(onClick = { iconPressed.value = true }) {
                         Icon(
-                            imageVector = Icons.Outlined.Refresh,
-                            contentDescription = "Reset",
+                            imageVector = trailingIcon,
+                            contentDescription = iconDescription,
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }

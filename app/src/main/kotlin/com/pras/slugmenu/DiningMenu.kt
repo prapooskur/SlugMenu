@@ -22,7 +22,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,19 +37,13 @@ import androidx.navigation.NavController
 import com.pras.slugmenu.ui.elements.LongPressFloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.lang.Exception
-import java.net.SocketTimeoutException
 import java.net.URLDecoder
 import java.net.URLEncoder
-import java.net.UnknownHostException
-import java.nio.channels.UnresolvedAddressException
-import java.security.cert.CertificateException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import javax.net.ssl.SSLHandshakeException
 
 private const val TAG = "DiningMenu"
 
@@ -55,6 +55,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
 
     val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
     val menuDao = menuDatabase.menuDao()
+    val favoritesDao = menuDatabase.favoritesDao()
 
     // Define a state to hold the retrieved Menu
     var menuList by remember { mutableStateOf<List<List<String>>>(listOf(listOf(), listOf())) }
@@ -103,19 +104,6 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
         }
     }
 
-
-
-    /*
-    if (exceptionFound != "No Exception") {
-        ShortToast(exceptionFound, LocalContext.current)
-        Log.d(TAG, exceptionFound)
-    }
-
-     */
-
-
-
-
     Column {
         if (dataLoadedState.value) {
             // If the data has been loaded from the cache, display the menu
@@ -127,7 +115,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                     TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
                 },
                 content = {padding ->
-                    SwipableTabBar(menuArray = menuList, padding = padding)
+                    SwipableTabBar(menuArray = menuList, favoritesDao = favoritesDao, padding = padding)
                 },
                 //floating action button
                 // opens date picker on click, opens bottom sheet on long click
@@ -227,6 +215,9 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
 @Composable
 fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String, dateUrl: String, inputLocationName: String) {
 
+    val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
+    val favoritesDao = menuDatabase.favoritesDao()
+
     val locationName = URLDecoder.decode(inputLocationName, "UTF-8")
     val locationUrl = inputLocationUrl.replace("/", "%2f")
 
@@ -274,7 +265,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                     TopBarClean(titleText = locationName, navController = navController)
                 },
                 content = {padding ->
-                    SwipableTabBar(menuArray = menuList, padding = padding)
+                    SwipableTabBar(menuArray = menuList, favoritesDao = favoritesDao, padding = padding)
                 },
                 //floating action button, currently shows date picker on short press and hours on long press
 

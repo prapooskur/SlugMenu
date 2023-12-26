@@ -1,7 +1,10 @@
 package com.pras.slugmenu
 
+//Swipable tabs
+import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +17,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Tab
@@ -22,24 +27,24 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.time.LocalDateTime
-//Swipable tabs
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.runtime.mutableIntStateOf
 import com.pras.slugmenu.ui.elements.pagerTabIndicatorOffset
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.time.LocalDateTime
 import java.util.Collections
 
 
@@ -49,7 +54,7 @@ private const val TAG = "TabMenus"
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SwipableTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
+fun SwipableTabBar(menuArray: List<List<String>>, favoritesDao: FavoritesDao, padding: PaddingValues) {
     val currentHour: Int = LocalDateTime.now().hour
     val currentMinute: Int = LocalDateTime.now().minute
     val currentDay: DayOfWeek = LocalDateTime.now().dayOfWeek
@@ -168,16 +173,20 @@ fun SwipableTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
             state = pagerState
         ) { state ->
             if (titles[0] != "Closed") {
-                PrintMenu(itemList = menuArray[state])
+                PrintMenu(itemList = menuArray[state], favoritesDao = favoritesDao)
             } else {
-                PrintMenu(itemList = mutableListOf("Not Open Today"))
+                PrintMenu(itemList = mutableListOf("Not Open Today"), favoritesDao = favoritesDao)
             }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PrintMenu(itemList: List<String>) {
+fun PrintMenu(itemList: List<String>, favoritesDao: FavoritesDao) {
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val haptics = LocalHapticFeedback.current
     if (itemList.isNotEmpty() && itemList[0] != "Not Open Today") {
         LazyColumn (
             modifier = Modifier
@@ -199,7 +208,32 @@ fun PrintMenu(itemList: List<String>) {
                     )
                 }
                 ListItem(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = if (!itemval.contains("--") && !itemval.contains("—")) {
+                        Modifier
+                            .fillMaxWidth()
+                            .combinedClickable(
+                                onClick = {},
+                                onLongClick = {
+                                    coroutineScope.launch {
+                                        try {
+                                            favoritesDao.insertFavorite(
+                                                Favorite(
+                                                    name = itemList[item]
+                                                )
+                                            )
+                                            ShortToast("Added favorite", context)
+                                        } catch (e: SQLiteConstraintException) {
+                                            Log.d(TAG, "favorited a duplicate")
+                                            ShortToast("Item already favorited", context)
+                                        }
+                                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    }
+
+                                }
+                        )
+                    } else {
+                        Modifier.fillMaxWidth()
+                    },
                     headlineContent = {
                         Text(
                             itemList[item],
@@ -287,7 +321,9 @@ fun PrintPriceMenu(itemList: List<String>, padding: PaddingValues) {
             }
         }
     } else {
-        Column(modifier = Modifier.padding(padding).fillMaxWidth()) {
+        Column(modifier = Modifier
+            .padding(padding)
+            .fillMaxWidth()) {
             TabRow(
                 selectedTabIndex = 0
             ) {

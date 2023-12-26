@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -77,7 +78,7 @@ private const val TAG = "Settings"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, useAmoledBlack: MutableState<Boolean>, themeChoice: MutableState<Int>, preferencesDataStore: PreferencesDatastore) {
-    Log.d(TAG,"test $useMaterialYou")
+
     val useCollapsingTopBar = remember { mutableStateOf(true) }
     val updateInBackground = remember { mutableStateOf(false) }
     val sendItemNotifications = remember { mutableStateOf(false) }
@@ -162,7 +163,11 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                                 // Fade in with the initial alpha of 0.3f.
                                 initialAlpha = 0.3f
                             ),
-                            exit = shrinkVertically() + fadeOut()
+                            exit = shrinkVertically(
+                                shrinkTowards = Alignment.Top
+                            ) + fadeOut(
+                                targetAlpha = 0.3f
+                            )
                             ) {
                             AmoledSwitcher(
                                 useAmoledBlack = useAmoledBlack,
@@ -198,6 +203,9 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         MenuOrganizerNavigator(navController = navController)
                     }
                     item {
+                        FavoritesNavigator(navController = navController)
+                    }
+                    item {
                         Divider()
                     }
                     item {
@@ -211,7 +219,21 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         )
                     }
                     item {
-                        AnimatedVisibility(updateInBackground.value) {
+                        AnimatedVisibility(
+                            visible = updateInBackground.value,
+                            enter = expandVertically(
+                                // Expand from the top.
+                                expandFrom = Alignment.Top
+                            ) + fadeIn(
+                                // Fade in with the initial alpha of 0.3f.
+                                initialAlpha = 0.3f
+                            ),
+                            exit = shrinkVertically(
+                                shrinkTowards = Alignment.Top
+                            ) + fadeOut(
+                                targetAlpha = 0.3f
+                            )
+                        ) {
                             ItemNotificationSwitcher(sendItemNotifications = sendItemNotifications, preferencesDataStore = preferencesDataStore)
                         }
                     }
@@ -454,6 +476,22 @@ fun MenuOrganizerNavigator(navController: NavController) {
 }
 
 @Composable
+fun FavoritesNavigator(navController: NavController) {
+    ListItem(
+        leadingContent = {
+            Icon(
+                Icons.Outlined.Star,
+                contentDescription = "Favorites",
+            )
+        },
+        headlineContent = {
+            Text(text = "Manage Favorites")
+        },
+        modifier = Modifier.clickable { navController.navigate("favoritesmenu") }
+    )
+}
+
+@Composable
 fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar: MutableState<Boolean>) {
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier.clickable(
@@ -541,9 +579,16 @@ fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, prefe
         ListItem(
             headlineContent = {
                 Text(
-                    text = "Send Item Notifications",
+                    text = "Favorite Notifications",
                     style = MaterialTheme.typography.bodyLarge,
                 )
+            },
+            supportingContent = {
+                if (sendItemNotifications.value) {
+                    Text(
+                        text = "Send a notification when favorited items are available."
+                    )
+                }
             },
             trailingContent = {
                 Switch(

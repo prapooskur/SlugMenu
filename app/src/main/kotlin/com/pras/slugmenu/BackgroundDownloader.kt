@@ -1,7 +1,12 @@
 package com.pras.slugmenu
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
+import android.os.Build
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
@@ -32,7 +37,7 @@ private const val TAG = "BackgroundDownloadWorker"
 data class LocationListItem(val name: String, val url: String, val type: LocationType)
 
 enum class LocationType { Dining, NonDining, Oakes }
-
+private const val CHANNEL_ID = "FAVORITES"
 //todo update to also download location hours
 class BackgroundDownloadWorker(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
 
@@ -42,9 +47,12 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
 
         val menuDatabase = MenuDatabase.getInstance(applicationContext)
         val menuDao = menuDatabase.menuDao()
+        val favoritesDao = menuDatabase.favoritesDao()
 
         val locationList: List<LocationListItem> = inputData.getString("locationList")
             ?.let { Json.decodeFromString(it) } ?: emptyList()
+
+        val notifyFavorites = inputData.getBoolean("notifyFavorites", false)
 
         Log.d(TAG,"location list: $locationList")
 
@@ -64,13 +72,37 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                             val menuType = location.type
 
                             try {
+                                Log.d(TAG, "Downloading menu in background for $locationName")
                                 val menuList: List<List<String>> = when (menuType) {
                                     LocationType.Dining     -> getDiningMenuAsync(locationUrl)
                                     LocationType.NonDining  -> getSingleMenuAsync(locationUrl)
                                     LocationType.Oakes      -> getOakesMenuAsync(locationUrl)
                                 }
                                 if (menuList.isNotEmpty()) {
-                                    Log.d(TAG, "Downloading menu in background for $locationName")
+                                    if (notifyFavorites) {
+                                        for (menu in menuList.indices) {
+                                            val favoritesList = favoritesDao.selectFavorites(menuList[menu].toSet())
+                                            val time = when (menu) {
+                                                0 -> "Breakfast"
+                                                1 -> "Lunch"
+                                                2 -> "Dinner"
+                                                3 -> "Late Night"
+                                                else -> "Unknown?"
+                                            }
+                                            for (item in favoritesList) {
+                                                //todo add notifications
+                                                createNotificationChannel()
+
+                                                var builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                                                    .setSmallIcon(R.mipmap.slugicon)
+                                                    .setContentTitle("Favorite found")
+                                                    .setContentText("$item at ${location.name} for $time")
+                                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                                    .setAutoCancel(true)
+                                            }
+                                        }
+                                    }
+
                                     menuDao.insertMenu(
                                         Menu(
                                             locationName,
@@ -97,7 +129,25 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
         }
     }
 
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "FAVORITES_CHANNEL"
+            val descriptionText = "Notifications for favorite items"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system. You can't change the importance
+            // or other notification behaviors after this.
+            val notificationManager = applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
 }
+
 
 // Object that automatically schedules background downloads
 object BackgroundDownloadScheduler {
@@ -184,6 +234,7 @@ object BackgroundDownloadScheduler {
 
         val inputLocationList = Data.Builder()
             .putString("locationList", serializedLocationList)
+            .putBoolean("notifyFavorites", false)
             .build()
 
 
