@@ -1,5 +1,6 @@
 package com.pras.slugmenu
 
+import android.annotation.SuppressLint
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,6 +14,8 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.cookies.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import java.security.cert.X509Certificate
+import javax.net.ssl.X509TrustManager
 
 private const val TAG = "Scraper"
 
@@ -29,6 +32,21 @@ suspend fun scrapeWebData (inputUrl: String): String {
     val locationCookie: String = inputUrl.substring(0,2)
 
     val client = HttpClient(CIO) {
+        // SSL validation is disabled because UCSC's webserver doesn't properly serve intermediate certs sometimes.
+        engine {
+            https {
+                trustManager = @SuppressLint("CustomX509TrustManager")
+                object: X509TrustManager {
+                    @SuppressLint("TrustAllX509TrustManager")
+                    override fun checkClientTrusted(p0: Array<out X509Certificate>?, p1: String?) { }
+
+                    @SuppressLint("TrustAllX509TrustManager")
+                    override fun checkServerTrusted(p0: Array<out X509Certificate>?, p1: String?) { }
+
+                    override fun getAcceptedIssuers(): Array<X509Certificate>? = null
+                }
+            }
+        }
         install(HttpCookies) {}
     }
     val httpResponse: HttpResponse = client.get(url) {
