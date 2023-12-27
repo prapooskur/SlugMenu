@@ -25,6 +25,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -42,8 +44,10 @@ data class LocationListItem(val name: String, val url: String, val type: Locatio
 
 enum class LocationType { Dining, NonDining, Oakes }
 private const val CHANNEL_ID = "FAVORITES"
-//todo update to also download location hours
+//todo update to also download location hours?
 class BackgroundDownloadWorker(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
+
+    val preferencesDatastore = PreferencesDatastore(context.dataStore)
 
     override suspend fun doWork(): Result {
 
@@ -53,10 +57,11 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
         val menuDao = menuDatabase.menuDao()
         val favoritesDao = menuDatabase.favoritesDao()
 
+
         val locationList: List<LocationListItem> = inputData.getString("locationList")
             ?.let { Json.decodeFromString(it) } ?: emptyList()
 
-        val notifyFavorites = inputData.getBoolean("notifyFavorites", false)
+        //val isPersistent = inputData.getBoolean("isPersistent", false)
 
         Log.d(TAG,"location list: $locationList")
 
@@ -68,6 +73,9 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                 // Enum: type of menu (dining menu, non dining menu, oakes)
 
                 coroutineScope {
+                    val notifyFavorites = withContext(Dispatchers.IO) {
+                        preferencesDatastore.getNotificationPreference.first()
+                    }
                     // Uses coroutines to download and insert the menus asynchronously
                     val deferredResults = locationList.map { location ->
                         async(Dispatchers.IO) {
@@ -89,8 +97,10 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                             Manifest.permission.POST_NOTIFICATIONS
                                         ) == PackageManager.PERMISSION_GRANTED
                                     ) {
-                                        for (menu in menuList.indices) {
+                                        // reverse the iter order so earlier time notifications appear above later time notifications
+                                        for (menu in menuList.size-1 downTo 0) {
                                             val favoritesList = favoritesDao.selectFavorites(menuList[menu].toSet())
+                                            Log.d(TAG, "Favorite items: $favoritesList")
                                             val time = when (menu) {
                                                 0 -> "Breakfast"
                                                 1 -> "Lunch"
@@ -100,7 +110,6 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                             }
                                             for (favorite in favoritesList) {
                                                 createNotificationChannel()
-
                                                 val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                                                     .setSmallIcon(R.drawable.slugicon_notification_foreground)
                                                     .setContentTitle(favorite.name)
@@ -112,8 +121,8 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                                     // notificationId is a unique int for each notification that you must define.
                                                     val oneTimeID = System.currentTimeMillis()
                                                     notify(oneTimeID.toInt(), builder.build())
+                                                    Log.d(TAG,"sending notification")
                                                 }
-
                                             }
                                         }
                                     }
@@ -162,7 +171,6 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
     }
 
 }
-
 
 // Object that automatically schedules background downloads
 object BackgroundDownloadScheduler {
@@ -217,7 +225,6 @@ object BackgroundDownloadScheduler {
 
         val currentDateTime = LocalDateTime.now()
 
-
         // set to 2AM because workmanager may not download at the exact time
         var executionDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(2, 0))
             .atZone(timeZone)
@@ -247,14 +254,16 @@ object BackgroundDownloadScheduler {
         val serializedLocationList = Json.encodeToString(locationList)
         Log.d(TAG,"serialized Location List: $serializedLocationList")
 
-        val inputLocationList = Data.Builder()
+        val isPersistent = true
+
+        val backgroundWorkerInput = Data.Builder()
             .putString("locationList", serializedLocationList)
-            .putBoolean("notifyFavorites", false)
+            .putBoolean("isPersistent", isPersistent)
             .build()
 
 
         val refreshCpnWork = PeriodicWorkRequest.Builder(BackgroundDownloadWorker::class.java, 24, TimeUnit.HOURS)
-            .setInputData(inputLocationList)
+            .setInputData(backgroundWorkerInput)
             .setInitialDelay(minutes, TimeUnit.MINUTES)
             .setConstraints(workerConstraints)
             .addTag("backgroundMenuDownload")
@@ -278,6 +287,8 @@ object BackgroundDownloadScheduler {
 
         val inputLocationList = Data.Builder()
             .putString("locationList", serializedLocationList)
+            //todo set to false once testing done
+            .putBoolean("isPersistent", true)
             .build()
 
         val oneTimeWorkRequest = OneTimeWorkRequestBuilder<BackgroundDownloadWorker>()
