@@ -130,7 +130,7 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
                 ) {
                     Text(
                         "No Favorites",
@@ -144,7 +144,6 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
                         modifier = Modifier.padding(8.dp),
                     )
                 }
-
             } else {
                 LazyColumn(
                     modifier = Modifier
