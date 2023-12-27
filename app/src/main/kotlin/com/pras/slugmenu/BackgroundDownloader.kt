@@ -99,7 +99,6 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                                 else -> "Unknown?"
                                             }
                                             for (favorite in favoritesList) {
-                                                //todo add notifications
                                                 createNotificationChannel()
 
                                                 val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
