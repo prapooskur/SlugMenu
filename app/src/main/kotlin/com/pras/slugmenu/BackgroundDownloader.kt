@@ -61,7 +61,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
         val locationList: List<LocationListItem> = inputData.getString("locationList")
             ?.let { Json.decodeFromString(it) } ?: emptyList()
 
-        //val isPersistent = inputData.getBoolean("isPersistent", false)
+        val isPersistent = inputData.getBoolean("isPersistent", false)
 
         Log.d(TAG,"location list: $locationList")
 
@@ -92,7 +92,8 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                 }
                                 if (menuList.isNotEmpty()) {
                                     // send notifications if user has requested it, making sure to check if permissions were granted
-                                    if (notifyFavorites && ActivityCompat.checkSelfPermission(
+                                    // should this only notify for background downloads, or for both background and user-requested ones?
+                                    if (isPersistent && notifyFavorites && ActivityCompat.checkSelfPermission(
                                             applicationContext,
                                             Manifest.permission.POST_NOTIFICATIONS
                                         ) == PackageManager.PERMISSION_GRANTED
@@ -254,11 +255,9 @@ object BackgroundDownloadScheduler {
         val serializedLocationList = Json.encodeToString(locationList)
         Log.d(TAG,"serialized Location List: $serializedLocationList")
 
-        val isPersistent = true
-
         val backgroundWorkerInput = Data.Builder()
             .putString("locationList", serializedLocationList)
-            .putBoolean("isPersistent", isPersistent)
+            .putBoolean("isPersistent", true)
             .build()
 
 
@@ -287,7 +286,7 @@ object BackgroundDownloadScheduler {
 
         val inputLocationList = Data.Builder()
             .putString("locationList", serializedLocationList)
-            //todo set to false once testing done
+            //todo set to false once testing done?
             .putBoolean("isPersistent", true)
             .build()
 
