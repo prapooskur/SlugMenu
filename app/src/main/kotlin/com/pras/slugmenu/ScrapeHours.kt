@@ -11,7 +11,7 @@ import org.jsoup.Jsoup
 import java.security.cert.X509Certificate
 import javax.net.ssl.X509TrustManager
 
-private const val TAG = "Hours Scraper"
+private const val TAG = "HoursScraper"
 /*
 Dining menus fill in both dayslist and hourslist
 
