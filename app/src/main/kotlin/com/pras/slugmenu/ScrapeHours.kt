@@ -86,7 +86,8 @@ suspend fun getHoursData(): AllHoursList {
         "oakes"
     )
 
-    /*
+
+
     val altLocationList = listOf(
         "altnine",
         "altcsdh",
@@ -102,7 +103,7 @@ suspend fun getHoursData(): AllHoursList {
         "altstevenson",
         "altoakes"
     )
-     */
+
 
     val tempDiningList = mutableListOf<HoursList>()
     val tempNonDiningList = mutableListOf<List<String>>()
@@ -110,11 +111,25 @@ suspend fun getHoursData(): AllHoursList {
         if (index < 5) {
             val diningHours = getDiningHours(location,pageBody)
             Log.d(TAG,"hours, $diningHours")
-            tempDiningList.add(diningHours)
+            if (diningHours.daysList.isEmpty() && diningHours.hoursList.isEmpty()) {
+                // fall back to alternate list, sometimes this might work
+                val altDiningHours = getDiningHours(altLocationList[index],pageBody)
+                Log.d(TAG,"falling back to alt hours: $altDiningHours")
+                tempDiningList.add(altDiningHours)
+            } else {
+                tempDiningList.add(diningHours)
+            }
         } else {
             val nonDiningHours = getNonDiningHours(location, pageBody)
             Log.d(TAG,"hours, $nonDiningHours")
-            tempNonDiningList.add(nonDiningHours)
+            if (nonDiningHours.isEmpty()) {
+                // fall back to alternate list, sometimes this might work
+                Log.d(TAG,"falling back to alt nd hours: $nonDiningHours")
+                val altNonDiningHours = getNonDiningHours(altLocationList[index], pageBody)
+                tempNonDiningList.add(altNonDiningHours)
+            } else {
+                tempNonDiningList.add(nonDiningHours)
+            }
         }
     }
 
