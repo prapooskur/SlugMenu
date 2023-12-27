@@ -1,5 +1,7 @@
 package com.pras.slugmenu
 
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -7,11 +9,17 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -19,10 +27,12 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,13 +46,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.pras.slugmenu.ui.elements.LongPressFloatingActionButton
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 private const val TAG = "FavoritesMenu"
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FavoritesMenu(navController: NavController, preferencesDataStore: PreferencesDatastore) {
 
@@ -63,6 +74,7 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
     }
 
     val showDeleteDialog = remember { mutableStateOf(false) }
+    val showAddDialog = remember { mutableStateOf(false) }
 
     // make it so that you can't accidentally press items while navigating out of screen
     val clickable = remember { mutableStateOf(true) }
@@ -114,58 +126,74 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
             }
         },
         content = { paddingValues ->
-            Column(modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()) {
-                for (favorite in favoritesList) {
-                    ListItem(
-                        headlineContent = {
-                            Text(favorite.name)
-                        },
-                        trailingContent = {
-                            IconButton(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        favoritesDao.deleteFavorite(favorite)
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Delete,
-                                    contentDescription = "Delete item",
-                                )
-                            }
-                        }
+            if (favoritesList.isEmpty()) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)
+                ) {
+                    Text(
+                        "No Favorites",
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 40.sp,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    Text(
+                        "Long-press dining hall items to add favorites",
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(8.dp),
                     )
                 }
-                if (favoritesList.isEmpty()) {
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)
-                    ) {
-                        Text(
-                            "No Favorites",
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 40.sp
-                        )
-                        Text(
-                            "Long-press dining hall items to add favorites",
-                            fontSize = 18.sp
+
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize()
+                ) {
+                    items(favoritesList, key = { it.name }) { favorite ->
+                        ListItem(
+                            headlineContent = {
+                                Text(favorite.name)
+                            },
+                            trailingContent = {
+                                IconButton(
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            favoritesDao.deleteFavorite(favorite)
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Clear,
+                                        contentDescription = "Delete item",
+                                    )
+                                }
+                            },
+                            modifier = Modifier.animateItemPlacement(
+                                tween(durationMillis = 250)
+                            )
                         )
                     }
-
                 }
             }
-        }
+        },
+        floatingActionButton = {
+            LongPressFloatingActionButton(
+                onClick = { showAddDialog.value = !showAddDialog.value },
+                onLongClick = { showDeleteDialog.value = !showDeleteDialog.value },
+                modifier = Modifier.systemBarsPadding()
+            ) {
+                Icon(Icons.Filled.Add,"Add new favorite")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
     )
 
     if (showDeleteDialog.value) {
         AlertDialog(
             title = { Text(text = "Delete all favorites") },
-            text = {
-                Text(text = "Would you like to delete all favorited items?")
-            },
+            text = { Text(text = "Would you like to delete all favorited items?") },
             onDismissRequest = { showDeleteDialog.value = false },
             confirmButton = {
                 Button(
@@ -192,4 +220,54 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
 
         )
     }
+
+    val name = remember { mutableStateOf("") }
+    val context = LocalContext.current
+    if (showAddDialog.value) {
+        AlertDialog(
+            title = { Text(text = "Add new favorite") },
+            text = { AddFavorite(name) },
+            onDismissRequest = { showAddDialog.value = false },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            if (favoritesDao.selectFavorite(name.value) == null) {
+                                favoritesDao.insertFavorite(
+                                    Favorite(
+                                        name = name.value.replace("\n","")
+                                    )
+                                )
+                                name.value = ""
+                                showAddDialog.value = false
+                            } else {
+                                ShortToast("Item is already favorited", context)
+                            }
+                        }
+
+                    },
+                ) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = {
+                        showAddDialog.value = false
+                    },
+                ) {
+                    Text("Dismiss")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun AddFavorite(name: MutableState<String>) {
+    TextField(
+        value = name.value,
+        onValueChange = { name.value = it },
+        label = { Text("Item Name") }
+    )
 }

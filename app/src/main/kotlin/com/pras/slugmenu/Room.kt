@@ -2,6 +2,7 @@ package com.pras.slugmenu
 
 import android.content.Context
 import android.util.Log
+import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Delete
@@ -44,6 +45,7 @@ data class Hours(
 
 @Entity(tableName = "favorites")
 data class Favorite(
+    @ColumnInfo(collate = ColumnInfo.NOCASE)
     @PrimaryKey val name: String
 )
 
@@ -54,6 +56,9 @@ interface MenuDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMenu(menu: Menu)
+
+    @Query("DELETE FROM menu")
+    fun deleteMenus()
 }
 
 class MenuTypeConverters {
@@ -77,6 +82,9 @@ interface WaitzDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertWaitz(waitz: Waitz)
+
+    @Query("DELETE FROM waitz")
+    fun deleteWaitz()
 }
 
 class WaitzTypeConverters {
@@ -100,6 +108,9 @@ interface HoursDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertHours(hours: Hours)
+
+    @Query("DELETE FROM hours")
+    fun deleteHours()
 }
 
 class HoursTypeConverters {
@@ -124,10 +135,10 @@ interface FavoritesDao {
     @Query("SELECT * FROM favorites")
     fun getFavoritesFlow(): Flow<List<Favorite>>
 
-    @Query("SELECT * FROM favorites WHERE name = :item")
-    suspend fun selectFavorite(item: String): Favorite
+    @Query("SELECT * FROM favorites WHERE name = :item COLLATE NOCASE")
+    suspend fun selectFavorite(item: String): Favorite?
 
-    @Query("SELECT * FROM favorites WHERE name IN (:items)")
+    @Query("SELECT * FROM favorites WHERE name IN (:items) COLLATE NOCASE")
     suspend fun selectFavorites(items: Set<String>): List<Favorite>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)

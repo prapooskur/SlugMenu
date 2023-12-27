@@ -801,7 +801,9 @@ fun ClearCache(menuDatabase: MenuDatabase, context: Context) {
         supportingContent = { Text("Clears menu and busyness data for all locations.") },
         modifier = Modifier.clickable {
             CoroutineScope(Dispatchers.IO).launch {
-                menuDatabase.clearAllTables()
+                menuDatabase.menuDao().deleteMenus()
+                menuDatabase.waitzDao().deleteWaitz()
+                menuDatabase.hoursDao().deleteHours()
                 withContext(Dispatchers.Main) {
                     ShortToast("Cache cleared.", context)
                 }
