@@ -123,12 +123,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            SlugMenuTheme(darkTheme = when (themeChoice.intValue) {1 -> false 2 -> true else -> isSystemInDarkTheme() }, dynamicColor = useMaterialYou.value, amoledColor = useAmoledTheme.value) {
+            val useDarkTheme = when (themeChoice.intValue) {1 -> false 2 -> true else -> isSystemInDarkTheme() }
+
+            SlugMenuTheme(darkTheme = useDarkTheme, dynamicColor = useMaterialYou.value, amoledColor = useAmoledTheme.value) {
                 // Update the edge to edge configuration to match the theme
                 // This is the same parameters as the default enableEdgeToEdge call, but we manually
                 // resolve whether or not to show dark theme using uiState, since it can be different
                 // than the configuration's dark theme value based on the user preference.
-                val useDarkTheme = isSystemInDarkTheme()
                 val lightScrim = android.graphics.Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
                 val darkScrim = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
                 DisposableEffect(useDarkTheme) {
