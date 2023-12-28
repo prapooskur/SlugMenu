@@ -62,7 +62,6 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
     val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
     val favoritesDao = menuDatabase.favoritesDao()
 
-    //todo make non-blocking
     var favoritesList by remember { mutableStateOf(listOf<Favorite>()) }
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(key1 = Unit) {
