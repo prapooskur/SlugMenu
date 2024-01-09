@@ -25,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
@@ -42,6 +43,8 @@ private const val TAG = "BackgroundDownloadWorker"
 @Serializable
 data class LocationListItem(val name: String, val url: String, val type: LocationType)
 
+data class FavoriteItem(val name: String, val location: String, val times: MutableList<String>)
+
 enum class LocationType { Dining, NonDining, Oakes }
 private const val CHANNEL_ID = "FAVORITES"
 //todo update to also download location hours?
@@ -51,7 +54,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
 
     override suspend fun doWork(): Result {
 
-        // takes a serialized List<LocationListItem> comprised of four-element LocationListItems
+        // takes a serialized List<LocationListItem> comprised of three-element LocationListItems
 
         val menuDatabase = MenuDatabase.getInstance(applicationContext)
         val menuDao = menuDatabase.menuDao()
@@ -73,9 +76,29 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                 // Enum: type of menu (dining menu, non dining menu, oakes)
 
                 coroutineScope {
-                    val notifyFavorites = withContext(Dispatchers.IO) {
+
+                    val notifyPreference = withContext(Dispatchers.IO) {
                         preferencesDatastore.getNotificationPreference.first()
                     }
+
+                    val notifyPermissionGranted =
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+                        } else {
+                            true
+                        }
+
+                    val notifyFavorites = isPersistent && notifyPreference && notifyPermissionGranted
+
+                    val favoritesMap = mutableMapOf<String, FavoriteItem>()
+
+                    if (notifyFavorites) {
+                        Log.d(TAG, "Notifications enabled")
+                        createNotificationChannel()
+                    } else {
+                        Log.d(TAG, "Notifications disabled")
+                    }
+
                     // Uses coroutines to download and insert the menus asynchronously
                     val deferredResults = locationList.map { location ->
                         async(Dispatchers.IO) {
@@ -93,12 +116,9 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                 if (menuList.isNotEmpty()) {
                                     // send notifications if user has requested it, making sure to check if permissions were granted
                                     // should this only notify for background downloads, or for both background and user-requested ones?
-                                    if (isPersistent && notifyFavorites && ActivityCompat.checkSelfPermission(
-                                            applicationContext,
-                                            Manifest.permission.POST_NOTIFICATIONS
-                                        ) == PackageManager.PERMISSION_GRANTED
-                                    ) {
+                                    if (notifyFavorites) {
                                         // reverse the iter order so earlier time notifications appear above later time notifications
+                                        /*
                                         for (menu in menuList.size-1 downTo 0) {
                                             val favoritesList = favoritesDao.selectFavorites(menuList[menu].toSet())
                                             Log.d(TAG, "Favorite items: $favoritesList")
@@ -126,6 +146,28 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                                 }
                                             }
                                         }
+                                         */
+
+                                        // queue up favorited item notifications
+                                        for (menu in menuList.indices) {
+                                            val favoritesList = favoritesDao.selectFavorites(menuList[menu].toSet())
+                                            val time = when (menu) {
+                                                0 -> "Breakfast"
+                                                1 -> "Lunch"
+                                                2 -> "Dinner"
+                                                3 -> "Late Night"
+                                                else -> "Unknown?"
+                                            }
+                                            for (favorite in favoritesList) {
+                                                // get item in the map associated with favorite at location if it exists, otherwise create a new entry
+                                                // then, update it with the proper times
+                                                val favoriteKey = favorite.name+"-"+locationName
+                                                favoritesMap.getOrPut(favoriteKey) {
+                                                    FavoriteItem(favorite.name, locationName, mutableListOf())
+                                                }.times.add(time)
+                                            }
+                                        }
+
                                     }
 
                                     menuDao.insertMenu(
@@ -144,6 +186,69 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                         }
                     }
                     deferredResults.awaitAll()
+                    Log.d(TAG, favoritesMap.values.toString())
+
+                    if (notifyFavorites) {
+                        val groupKey = "com.pras.slugmenu.FAVORITE_NOTIFICATION"
+                        val childNotificationList = mutableListOf<NotificationCompat.Builder>()
+                        for (favorite in favoritesMap.values) {
+                            val times = when (favorite.times.size) {
+                                1 -> favorite.times[0]
+                                2 -> favorite.times.joinToString(" and ")
+                                else -> favorite.times.subList(0, favorite.times.size - 1)
+                                    .joinToString(", ") + ", and " + favorite.times.last()
+                            }
+
+                            val sortKey = when (favorite.location) {
+                                "Nine/Lewis" -> 1
+                                "Cowell/Stevenson" -> 2
+                                "Crown/Merrill" -> 3
+                                "Porter/Kresge" -> 4
+                                "Carson/Oakes" -> 5
+                                else -> 6
+                            }
+
+                            val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                                .setSmallIcon(R.drawable.slugicon_notification_foreground)
+                                .setContentTitle(favorite.name)
+                                .setContentText("Item at ${favorite.location} for $times")
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                .setGroup(groupKey)
+                                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
+                                .setSortKey(sortKey.toString())
+                                .setAutoCancel(true)
+
+                            childNotificationList.add(builder)
+                        }
+
+                        val summaryNotification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+                            .setContentTitle("Favorited items")
+                            // Set content text to support devices running API level < 24.
+                            .setContentText("Favorited items available")
+                            .setSmallIcon(R.drawable.slugicon_notification_foreground)
+                            // Build summary info into InboxStyle template.
+                            .setStyle(NotificationCompat.InboxStyle())
+                            // Specify which group this notification belongs to.
+                            .setGroup(groupKey)
+                            // Set this notification as the summary for the group.
+                            .setGroupSummary(true)
+                            .build()
+
+
+                        with(NotificationManagerCompat.from(applicationContext)) {
+                            for (builder in childNotificationList) {
+                                // notificationId is a unique int for each notification that you must define.
+                                val oneTimeID = System.currentTimeMillis()
+                                notify(oneTimeID.toInt(), builder.build())
+                                Log.d(TAG,"sending child notification")
+                                // small delay to avoid notifications not showing
+                                delay(10)
+                            }
+                            // The summary notification requires a constant ID.
+                            notify(0, summaryNotification)
+                        }
+                    }
+
                     Log.d(TAG, "All menu downloads completed.")
                 }
             }
@@ -158,7 +263,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is not in the Support Library.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "FAVORITES_CHANNEL"
+            val name = "Favorites"
             val descriptionText = "Notifications for favorite items"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
