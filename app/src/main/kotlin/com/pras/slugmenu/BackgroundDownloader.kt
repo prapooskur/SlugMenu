@@ -188,11 +188,15 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
 
                             val sortKey = favorite.name
 
+                            /*
                             val inboxStyle = NotificationCompat.InboxStyle()
                             Log.d(TAG, timesList.joinToString("\n"))
                             for (time in timesList) {
                                 inboxStyle.addLine(time)
                             }
+                             */
+                            val bigTextStyle = NotificationCompat.BigTextStyle().bigText(timesList.joinToString("\n"))
+
 
                             val contentText = if (timesList.size == 1) { timesList[0] } else { "At ${timesList.size} locations today" }
 
@@ -200,7 +204,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                 .setSmallIcon(R.drawable.slugicon_notification_foreground)
                                 .setContentTitle(favorite.name)
                                 .setContentText(contentText)
-                                .setStyle(inboxStyle)
+                                .setStyle(bigTextStyle)
                                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                                 .setGroup(groupKey)
                                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
@@ -210,9 +214,9 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                             childNotificationList.add(builder)
                         }
 
-
+                        //todo improve appearance on older devices
                         val summaryNotification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-                            .setContentTitle("Favorited items")
+                            .setContentTitle("Favorited items available")
                             // Set content text to support devices running API level < 24.
                             .setContentText("Favorited items available")
                             .setSmallIcon(R.drawable.slugicon_notification_foreground)
