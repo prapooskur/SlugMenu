@@ -903,7 +903,7 @@ fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableStat
                 )
             },
             dismissButton = {
-                Button(
+                OutlinedButton(
                     onClick = {
                         updateAvailable.value = false
                     },
