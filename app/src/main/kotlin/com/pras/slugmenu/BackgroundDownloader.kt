@@ -43,14 +43,14 @@ private const val TAG = "BackgroundDownloadWorker"
 @Serializable
 data class LocationListItem(val name: String, val url: String, val type: LocationType)
 
-data class FavoriteItem(val name: String, val location: String, val times: MutableList<String>)
+data class FavoriteItem(val name: String, val locations: MutableMap<String, MutableList<String>>)
 
 enum class LocationType { Dining, NonDining, Oakes }
 private const val CHANNEL_ID = "FAVORITES"
 //todo update to also download location hours?
 class BackgroundDownloadWorker(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
 
-    val preferencesDatastore = PreferencesDatastore(context.dataStore)
+    private val preferencesDatastore = PreferencesDatastore(context.dataStore)
 
     override suspend fun doWork(): Result {
 
@@ -117,37 +117,6 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                     // send notifications if user has requested it, making sure to check if permissions were granted
                                     // should this only notify for background downloads, or for both background and user-requested ones?
                                     if (notifyFavorites) {
-                                        // reverse the iter order so earlier time notifications appear above later time notifications
-                                        /*
-                                        for (menu in menuList.size-1 downTo 0) {
-                                            val favoritesList = favoritesDao.selectFavorites(menuList[menu].toSet())
-                                            Log.d(TAG, "Favorite items: $favoritesList")
-                                            val time = when (menu) {
-                                                0 -> "Breakfast"
-                                                1 -> "Lunch"
-                                                2 -> "Dinner"
-                                                3 -> "Late Night"
-                                                else -> "Unknown?"
-                                            }
-                                            for (favorite in favoritesList) {
-                                                createNotificationChannel()
-                                                val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-                                                    .setSmallIcon(R.drawable.slugicon_notification_foreground)
-                                                    .setContentTitle(favorite.name)
-                                                    .setContentText("${favorite.name} at ${location.name} for $time")
-                                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                                                    .setAutoCancel(true)
-
-                                                with(NotificationManagerCompat.from(applicationContext)) {
-                                                    // notificationId is a unique int for each notification that you must define.
-                                                    val oneTimeID = System.currentTimeMillis()
-                                                    notify(oneTimeID.toInt(), builder.build())
-                                                    Log.d(TAG,"sending notification")
-                                                }
-                                            }
-                                        }
-                                         */
-
                                         // queue up favorited item notifications
                                         for (menu in menuList.indices) {
                                             val favoritesList = favoritesDao.selectFavorites(menuList[menu].toSet())
@@ -161,10 +130,11 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                             for (favorite in favoritesList) {
                                                 // get item in the map associated with favorite at location if it exists, otherwise create a new entry
                                                 // then, update it with the proper times
-                                                val favoriteKey = favorite.name+"-"+locationName
+                                                val favoriteKey = favorite.name
                                                 favoritesMap.getOrPut(favoriteKey) {
-                                                    FavoriteItem(favorite.name, locationName, mutableListOf())
-                                                }.times.add(time)
+                                                    FavoriteItem(favorite.name, mutableMapOf())
+                                                }.locations.getOrPut(locationName) { mutableListOf() }
+                                                    .add(time)
                                             }
                                         }
 
@@ -186,40 +156,57 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                         }
                     }
                     deferredResults.awaitAll()
-                    Log.d(TAG, favoritesMap.values.toString())
 
                     if (notifyFavorites) {
                         val groupKey = "com.pras.slugmenu.FAVORITE_NOTIFICATION"
                         val childNotificationList = mutableListOf<NotificationCompat.Builder>()
-                        for (favorite in favoritesMap.values) {
-                            val times = when (favorite.times.size) {
-                                1 -> favorite.times[0]
-                                2 -> favorite.times.joinToString(" and ")
-                                else -> favorite.times.subList(0, favorite.times.size - 1)
-                                    .joinToString(", ") + ", and " + favorite.times.last()
+                        val favorites = favoritesMap.values
+                        Log.d(TAG, favorites.toString())
+                        for (favorite in favorites) {
+                            val locValues = favorite.locations.toList()
+                            val timesList = mutableListOf<String>()
+                            for (value in locValues) {
+                                val times = when (value.second.size) {
+                                    1 -> value.second[0]
+                                    2 -> value.second.joinToString(" and ")
+                                    else -> value.second.subList(0, value.second.size - 1)
+                                        .joinToString(", ") + ", and " + value.second.last()
+                                }
+                                timesList.add("at ${value.first} for $times")
+                            }
+                            timesList.sortBy {
+                                when (it.substringAfter("at ").substringBefore(" for ")) {
+                                    "Nine/Lewis" -> 1
+                                    "Cowell/Stevenson" -> 2
+                                    "Crown/Merrill" -> 3
+                                    "Porter/Kresge" -> 4
+                                    "Carson/Oakes" -> 5
+                                    else -> 6
+                                }
                             }
 
-                            val sortKey = when (favorite.location) {
-                                "Nine/Lewis" -> 1
-                                "Cowell/Stevenson" -> 2
-                                "Crown/Merrill" -> 3
-                                "Porter/Kresge" -> 4
-                                "Carson/Oakes" -> 5
-                                else -> 6
+                            val sortKey = favorite.name
+
+                            val inboxStyle = NotificationCompat.InboxStyle()
+                            Log.d(TAG, timesList.joinToString("\n"))
+                            for (time in timesList) {
+                                inboxStyle.addLine(time)
                             }
 
                             val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                                 .setSmallIcon(R.drawable.slugicon_notification_foreground)
                                 .setContentTitle(favorite.name)
-                                .setContentText("Item at ${favorite.location} for $times")
+                                .setContentText("At ${timesList.size} locations today")
+                                .setStyle(inboxStyle)
                                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                                 .setGroup(groupKey)
                                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
-                                .setSortKey(sortKey.toString())
+                                .setSortKey(sortKey)
                                 .setAutoCancel(true)
 
                             childNotificationList.add(builder)
                         }
+
 
                         val summaryNotification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                             .setContentTitle("Favorited items")
@@ -242,7 +229,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                 notify(oneTimeID.toInt(), builder.build())
                                 Log.d(TAG,"sending child notification")
                                 // small delay to avoid notifications not showing
-                                delay(10)
+                                delay(50)
                             }
                             // The summary notification requires a constant ID.
                             notify(0, summaryNotification)
