@@ -172,12 +172,13 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                     else -> value.second.subList(0, value.second.size - 1)
                                         .joinToString(", ") + ", and " + value.second.last()
                                 }
-                                timesList.add("at ${value.first} for $times")
+                                timesList.add("at ${value.first.replace("Stevenson","Stev")} for $times")
                             }
                             timesList.sortBy {
                                 when (it.substringAfter("at ").substringBefore(" for ")) {
                                     "Nine/Lewis" -> 1
                                     "Cowell/Stevenson" -> 2
+                                    "Cowell/Stev" -> 2
                                     "Crown/Merrill" -> 3
                                     "Porter/Kresge" -> 4
                                     "Carson/Oakes" -> 5
@@ -193,10 +194,12 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                 inboxStyle.addLine(time)
                             }
 
+                            val contentText = if (timesList.size == 1) { timesList[0] } else { "At ${timesList.size} locations today" }
+
                             val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
                                 .setSmallIcon(R.drawable.slugicon_notification_foreground)
                                 .setContentTitle(favorite.name)
-                                .setContentText("At ${timesList.size} locations today")
+                                .setContentText(contentText)
                                 .setStyle(inboxStyle)
                                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                                 .setGroup(groupKey)
