@@ -359,8 +359,9 @@ object BackgroundDownloadScheduler {
             .putBoolean("isPersistent", true)
             .build()
 
-
-        val refreshCpnWork = PeriodicWorkRequest.Builder(BackgroundDownloadWorker::class.java, 24, TimeUnit.HOURS)
+        // the flexinterval here should, in theory, only allow the task to run between 1 and 2 AM
+        // hopefully this stops the task from running before a new day begins
+        val refreshCpnWork = PeriodicWorkRequest.Builder(BackgroundDownloadWorker::class.java, 24, TimeUnit.HOURS, 1, TimeUnit.HOURS)
             .setInputData(backgroundWorkerInput)
             .setInitialDelay(minutes, TimeUnit.MINUTES)
             .setConstraints(workerConstraints)
