@@ -21,7 +21,7 @@ android {
         applicationId = "com.pras.slugmenu"
         minSdk = 24
         targetSdk = 34
-        versionCode = 20
+        versionCode = 21
         versionName = "1.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -209,6 +209,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         MenuOrganizerNavigator(navController = navController)
                     }
                     item {
+                        // this is out of place, but i think it looks better this way than in downloads
                         FavoritesNavigator(navController = navController)
                     }
                     item {
@@ -225,33 +226,12 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         )
                     }
                     item {
-                        AnimatedVisibility(
-                            visible = updateInBackground.value,
-                            enter = expandVertically(
-                                // Expand from the top.
-                                expandFrom = Alignment.Top
-                            ) + fadeIn(
-                                // Fade in with the initial alpha of 0.3f.
-                                initialAlpha = 0.3f
-                            ),
-                            exit = shrinkVertically(
-                                shrinkTowards = Alignment.Top
-                            ) + fadeOut(
-                                targetAlpha = 0.3f
-                            )
-                        ) {
-                            ItemNotificationSwitcher(
-                                sendItemNotifications = sendItemNotifications,
-                                showNotificationDialog = showNotificationDialog,
-                                preferencesDataStore = preferencesDataStore
-                            )
-                        }
+                        ItemNotificationSwitcher(
+                            sendItemNotifications = sendItemNotifications,
+                            showNotificationDialog = showNotificationDialog,
+                            preferencesDataStore = preferencesDataStore
+                        )
                     }
-                    /*
-                    item {
-                        TestNotificationButton(showNotificationDialog)
-                    }
-                    */
                     item {
                         BackgroundOneTimeDownload(context)
                     }
@@ -587,10 +567,28 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
 fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, showNotificationDialog: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
     val coroutineScope = rememberCoroutineScope()
     val notificationPermissionState = rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
-    val favoritetext = "Notify when favorited items are available."
+    val favoritetext = "Will notify when favorites exist."
     Row(
         modifier = Modifier.clickable {
-            sendItemNotifications.value = !sendItemNotifications.value
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (
+                    notificationPermissionState.status.shouldShowRationale &&
+                    !notificationPermissionState.status.isGranted
+                ) {
+                    Log.d(TAG,"Setting to false, permission not granted")
+                    sendItemNotifications.value = false
+                } else if (notificationPermissionState.status.isGranted) {
+                    sendItemNotifications.value = !sendItemNotifications.value
+                }
+                coroutineScope.launch {
+                    preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
+                }
+            } else {
+                sendItemNotifications.value = !sendItemNotifications.value
+                coroutineScope.launch {
+                    preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
+                }
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && sendItemNotifications.value) {
                 if (
                     !notificationPermissionState.status.shouldShowRationale &&
@@ -599,9 +597,6 @@ fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, showN
                     showNotificationDialog.value = true
                     Log.d(TAG,"toggling dialog")
                 }
-            }
-            coroutineScope.launch {
-                preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
             }
             Log.d(TAG, "item notifications toggled")
         }
