@@ -115,6 +115,7 @@ dependencies {
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Android navigation
+    // todo find out when new versions no longer cause animation bugs
     implementation("androidx.navigation:navigation-compose:2.7.0")
 
     // Material 3
