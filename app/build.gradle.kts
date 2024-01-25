@@ -96,7 +96,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    val composeUiVersion = "1.5.4"
+    val composeUiVersion = "1.6.0"
 
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
@@ -106,7 +106,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeUiVersion")
 
     // jsoup HTML parser library @ https://jsoup.org/
-    implementation("org.jsoup:jsoup:1.16.2")
+    implementation("org.jsoup:jsoup:1.17.2")
 
     // ktor for http requests
     val ktorVersion = "2.3.7"
@@ -116,7 +116,8 @@ dependencies {
 
     // Android navigation
     // todo find out when new versions no longer cause animation bugs
-    implementation("androidx.navigation:navigation-compose:2.7.0")
+    // upgrading to compose 1.6 should have fixed bug?
+    implementation("androidx.navigation:navigation-compose:2.7.6")
 
     // Material 3
     val mat3Version = "1.1.2"
@@ -162,7 +163,7 @@ dependencies {
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 
     // accompanist for easier permission management
-    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
 
 }
 
