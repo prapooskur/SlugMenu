@@ -21,8 +21,8 @@ android {
         applicationId = "com.pras.slugmenu"
         minSdk = 24
         targetSdk = 34
-        versionCode = 18
-        versionName = "1.2.7"
+        versionCode = 21
+        versionName = "1.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -89,14 +89,14 @@ dependencies {
 
 
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.activity:activity-compose:1.8.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    val composeUiVersion = "1.5.4"
+    val composeUiVersion = "1.6.0"
 
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
@@ -106,16 +106,18 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeUiVersion")
 
     // jsoup HTML parser library @ https://jsoup.org/
-    implementation("org.jsoup:jsoup:1.16.2")
+    implementation("org.jsoup:jsoup:1.17.2")
 
     // ktor for http requests
-    val ktorVersion = "2.3.6"
+    val ktorVersion = "2.3.7"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Android navigation
-    implementation("androidx.navigation:navigation-compose:2.7.0")
+    // todo find out when new versions no longer cause animation bugs
+    // upgrading to compose 1.6 should have fixed bug?
+    implementation("androidx.navigation:navigation-compose:2.7.6")
 
     // Material 3
     val mat3Version = "1.1.2"
@@ -123,7 +125,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
     //kotlinx serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 
     // Save settings
     implementation("androidx.datastore:datastore-preferences:1.0.0")
@@ -161,7 +163,7 @@ dependencies {
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 
     // accompanist for easier permission management
-    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
 
 }
 

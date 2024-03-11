@@ -2,20 +2,21 @@ package com.pras.slugmenu
 
 import android.annotation.SuppressLint
 import android.util.Log
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.cookies.HttpCookies
+import io.ktor.client.request.cookie
+import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import kotlin.system.measureTimeMillis
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.cookies.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import java.security.cert.X509Certificate
 import javax.net.ssl.X509TrustManager
+import kotlin.system.measureTimeMillis
 
 private const val TAG = "Scraper"
 

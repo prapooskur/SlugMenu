@@ -73,13 +73,13 @@ fun SwipableTabBar(menuArray: List<List<String>>, favoritesDao: FavoritesDao, pa
         // weekend hours
         when {
             titles.size <= 1 -> 0
-            //Breakfast from 12AM-11AM
-            (currentHour in 0..11) -> 0
-            // Brunch from 10AM-5PM
-            currentHour in 10..17 -> 1
+            //Breakfast from 7AM-10AM (but start showing it from beginning of the day)
+            currentHour in 0..<10 -> 0
+            // Brunch from 10AM-2PM, then continuous from 2PM-5PM
+            currentHour in 10..<17 -> 1
             // dinner from 5PM-8PM
-            currentHour in 17..19 -> 2
-            // Late night from 8PM-11PM if available, dinner archive otherwise
+            currentHour in 17..<20 -> 2
+            // Late night from 8PM-11PM if available, keep showing dinner otherwise
             currentHour in 20..23 && (menuArray[3].isNotEmpty()) -> 3
             currentHour in 20..23 && (menuArray[3].isEmpty()) -> 2
             // if all else fails (even though it never should), default to breakfast
@@ -89,20 +89,19 @@ fun SwipableTabBar(menuArray: List<List<String>>, favoritesDao: FavoritesDao, pa
         //normal hours
          when {
             titles.size <= 1 -> 0
-            //Breakfast from 12AM-11:30AM
-            (currentHour in 0..10) || (currentHour == 11 && currentMinute < 30) -> 0
-            // Lunch from 11:30AM-5PM
-            (currentHour in 11..17) || (menuArray[2].isEmpty()) -> 1
+            //Breakfast from 7AM-11AM, then continuous till 11:30AM (but start showing it from beginning of the day)
+            (currentHour in 0..<11) || (currentHour == 11 && currentMinute < 30) -> 0
+            // Lunch from 11:30AM-2PM, then continuous till 5PM
+            (currentHour in 11..<17) || (menuArray[2].isEmpty()) -> 1
             // dinner from 5PM-8PM
-            currentHour in 17..19 -> 2
-            // Late night from 8PM-11PM if available, dinner archive otherwise
+            currentHour in 17..<20 -> 2
+            // Late night from 8PM-11PM if available, keep showing dinner otherwise
             currentHour in 20..23 && (menuArray[3].isNotEmpty()) -> 3
             currentHour in 20..23 && (menuArray[3].isEmpty()) -> 2
             // if all else fails (even though it never should), default to breakfast
             else -> 0
         }
     }
-//    Log.d(TAG,"initstate: "+initState)
 
     var state by remember { mutableIntStateOf(initState) }
     val pagerState = rememberPagerState(

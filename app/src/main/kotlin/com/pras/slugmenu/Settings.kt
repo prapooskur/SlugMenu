@@ -1,8 +1,5 @@
 package com.pras.slugmenu
 
-import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -62,8 +59,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -138,7 +133,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
 
 
     val clickable = remember { mutableStateOf(true) }
-    TouchBlocker(navController = navController, delay = FADETIME.toLong(), clickable = clickable)
+    TouchBlocker(navController = navController, delay = FADETIME.toLong()+20, clickable = clickable)
 
     Surface(
         modifier = scaffoldModifier,
@@ -214,6 +209,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         MenuOrganizerNavigator(navController = navController)
                     }
                     item {
+                        // this is out of place, but i think it looks better this way than in downloads
                         FavoritesNavigator(navController = navController)
                     }
                     item {
@@ -230,33 +226,12 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         )
                     }
                     item {
-                        AnimatedVisibility(
-                            visible = updateInBackground.value,
-                            enter = expandVertically(
-                                // Expand from the top.
-                                expandFrom = Alignment.Top
-                            ) + fadeIn(
-                                // Fade in with the initial alpha of 0.3f.
-                                initialAlpha = 0.3f
-                            ),
-                            exit = shrinkVertically(
-                                shrinkTowards = Alignment.Top
-                            ) + fadeOut(
-                                targetAlpha = 0.3f
-                            )
-                        ) {
-                            ItemNotificationSwitcher(
-                                sendItemNotifications = sendItemNotifications,
-                                showNotificationDialog = showNotificationDialog,
-                                preferencesDataStore = preferencesDataStore
-                            )
-                        }
+                        ItemNotificationSwitcher(
+                            sendItemNotifications = sendItemNotifications,
+                            showNotificationDialog = showNotificationDialog,
+                            preferencesDataStore = preferencesDataStore
+                        )
                     }
-                    /*
-                    item {
-                        TestNotificationButton(showNotificationDialog)
-                    }
-                    */
                     item {
                         BackgroundOneTimeDownload(context)
                     }
@@ -592,22 +567,36 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
 fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, showNotificationDialog: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
     val coroutineScope = rememberCoroutineScope()
     val notificationPermissionState = rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
-    val favoritetext = "Send notifications when favorited items are available."
+    val favoritetext = "Will notify when favorites exist."
     Row(
         modifier = Modifier.clickable {
-            sendItemNotifications.value = !sendItemNotifications.value
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (
+                    notificationPermissionState.status.shouldShowRationale &&
+                    !notificationPermissionState.status.isGranted
+                ) {
+                    Log.d(TAG,"Setting to false, permission not granted")
+                    sendItemNotifications.value = false
+                } else if (notificationPermissionState.status.isGranted) {
+                    sendItemNotifications.value = !sendItemNotifications.value
+                }
+                coroutineScope.launch {
+                    preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
+                }
+            } else {
+                sendItemNotifications.value = !sendItemNotifications.value
+                coroutineScope.launch {
+                    preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
+                }
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && sendItemNotifications.value) {
                 if (
                     !notificationPermissionState.status.shouldShowRationale &&
                     !notificationPermissionState.status.isGranted
                 ) {
-                    // todo add a dialog or something here
                     showNotificationDialog.value = true
                     Log.d(TAG,"toggling dialog")
                 }
-            }
-            coroutineScope.launch {
-                preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
             }
             Log.d(TAG, "item notifications toggled")
         }
@@ -621,17 +610,16 @@ fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, showN
             },
             supportingContent = {
                 if (
-                    sendItemNotifications.value &&
-                    notificationPermissionState.status.shouldShowRationale &&
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                    notificationPermissionState.status.shouldShowRationale
                 ) {
                     Text(
-                        text = "Notification permission is requred to send favorite notifications."
+                        text = "Notification permissions not granted."
                     )
                 } else if (
                     sendItemNotifications.value &&
-                    notificationPermissionState.status.isGranted &&
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                    notificationPermissionState.status.isGranted
                 ) {
                     Text(
                         text = favoritetext
@@ -655,6 +643,7 @@ fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, showN
     }
 }
 
+/*
 private const val CHANNEL_ID = "TEST"
 fun createNotificationChannel(context: Context) {
     // Create the NotificationChannel, but only on API 26+ because
@@ -672,6 +661,7 @@ fun createNotificationChannel(context: Context) {
         notificationManager.createNotificationChannel(channel)
     }
 }
+
 
 
 @SuppressLint("MissingPermission")
@@ -743,6 +733,7 @@ fun TestNotificationButton(showNotificationDialog: MutableState<Boolean>) {
         )
     }
 }
+*/
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -907,7 +898,7 @@ fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableStat
                 )
             },
             dismissButton = {
-                Button(
+                OutlinedButton(
                     onClick = {
                         updateAvailable.value = false
                     },

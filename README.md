@@ -27,6 +27,8 @@ A Material You UCSC menu app for Android.
 
 - Select the order and visibility of each location.
 
+- Automatically notify when your favorite items are available.
+
 # Screenshots
 
 <div>
