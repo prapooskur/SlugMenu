@@ -491,8 +491,8 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
         //settings menu
         composable(
             "settings",
-            enterTransition = {fadeIn()},
-            exitTransition = {fadeOut()}
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
 
         ) {
             SettingsScreen(
@@ -507,8 +507,8 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
         //about menu
         composable(
             "about",
-            enterTransition = {fadeIn()},
-            exitTransition = {fadeOut()}
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
         ) {
             AboutScreen(navController, userSettings)
         }

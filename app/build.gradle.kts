@@ -96,8 +96,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    val composeUiVersion = "1.6.0"
-
+    val composeUiVersion = "1.6.4"
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
     implementation("androidx.compose.material:material:$composeUiVersion")
@@ -109,18 +108,18 @@ dependencies {
     implementation("org.jsoup:jsoup:1.17.2")
 
     // ktor for http requests
-    val ktorVersion = "2.3.7"
+    val ktorVersion = "2.3.9"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
-    implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Android navigation
     // todo find out when new versions no longer cause animation bugs
     // upgrading to compose 1.6 should have fixed bug?
-    implementation("androidx.navigation:navigation-compose:2.7.6")
+    //noinspection GradleDependency
+    implementation("androidx.navigation:navigation-compose:2.7.0")
 
     // Material 3
-    val mat3Version = "1.1.2"
+    val mat3Version = "1.2.1"
     implementation("androidx.compose.material3:material3:$mat3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
