@@ -68,7 +68,7 @@ fun NonDiningMenu(navController: NavController, locationName: String, locationUr
                 } catch (e: Exception) {
                     val exceptionFound = exceptionText(e)
                     withContext(Dispatchers.Main) {
-                        ShortToast(exceptionFound, toastContext)
+                        shortToast(exceptionFound, toastContext)
                     }
                 }
                 dataLoadedState.value = true

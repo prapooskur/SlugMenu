@@ -96,7 +96,8 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    val composeUiVersion = "1.6.4"
+    val composeUiVersion = "1.7.0-alpha06"
+
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
     implementation("androidx.compose.material:material:$composeUiVersion")
@@ -111,12 +112,12 @@ dependencies {
     val ktorVersion = "2.3.9"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Android navigation
     // todo find out when new versions no longer cause animation bugs
-    // upgrading to compose 1.6 should have fixed bug?
-    //noinspection GradleDependency
-    implementation("androidx.navigation:navigation-compose:2.7.0")
+    // upgrading to compose 1.7 should have fixed bug?
+    implementation("androidx.navigation:navigation-compose:2.8.0-alpha06")
 
     // Material 3
     val mat3Version = "1.2.1"
@@ -145,7 +146,7 @@ dependencies {
 
 
     // Flow stuff
-    val coroutineVersion = "1.7.3"
+    val coroutineVersion = "1.8.0"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 
@@ -162,7 +163,7 @@ dependencies {
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 
     // accompanist for easier permission management
-    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
 
 }
 

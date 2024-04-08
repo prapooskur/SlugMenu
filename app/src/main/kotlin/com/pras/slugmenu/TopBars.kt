@@ -2,7 +2,7 @@ package com.pras.slugmenu
 
 import android.util.Log
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
@@ -103,7 +103,7 @@ fun CollapsingLargeTopBar(
                         }
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
                             tint = Color(topBarItemColor)
                         )
@@ -173,7 +173,7 @@ fun TopBar(
                         navController.navigateUp()
                     }
                     ) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             },
@@ -217,7 +217,7 @@ fun TopBarClean(titleText: String, navController: NavController) {
         navigationIcon = {
             IconButton(onClick = {navController.navigateUp()}) {
                 Icon(
-                    Icons.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         },
@@ -241,7 +241,7 @@ fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog
         navigationIcon = {
             IconButton(onClick = {navController.navigateUp()}) {
                 Icon(
-                    Icons.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         },

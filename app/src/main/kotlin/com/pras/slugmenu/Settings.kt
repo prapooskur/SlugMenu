@@ -29,8 +29,8 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -191,7 +191,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         }
                     }
                     item {
-                        Divider()
+                        HorizontalDivider()
                     }
                     item {
                         SectionText("Layout")
@@ -213,7 +213,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         FavoritesNavigator(navController = navController)
                     }
                     item {
-                        Divider()
+                        HorizontalDivider()
                     }
                     item {
                         SectionText("Downloads")
@@ -242,7 +242,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                         )
                     }
                     item {
-                        Divider()
+                        HorizontalDivider()
                     }
                     // if the app was installed from the play store, it should be updated there
                     if (!installedFromPlayStore) {
@@ -796,7 +796,7 @@ fun ClearCache(menuDatabase: MenuDatabase, context: Context) {
                 menuDatabase.waitzDao().deleteWaitz()
                 menuDatabase.hoursDao().deleteHours()
                 withContext(Dispatchers.Main) {
-                    ShortToast("Cache cleared.", context)
+                    shortToast("Cache cleared.", context)
                 }
             }
         }
@@ -855,14 +855,14 @@ fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState
                 }
                 withContext(Dispatchers.Main) {
                     if (exceptionFound.isNotEmpty()) {
-                        ShortToast(exceptionFound, context)
+                        shortToast(exceptionFound, context)
                     } else if (appVersion == "selfbuilt") {
-                        ShortToast("You are on a self-built version, check for updates manually.", context)
+                        shortToast("You are on a self-built version, check for updates manually.", context)
                     } else if (latestVersion != appVersion) {
                         updateAvailable.value = true
                         newVersion.value = latestVersion
                     } else {
-                        ShortToast("You are on the latest version.", context)
+                        shortToast("You are on the latest version.", context)
                     }
                 }
             }

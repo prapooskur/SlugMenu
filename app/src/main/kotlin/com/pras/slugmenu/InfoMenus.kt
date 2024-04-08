@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
@@ -47,7 +46,7 @@ import javax.net.ssl.SSLHandshakeException
 
 private const val TAG = "InfoMenus"
 
-fun ShortToast(text: String, context: Context) {
+fun shortToast(text: String, context: Context) {
     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 }
 
@@ -159,7 +158,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
 
     if (showDialog.value && exceptionFound != "No Exception") {
         showDialog.value = false
-        ShortToast(exceptionFound, LocalContext.current)
+        shortToast(exceptionFound, LocalContext.current)
         Log.d(TAG, "waitz error: $exceptionFound")
     } else if (showDialog.value) {
         Log.d(TAG,currentTime)
@@ -298,7 +297,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
 
     if (openBottomSheet.value && exceptionFound != "No Exception") {
 //        openBottomSheet.value = false
-        ShortToast("Failed to get hours, falling back to cached data", LocalContext.current)
+        shortToast("Failed to get hours, falling back to cached data", LocalContext.current)
         Log.d(TAG, "hours error: $exceptionFound")
     }
 
@@ -319,7 +318,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                 }
             )
 
-            Divider(
+            HorizontalDivider(
                 thickness = 2.dp
             )
 
@@ -349,7 +348,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                                 val combinedDays = daysList.joinToString("\n")
                                 if (daysList.isNotEmpty()) {
                                     item {
-                                        Divider()
+                                        HorizontalDivider()
                                         ListItem(
                                             headlineContent = {
                                                 Text(
@@ -360,7 +359,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                                                 )
                                             }
                                         )
-                                        Divider()
+                                        HorizontalDivider()
                                         ListItem(
                                             headlineContent = {
                                                 Text(
@@ -412,7 +411,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                             items(daysList.size) { item ->
                                 val days = daysList[item]
                                 val hours = hoursList[item]
-                                Divider()
+                                HorizontalDivider()
                                 ListItem(
                                     headlineContent = {
                                         Text(
@@ -423,7 +422,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                                         )
                                     }
                                 )
-                                Divider()
+                                HorizontalDivider()
                                 val combinedHours = hours.joinToString("\n")
                                 ListItem(
                                     headlineContent = {

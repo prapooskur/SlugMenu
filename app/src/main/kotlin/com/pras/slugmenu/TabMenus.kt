@@ -19,7 +19,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -52,7 +52,6 @@ private const val TAG = "TabMenus"
 
 //Swipable tab bar
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SwipableTabBar(menuArray: List<List<String>>, favoritesDao: FavoritesDao, padding: PaddingValues) {
     val currentHour: Int = LocalDateTime.now().hour
@@ -117,7 +116,7 @@ fun SwipableTabBar(menuArray: List<List<String>>, favoritesDao: FavoritesDao, pa
         TabRow(
             selectedTabIndex = state,
             indicator = { tabPositions -> // 3.
-                TabRowDefaults.Indicator(
+                TabRowDefaults.SecondaryIndicator(
                     Modifier.pagerTabIndicatorOffset(
                         pagerState,
                         tabPositions
@@ -202,7 +201,7 @@ fun PrintMenu(itemList: List<String>, favoritesDao: FavoritesDao) {
                     divider = true
                 }
                 if (divider) {
-                    Divider(
+                    HorizontalDivider(
                         thickness = 2.dp
                     )
                 }
@@ -220,10 +219,10 @@ fun PrintMenu(itemList: List<String>, favoritesDao: FavoritesDao) {
                                                     name = itemList[item]
                                                 )
                                             )
-                                            ShortToast("Added favorite", context)
+                                            shortToast("Added favorite", context)
                                         } catch (e: SQLiteConstraintException) {
                                             Log.d(TAG, "favorited a duplicate")
-                                            ShortToast("Item already favorited", context)
+                                            shortToast("Item already favorited", context)
                                         }
                                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                     }
@@ -243,7 +242,7 @@ fun PrintMenu(itemList: List<String>, favoritesDao: FavoritesDao) {
 
                 )
                 if (divider) {
-                    Divider(
+                    HorizontalDivider(
                         thickness = 2.dp
                     )
                 }
@@ -274,7 +273,7 @@ fun PrintPriceMenu(itemList: List<String>, padding: PaddingValues) {
 
                 if (itemval.contains("—")) {
                     if (item != 0) {
-                        Divider(
+                        HorizontalDivider(
                             thickness = 2.dp
                         )
                     }
@@ -289,7 +288,7 @@ fun PrintPriceMenu(itemList: List<String>, padding: PaddingValues) {
                         },
                     )
 
-                    Divider(
+                    HorizontalDivider(
                         thickness = 2.dp
                     )
                 }
@@ -367,7 +366,7 @@ fun PrintOakesMenu(itemList: List<String>) {
                 val itemval = itemList[item]
 
                 if (itemval.contains("--") || itemval.contains("—")) {
-                    Divider(
+                    HorizontalDivider(
                         thickness = 2.dp
                     )
 
@@ -381,7 +380,7 @@ fun PrintOakesMenu(itemList: List<String>) {
                         },
                     )
 
-                    Divider(
+                    HorizontalDivider(
                         thickness = 2.dp
                     )
                 }
@@ -427,7 +426,6 @@ fun PrintOakesMenu(itemList: List<String>) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PriceTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
     val currentHour: Int = LocalDateTime.now().hour
@@ -465,7 +463,7 @@ fun PriceTabBar(menuArray: List<List<String>>, padding: PaddingValues) {
         TabRow(
             selectedTabIndex = state,
             indicator = { tabPositions -> // 3.
-                TabRowDefaults.Indicator(
+                TabRowDefaults.SecondaryIndicator(
                     Modifier.pagerTabIndicatorOffset(
                         pagerState,
                         tabPositions

@@ -96,7 +96,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                 } catch (e: Exception) {
                     val exceptionFound = exceptionText(e)
                     withContext(Dispatchers.Main) {
-                        ShortToast(exceptionFound, toastContext)
+                        shortToast(exceptionFound, toastContext)
                     }
                 }
                 dataLoadedState.value = true
@@ -248,7 +248,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
             } catch (e: Exception) {
                 val exceptionFound = exceptionText(e)
                 withContext(Dispatchers.Main) {
-                    ShortToast(exceptionFound, toastContext)
+                    shortToast(exceptionFound, toastContext)
                 }
             }
             dataLoadedState.value = true

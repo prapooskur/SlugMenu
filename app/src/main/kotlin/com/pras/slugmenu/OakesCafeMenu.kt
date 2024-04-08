@@ -73,7 +73,7 @@ fun OakesCafeMenu(navController: NavController, locationName: String, locationUr
                     )
                 } catch (e: Exception) {
                     exceptionFound = exceptionText(e)
-                    ShortToast(exceptionFound, toastContext)
+                    shortToast(exceptionFound, toastContext)
                 }
                 dataLoadedState.value = true
             }

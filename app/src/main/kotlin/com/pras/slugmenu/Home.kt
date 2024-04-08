@@ -4,7 +4,17 @@ import android.app.Activity
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -166,7 +176,7 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
             Log.d(TAG, "back pressed twice, exiting")
         } else {
             // show toast and update pressed time
-            ShortToast("Press back again to exit", context)
+            shortToast("Press back again to exit", context)
             Log.d(TAG, "back pressed, toast shown")
             pressedTime = System.currentTimeMillis()
         }
@@ -174,7 +184,6 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TwoByTwoGridWithIcons(navController: NavController, innerPadding: PaddingValues, locationOrder: List<LocationOrderItem>, iconMap: Map<String, Int>) {
 
@@ -273,7 +282,6 @@ fun TwoByTwoGridWithIcons(navController: NavController, innerPadding: PaddingVal
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardListWithIcons(navController: NavController, innerPadding: PaddingValues, locationOrder: List<LocationOrderItem>, iconMap: Map<String, Int>) {
 

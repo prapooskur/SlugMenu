@@ -1,7 +1,6 @@
 package com.pras.slugmenu
 
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -53,7 +52,7 @@ import kotlinx.coroutines.runBlocking
 
 private const val TAG = "FavoritesMenu"
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesMenu(navController: NavController, preferencesDataStore: PreferencesDatastore) {
 
@@ -168,7 +167,7 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
                                     )
                                 }
                             },
-                            modifier = Modifier.animateItemPlacement(
+                            modifier = Modifier.animateItem(
                                 tween(durationMillis = 250)
                             )
                         )
@@ -239,7 +238,7 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
                                 name.value = ""
                                 showAddDialog.value = false
                             } else {
-                                ShortToast("Item is already favorited", context)
+                                shortToast("Item is already favorited", context)
                             }
                         }
 
