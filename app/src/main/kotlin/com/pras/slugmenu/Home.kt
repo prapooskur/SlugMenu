@@ -1,8 +1,6 @@
 package com.pras.slugmenu
 
-import android.app.Activity
 import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -167,6 +164,7 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
         }
     )
 
+    /*
     val context = LocalContext.current
     var pressedTime: Long = 0
     BackHandler {
@@ -181,6 +179,7 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
             pressedTime = System.currentTimeMillis()
         }
     }
+    */
 
 }
 
