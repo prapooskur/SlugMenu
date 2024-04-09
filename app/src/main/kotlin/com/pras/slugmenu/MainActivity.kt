@@ -198,6 +198,8 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
     val navController = rememberNavController()
 
     NavHost(
+        // modifier necessary to stop animation bug?
+        modifier = Modifier.fillMaxSize(),
         navController = navController,
         startDestination = startDestination,
         enterTransition = { EnterTransition.None },
