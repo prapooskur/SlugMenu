@@ -13,6 +13,14 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
+// enable strong skipping
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>() {
+    compilerOptions.freeCompilerArgs.addAll(
+        "-P",
+        "plugin:androidx.compose.compiler.plugins.kotlin:experimentalStrongSkipping=true",
+    )
+}
+
 android {
     namespace = "com.pras.slugmenu"
     compileSdk = 34
@@ -88,15 +96,15 @@ ksp {
 dependencies {
 
 
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.activity:activity-ktx:1.8.2")
-    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity-ktx:1.9.0")
+    implementation("androidx.activity:activity-compose:1.9.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    val composeUiVersion = "1.7.0-alpha06"
+    val composeUiVersion = "1.7.0-alpha08"
 
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
@@ -109,7 +117,7 @@ dependencies {
     implementation("org.jsoup:jsoup:1.17.2")
 
     // ktor for http requests
-    val ktorVersion = "2.3.9"
+    val ktorVersion = "2.3.10"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
@@ -117,7 +125,7 @@ dependencies {
     // Android navigation
     // todo find out when new versions no longer cause animation bugs
     // upgrading to compose 1.7 should have fixed bug?
-    implementation("androidx.navigation:navigation-compose:2.8.0-alpha06")
+    implementation("androidx.navigation:navigation-compose:2.8.0-alpha08")
 
     // Material 3
     val mat3Version = "1.2.1"
@@ -128,7 +136,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 
     // Save settings
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // Colored Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.1")
