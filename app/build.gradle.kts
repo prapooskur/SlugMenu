@@ -123,7 +123,6 @@ dependencies {
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Android navigation
-    // todo find out when new versions no longer cause animation bugs
     // upgrading to compose 1.7 should have fixed bug?
     implementation("androidx.navigation:navigation-compose:2.8.0-alpha08")
 

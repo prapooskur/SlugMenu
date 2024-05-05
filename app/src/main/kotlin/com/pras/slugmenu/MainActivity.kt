@@ -45,6 +45,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -52,6 +53,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
 import java.io.IOException
 
 
@@ -189,6 +191,11 @@ fun TouchBlocker(navController: NavController, delay: Long, clickable: MutableSt
         )
     }
 }
+
+// navigation destinations
+@Serializable
+data class CustomDiningDate(val locationUrl: String, val dateUrl: String, val locationName: String)
+
 
 
 const val DELAYTIME = 350
@@ -532,7 +539,12 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
         }
 
         //custom date dining menu
-        composable("customdiningdate/{locationUrl}/{dateUrl}/{locationName}", arguments = listOf(navArgument("locationUrl") { type = NavType.StringType },navArgument("dateUrl") { type = NavType.StringType },navArgument("locationName") { type = NavType.StringType }))
+        composable(
+            "customdiningdate/{locationUrl}/{dateUrl}/{locationName}",
+            arguments = listOf(navArgument("locationUrl") { type = NavType.StringType },
+                navArgument("dateUrl") { type = NavType.StringType },
+                navArgument("locationName") { type = NavType.StringType })
+        )
         { backStackEntry ->
             DiningMenuCustomDate(
                 navController,
@@ -540,6 +552,20 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
                 // date the feature was added
                 dateUrl = backStackEntry.arguments?.getString("dateUrl") ?: "5-18-23",
                 inputLocationName = backStackEntry.arguments?.getString("locationName") ?: "Null - this should never happen."
+            )
+        }
+
+        // safe args version
+        composable<CustomDiningDate>(
+            enterTransition = { fadeIn() },
+            exitTransition = { fadeOut() }
+        ) { backStackEntry ->
+            val date: CustomDiningDate = backStackEntry.toRoute()
+            DiningMenuCustomDate(
+                navController,
+                inputLocationUrl = date.locationUrl,
+                dateUrl = date.dateUrl,
+                inputLocationName = date.locationName
             )
         }
 

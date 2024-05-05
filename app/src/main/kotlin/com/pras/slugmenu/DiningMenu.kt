@@ -159,8 +159,11 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                                 Log.d(TAG, "location date name: $locationDateName")
                                 val encodedLocationName = URLEncoder.encode(locationDateName, "UTF-8")
 
-                                Log.d(TAG,"route: \"customdiningdate/$locationUrl/$dateUrl/$encodedLocationName\"")
-                                navController.navigate("customdiningdate/$locationUrl/$dateUrl/$encodedLocationName")
+//                                Log.d(TAG,"route: \"customdiningdate/$locationUrl/$dateUrl/$encodedLocationName\"")
+//                                navController.navigate("customdiningdate/$locationUrl/$dateUrl/$encodedLocationName")
+                                val encodedLocation = CustomDiningDate(locationUrl, dateUrl, encodedLocationName)
+                                Log.d(TAG,"route: $encodedLocation")
+                                navController.navigate(encodedLocation)
 
                                 showDatePicker = false
                             },
@@ -310,7 +313,14 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                                 val strippedLocationUrl = locationUrl.substringBefore("&WeeksMenus=UCSC+-+This+Week's+Menus&myaction=read&dtdate=")
 
                                 navController.navigateUp()
-                                navController.navigate("customdiningdate/$strippedLocationUrl/$newDateUrl/$encodedLocationName")
+//                                navController.navigate("customdiningdate/$strippedLocationUrl/$newDateUrl/$encodedLocationName")
+                                val encodedLocation = CustomDiningDate(
+                                    strippedLocationUrl,
+                                    newDateUrl,
+                                    encodedLocationName
+                                )
+                                Log.d(TAG, "route: $encodedLocation")
+                                navController.navigate(encodedLocation)
 
                                 showDatePicker = false
                             },
