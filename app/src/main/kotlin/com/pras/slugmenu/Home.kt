@@ -1,6 +1,7 @@
 package com.pras.slugmenu
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,10 +25,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,6 +48,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.window.core.layout.WindowWidthSizeClass
+import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
+import com.google.accompanist.adaptive.TwoPane
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -53,6 +61,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 private const val TAG = "Home"
+
+data class SelectedItem(val id: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,6 +76,11 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
         useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
         locationOrder = Json.decodeFromString(preferencesDataStore.getLocationOrder.first())
     }
+
+    val themeChoice = remember { mutableIntStateOf(runBlocking { preferencesDataStore.getThemePreference.first() }) }
+    val useMaterialYou = remember { mutableStateOf(runBlocking { preferencesDataStore.getMaterialYouPreference.first() }) }
+    val useAmoledTheme = remember { mutableStateOf(runBlocking { preferencesDataStore.getAmoledPreference.first() }) }
+    val useTwoPanes = remember { mutableStateOf(runBlocking { preferencesDataStore.getPanePreference.first() }) }
 
     // add rachel carson, hide global village
     LaunchedEffect(locationOrder) {
@@ -118,69 +133,150 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
         "portermarket"  to R.drawable.portermarket,
         "stevcoffee"    to R.drawable.stevensoncoffeehouse,
         "globalvillage" to R.drawable.globalvillagecafe,
-        "oakescafe"     to R.drawable.oakescafe
+        "oakescafe"     to R.drawable.oakescafe,
+        "settings"      to R.drawable.settings
     )
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        rememberTopAppBarState(),
-        canScroll = { true })
-    val scaffoldModifier = if (useCollapsingTopBar.value) {
-        Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-    } else {
-        Modifier.fillMaxSize()
-    }
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
-    Scaffold(
-        modifier = scaffoldModifier,
-        // custom insets necessary to render behind nav bar
-        contentWindowInsets = WindowInsets(0.dp),
-        topBar = {
-            if (useCollapsingTopBar.value) {
-                CollapsingLargeTopBar(titleText = "Slug Menu", navController = navController, scrollBehavior = scrollBehavior, isHome = true)
-            } else {
-                Surface(shadowElevation = 4.dp) {
-                    TopBar(titleText = "Slug Menu", navController = navController, isHome = true)
+    if (windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT && useTwoPanes.value) {
+
+        // build a stack
+        val selectedDestination = remember { mutableStateListOf(visibleLocationOrder[0].navLocation) }
+
+        BackHandler(selectedDestination.size > 1) {
+            selectedDestination.removeLast()
+        }
+
+        TwoPane(
+            first = {
+                Scaffold { paddingValues ->
+                    AdaptiveCardList(
+                        clickAction = { item -> if (selectedDestination.last() != item.id) { selectedDestination.add(item.id) } },
+                        selectedItem = selectedDestination.last(),
+                        innerPadding = paddingValues,
+                        inputLocationOrder = locationOrder,
+                        iconMap = iconMap
+                    )
+                }
+
+            },
+            second = {
+                when(selectedDestination.last()) {
+                    "ninelewis" -> DiningMenu(navController,"Nine/Lewis","40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1")
+                    "cowellstev" -> DiningMenu(navController,"Cowell/Stevenson","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1")
+                    "crownmerrill" -> DiningMenu(
+                        navController,
+                        "Crown/Merrill",
+                        "20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1"
+                    )
+                    "porterkresge" -> DiningMenu(
+                        navController,
+                        "Porter/Kresge",
+                        "25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1"
+                    )
+                    "carsonoakes" -> DiningMenu(
+                        navController,
+                        "Carson/Oakes",
+                        "30&locationName=Rachel+Carson%2fOakes+Dining+Hall&naFlag=1"
+                    )
+                    "perkcoffee" -> NonDiningMenu(
+                        navController,
+                        "Perk Coffee Bars",
+                        "22&locationName=Perk+Coffee+Bars&naFlag=1"
+                    )
+                    "terrafresca" -> NonDiningMenu(
+                        navController,
+                        "Terra Fresca",
+                        "45&locationName=UCen+Coffee+Bar&naFlag=1"
+                    )
+                    "portermarket" -> NonDiningMenu(
+                        navController,
+                        "Porter Market",
+                        "50&locationName=Porter+Market&naFlag=1"
+                    )
+                    "stevcoffee" -> NonDiningMenu(
+                        navController,
+                        "Stevenson Coffee House",
+                        "26&locationName=Stevenson+Coffee+House&naFlag=1"
+                    )
+                    "globalvillage" -> NonDiningMenu(
+                        navController,
+                        "Global Village Cafe",
+                        "46&locationName=Global+Village+Cafe&naFlag=1"
+                    )
+                    "oakescafe" -> OakesCafeMenu(
+                        navController,
+                        "Oakes Cafe",
+                        "23&locationName=Oakes+Cafe&naFlag=1"
+                    )
+                    "settings" -> SettingsScreen(
+                        navController = navController,
+                        useMaterialYou = useMaterialYou,
+                        useAmoledBlack = useAmoledTheme,
+                        themeChoice = themeChoice,
+                        preferencesDataStore = preferencesDataStore
+                    )
+                    else -> throw Throwable("wtf")
+                }
+            },
+            strategy = HorizontalTwoPaneStrategy(0.4f),
+            displayFeatures = LocalDisplayFeatures.current.features
+        )
+
+    } else {
+        val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            rememberTopAppBarState(),
+            canScroll = { true })
+        val scaffoldModifier = if (useCollapsingTopBar.value) {
+            Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+        } else {
+            Modifier.fillMaxSize()
+        }
+
+        Scaffold(
+            modifier = scaffoldModifier,
+            // custom insets necessary to render behind nav bar
+            contentWindowInsets = WindowInsets(0.dp),
+            topBar = {
+                if (useCollapsingTopBar.value) {
+                    CollapsingLargeTopBar(
+                        titleText = "Slug Menu",
+                        navController = navController,
+                        scrollBehavior = scrollBehavior,
+                        isHome = true
+                    )
+                } else {
+                    Surface(shadowElevation = 4.dp) {
+                        TopBar(
+                            titleText = "Slug Menu",
+                            navController = navController,
+                            isHome = true
+                        )
+                    }
+                }
+            },
+            content = { innerPadding ->
+                if (useGridLayout.value) {
+                    TwoByTwoGridWithIcons(
+                        navController = navController,
+                        innerPadding = innerPadding,
+                        locationOrder = visibleLocationOrder,
+                        iconMap = iconMap
+                    )
+                } else {
+                    CardListWithIcons(
+                        navController = navController,
+                        innerPadding = innerPadding,
+                        locationOrder = visibleLocationOrder,
+                        iconMap = iconMap
+                    )
                 }
             }
-        },
-        content = {innerPadding ->
-            if (useGridLayout.value) {
-                TwoByTwoGridWithIcons(
-                    navController = navController,
-                    innerPadding = innerPadding,
-                    locationOrder = visibleLocationOrder,
-                    iconMap = iconMap
-                )
-            } else {
-                CardListWithIcons(
-                    navController = navController,
-                    innerPadding = innerPadding,
-                    locationOrder = visibleLocationOrder,
-                    iconMap = iconMap
-                )
-            }
-        }
-    )
-
-    /*
-    val context = LocalContext.current
-    var pressedTime: Long = 0
-    BackHandler {
-        if (pressedTime + 2000 > System.currentTimeMillis()) {
-            // if time since last back press is less than 2 sec, close application
-            (context as? Activity)?.finish()
-            Log.d(TAG, "back pressed twice, exiting")
-        } else {
-            // show toast and update pressed time
-            shortToast("Press back again to exit", context)
-            Log.d(TAG, "back pressed, toast shown")
-            pressedTime = System.currentTimeMillis()
-        }
+        )
     }
-    */
-
 }
 
 @Composable
@@ -378,6 +474,102 @@ fun CardListWithIcons(navController: NavController, innerPadding: PaddingValues,
         }
     }
 }
+
+@Composable
+fun AdaptiveCardList(clickAction: (SelectedItem) -> Unit, selectedItem: String, innerPadding: PaddingValues, inputLocationOrder: List<LocationOrderItem>, iconMap: Map<String, Int>) {
+
+    val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+    // combine the padding values given by scaffold with the padding for bottom bar, so parts of
+    // the grid aren't stuck behind the bottom bar
+    val paddingAmount = 10.dp
+    val contentPadding = PaddingValues(start = paddingAmount, top = paddingAmount, end = paddingAmount, bottom = paddingAmount+navPadding)
+
+    val locationOrder = inputLocationOrder.plus(LocationOrderItem("settings", "Settings", true))
+
+    LazyColumn(
+        contentPadding = contentPadding,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues = innerPadding),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        items(locationOrder.size) { index ->
+            val location: String = locationOrder[index].navLocation
+            val name: String = locationOrder[index].locationName.replace("Perks", "Perk Coffee Bars")
+            val selected = selectedItem == locationOrder[index].navLocation
+
+            // try to get icon from dictionary, default to nine/lewis icon if it isn't listed for some reason to avoid crash
+            // in practice, this should never need to fall back to the default.
+            val icon = iconMap.getOrDefault(location, R.drawable.ninelewis)
+
+            Card(
+                onClick = {
+                    clickAction(SelectedItem(location))
+                },
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    // todo get this to work properly and not cut off width
+//                    .heightIn(max = 120.dp)
+                    .aspectRatio(4f)
+                    .fillMaxWidth(),
+                colors = if (selected) {
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(30.dp)
+                    )
+                } else {
+                    CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                }
+
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+
+                    // without this, the nine/lewis icon looks larger than the others despite being the same weight
+                    // extra padding instead of lower weight prevents it from taking up less space than the other icons
+                    val imageModifier = if (icon == R.drawable.ninelewis) {
+                        Modifier
+                            .aspectRatio(1f)
+                            .weight(0.4f)
+                            .padding(22.dp)
+                    } else {
+                        Modifier
+                            .aspectRatio(1f)
+                            .weight(0.4f)
+                            .padding(14.dp)
+                    }
+
+                    // a little start padding helps text not be too close to the icon
+                    val textModifier = Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp)
+
+                    // no content description provided - image is purely decorative
+                    Image(
+                        painter = painterResource(icon),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                        alignment = Alignment.Center,
+                        modifier = imageModifier
+                    )
+
+                    Text(
+                        text = name,
+                        textAlign = TextAlign.Left,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontSize = 18.sp,
+                        modifier = textModifier
+                    )
+                }
+            }
+        }
+    }
+}
+
 
 @Preview
 @Composable

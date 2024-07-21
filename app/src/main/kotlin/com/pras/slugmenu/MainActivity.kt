@@ -21,10 +21,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +49,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.toRoute
+import androidx.window.core.layout.WindowSizeClass
+import androidx.window.layout.DisplayFeature
+import com.google.accompanist.adaptive.calculateDisplayFeatures
 import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -62,7 +68,11 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = SETTINGS_NAME
 )
 
-private const val TAG = "MainActivityLog"
+private const val TAG = "MainActivity"
+
+// todo find better defaults
+data class DisplayFeatures(val features: List<DisplayFeature> = listOf(), val sizeClass: WindowSizeClass = WindowSizeClass.compute(1f,1f))
+val LocalDisplayFeatures = compositionLocalOf { DisplayFeatures() }
 
 class MainActivity : ComponentActivity() {
     private lateinit var preferencesDatastore: PreferencesDatastore
@@ -127,33 +137,38 @@ class MainActivity : ComponentActivity() {
 
             val useDarkTheme = when (themeChoice.intValue) {1 -> false 2 -> true else -> isSystemInDarkTheme() }
 
-            SlugMenuTheme(darkTheme = useDarkTheme, dynamicColor = useMaterialYou.value, amoledColor = useAmoledTheme.value) {
-                // Update the edge to edge configuration to match the theme
-                // This is the same parameters as the default enableEdgeToEdge call, but we manually
-                // resolve whether or not to show dark theme using uiState, since it can be different
-                // than the configuration's dark theme value based on the user preference.
-                val lightScrim = android.graphics.Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
-                val darkScrim = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
-                DisposableEffect(useDarkTheme) {
-                    enableEdgeToEdge(
-                        statusBarStyle = SystemBarStyle.auto(
-                            android.graphics.Color.TRANSPARENT,
-                            android.graphics.Color.TRANSPARENT,
-                        ) { useDarkTheme },
-                        navigationBarStyle = SystemBarStyle.auto(
-                            lightScrim,
-                            darkScrim,
-                        ) { useDarkTheme },
-                    )
-                    onDispose {}
-                }
+            val displayFeatures = DisplayFeatures(calculateDisplayFeatures(activity = this),currentWindowAdaptiveInfo().windowSizeClass)
+            CompositionLocalProvider(LocalDisplayFeatures provides displayFeatures) {
+                SlugMenuTheme(darkTheme = useDarkTheme, dynamicColor = useMaterialYou.value, amoledColor = useAmoledTheme.value) {
+                    // Update the edge to edge configuration to match the theme
+                    // This is the same parameters as the default enableEdgeToEdge call, but we manually
+                    // resolve whether or not to show dark theme using uiState, since it can be different
+                    // than the configuration's dark theme value based on the user preference.
+                    val lightScrim = android.graphics.Color.argb(0xe6, 0xFF, 0xFF, 0xFF)
+                    val darkScrim = android.graphics.Color.argb(0x80, 0x1b, 0x1b, 0x1b)
+                    DisposableEffect(useDarkTheme) {
+                        enableEdgeToEdge(
+                            statusBarStyle = SystemBarStyle.auto(
+                                android.graphics.Color.TRANSPARENT,
+                                android.graphics.Color.TRANSPARENT,
+                            ) { useDarkTheme },
+                            navigationBarStyle = SystemBarStyle.auto(
+                                lightScrim,
+                                darkScrim,
+                            ) { useDarkTheme },
+                        )
+                        onDispose {}
+                    }
 
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Init("home", themeChoice, useMaterialYou, useAmoledTheme, preferencesDatastore)
+
+
+                    // A surface container using the 'background' color from the theme
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        Init("home", themeChoice, useMaterialYou, useAmoledTheme, preferencesDatastore)
+                    }
                 }
             }
         }
@@ -203,6 +218,9 @@ const val FADETIME = 200
 @Composable
 fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYou: MutableState<Boolean>, useAmoledTheme: MutableState<Boolean>, userSettings: PreferencesDatastore) {
     val navController = rememberNavController()
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+
+
 
     NavHost(
         // modifier necessary to stop animation bug?

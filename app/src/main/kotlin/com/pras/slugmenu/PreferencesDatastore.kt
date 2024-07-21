@@ -23,6 +23,7 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         val USE_MATERIAL_YOU = booleanPreferencesKey("use_material_you")
         val USE_AMOLED_BLACK = booleanPreferencesKey("use_amoled_black")
         val USE_COLLAPSING_TOOLBAR = booleanPreferencesKey("use_collapsing_toolbar")
+        val USE_TWO_PANES = booleanPreferencesKey("use_two_panes")
         val ENABLE_BACKGROUND_UPDATES = booleanPreferencesKey("enable_background_updates")
         val SEND_ITEM_NOTIFICATIONS = booleanPreferencesKey("send_item_notifications")
         val LOCATION_ORDER = stringPreferencesKey("location_order")
@@ -123,11 +124,31 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
             preferences[USE_COLLAPSING_TOOLBAR] ?: true
         }
 
+    suspend fun setPanePreference(userChoice: Boolean) {
+        dataStore.edit {preferences ->
+            preferences[USE_TWO_PANES] = userChoice
+        }
+    }
+
+    val getPanePreference: Flow<Boolean> = dataStore.data
+        .catch {
+            if (it is IOException) {
+                Log.e(TAG, "Error reading Top Bar preferences.", it)
+                emit(emptyPreferences())
+            } else {
+                throw it
+            }
+        }
+        .map {preferences ->
+            preferences[USE_TWO_PANES] ?: true
+        }
+
     suspend fun setToolbarPreference(userChoice: Boolean) {
         dataStore.edit {preferences ->
             preferences[USE_COLLAPSING_TOOLBAR] = userChoice
         }
     }
+
 
     val getBackgroundUpdatePreference: Flow<Boolean> = dataStore.data
         .catch {

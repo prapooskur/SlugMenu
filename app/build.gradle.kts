@@ -5,6 +5,7 @@ import com.android.build.api.dsl.Packaging
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
 
     //KSP for room
     id("com.google.devtools.ksp")
@@ -13,12 +14,8 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-// enable strong skipping
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>() {
-    compilerOptions.freeCompilerArgs.addAll(
-        "-P",
-        "plugin:androidx.compose.compiler.plugins.kotlin:experimentalStrongSkipping=true",
-    )
+composeCompiler {
+    enableStrongSkippingMode = true
 }
 
 android {
@@ -73,9 +70,9 @@ android {
         compose = true
         buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.11"
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.5.11"
+//    }
     fun Packaging.() {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -97,14 +94,14 @@ dependencies {
 
 
     implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.3")
     implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("androidx.activity:activity-compose:1.9.0")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
-    val composeUiVersion = "1.7.0-alpha08"
+    val composeUiVersion = "1.7.0-beta05"
 
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
@@ -114,17 +111,17 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeUiVersion")
 
     // jsoup HTML parser library @ https://jsoup.org/
-    implementation("org.jsoup:jsoup:1.17.2")
+    implementation("org.jsoup:jsoup:1.18.1")
 
     // ktor for http requests
-    val ktorVersion = "2.3.10"
+    val ktorVersion = "2.3.12"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Android navigation
     // upgrading to compose 1.7 should have fixed bug?
-    implementation("androidx.navigation:navigation-compose:2.8.0-alpha08")
+    implementation("androidx.navigation:navigation-compose:2.8.0-beta05")
 
     // Material 3
     val mat3Version = "1.2.1"
@@ -132,7 +129,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
     //kotlinx serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // Save settings
     implementation("androidx.datastore:datastore-preferences:1.1.1")
@@ -153,7 +150,7 @@ dependencies {
 
 
     // Flow stuff
-    val coroutineVersion = "1.8.0"
+    val coroutineVersion = "1.8.1"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 
@@ -170,8 +167,13 @@ dependencies {
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 
     // accompanist for easier permission management
-    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+    implementation("com.google.accompanist:accompanist-permissions:0.35.1-alpha")
 
+    // adaptive ui
+    implementation("androidx.compose.material3.adaptive:adaptive:1.0.0-beta04")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.0.0-beta04")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.0.0-beta04")
+    implementation("com.google.accompanist:accompanist-adaptive:0.35.1-alpha")
 }
 
 

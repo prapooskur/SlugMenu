@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
+import androidx.window.core.layout.WindowWidthSizeClass
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -88,7 +89,7 @@ fun CollapsingLargeTopBar(
                 )
             },
             navigationIcon = {
-                if (!isHome) {
+                if (!isHome && LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
                     IconButton(
                         onClick = {
                             if (isClickable.value) {
@@ -146,7 +147,8 @@ fun TopBar(
     hasTrailingIcon: Boolean = false,
     trailingIcon: ImageVector = Icons.Default.Warning,
     iconDescription: String = "",
-    iconPressed: MutableState<Boolean> = mutableStateOf(false)
+    iconPressed: MutableState<Boolean> = mutableStateOf(false),
+    twoPane: Boolean = false
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -160,7 +162,7 @@ fun TopBar(
                 )
             },
             navigationIcon = {
-                if (!isHome) {
+                if (!isHome || (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT && twoPane)) {
                     IconButton(onClick = {
                         if (isClickable.value) {
                             isClickable.value = !isClickable.value
@@ -205,7 +207,7 @@ fun TopBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarClean(titleText: String, navController: NavController) {
+fun TopBarClean(titleText: String, navController: NavController, twoPane: Boolean = false) {
     TopAppBar(
         title = {
             Text(
@@ -215,21 +217,22 @@ fun TopBarClean(titleText: String, navController: NavController) {
             )
         },
         navigationIcon = {
-            IconButton(onClick = {navController.navigateUp()}) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+            if (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT && twoPane) {
+                IconButton(onClick = {navController.navigateUp()}) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
             }
+
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-//        backgroundColor = MaterialTheme.colorScheme.primaryContainer
-//        elevation = 8.dp
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog: MutableState<Boolean> = mutableStateOf(false)) {
+fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog: MutableState<Boolean> = mutableStateOf(false), twoPane: Boolean = false) {
     TopAppBar(
         title = {
             Text(
@@ -239,11 +242,14 @@ fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog
             )
         },
         navigationIcon = {
-            IconButton(onClick = {navController.navigateUp()}) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+            if (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT && twoPane) {
+                IconButton(onClick = {navController.navigateUp()}) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
             }
+
         },
         actions = {
             IconButton(

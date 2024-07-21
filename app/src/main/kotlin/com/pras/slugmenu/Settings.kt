@@ -45,6 +45,8 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,7 +72,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -84,9 +85,17 @@ private const val TAG = "Settings"
 @Composable
 fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, useAmoledBlack: MutableState<Boolean>, themeChoice: MutableState<Int>, preferencesDataStore: PreferencesDatastore) {
 
-    val useCollapsingTopBar = remember { mutableStateOf(true) }
-    val updateInBackground = remember { mutableStateOf(false) }
-    val sendItemNotifications = remember { mutableStateOf(false) }
+//    val useCollapsingTopBar = remember { mutableStateOf(true) }
+//    val useTwoPanes = remember { mutableStateOf(true) }
+//    val updateInBackground = remember { mutableStateOf(false) }
+//    val sendItemNotifications = remember { mutableStateOf(false) }
+//    val showNotificationDialog = remember { mutableStateOf(false) }
+
+    val useCollapsingTopBar = preferencesDataStore.getToolbarPreference.collectAsState(initial = false)
+    val useTwoPanes = preferencesDataStore.getPanePreference.collectAsState(initial = false)
+    val updateInBackground = preferencesDataStore.getBackgroundUpdatePreference.collectAsState(initial = false)
+    val sendItemNotifications = preferencesDataStore.getNotificationPreference.collectAsState(initial = false)
+    
     val showNotificationDialog = remember { mutableStateOf(false) }
 
     val appVersion = BuildConfig.VERSION_NAME
@@ -97,11 +106,12 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
     val context = LocalContext.current
     val menuDatabase = MenuDatabase.getInstance(context)
 
-    runBlocking {
-        useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
-        updateInBackground.value = preferencesDataStore.getBackgroundUpdatePreference.first()
-        sendItemNotifications.value = preferencesDataStore.getNotificationPreference.first()
-    }
+//    runBlocking {
+//        useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
+////        useTwoPanes.value = preferencesDataStore.getPanePreference.first()
+//        updateInBackground.value = preferencesDataStore.getBackgroundUpdatePreference.first()
+//        sendItemNotifications.value = preferencesDataStore.getNotificationPreference.first()
+//    }
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState(),
@@ -198,6 +208,9 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
                     }
                     item {
                         LayoutSwitcher(preferencesDataStore = preferencesDataStore)
+                    }
+                    item {
+                        PaneSwitcher(usePane = useTwoPanes, preferencesDataStore = preferencesDataStore)
                     }
                     item {
                         TopAppBarSwitcher(
@@ -458,6 +471,34 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
 }
 
 @Composable
+fun PaneSwitcher(usePane: State<Boolean>, preferencesDataStore: PreferencesDatastore) {
+    val coroutineScope = rememberCoroutineScope()
+    Row(modifier = Modifier.clickable(
+        onClick = {
+            coroutineScope.launch {
+                preferencesDataStore.setPanePreference(!usePane.value)
+            }
+            Log.d(TAG, "amoled toggled")
+        },
+    )) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = "Use Two-Pane Layout on Large Screens (EXPERIMENTAL)",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            trailingContent = {
+                Switch(
+                    checked = usePane.value,
+                    onCheckedChange = null
+                )
+            }
+        )
+    }
+}
+
+@Composable
 fun MenuOrganizerNavigator(navController: NavController) {
     ListItem(
         leadingContent = {
@@ -490,13 +531,14 @@ fun FavoritesNavigator(navController: NavController) {
 }
 
 @Composable
-fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar: MutableState<Boolean>) {
+fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar: State<Boolean>) {
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier.clickable(
         onClick = {
-            useLargeTopBar.value = !useLargeTopBar.value
+//            useLargeTopBar.value = !useLargeTopBar.value
             coroutineScope.launch {
-                preferencesDataStore.setToolbarPreference(useLargeTopBar.value)
+//                preferencesDataStore.setToolbarPreference(useLargeTopBar.value)
+                preferencesDataStore.setToolbarPreference(!useLargeTopBar.value)
             }
             Log.d(TAG, "top bar choice toggled")
         },
@@ -519,21 +561,22 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
 }
 
 @Composable
-fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore, context: Context) {
+fun BackgroundUpdateSwitcher(updateInBackground: State<Boolean>, preferencesDataStore: PreferencesDatastore, context: Context) {
     val coroutineScope = rememberCoroutineScope()
     val backgroundDownloadScheduler = BackgroundDownloadScheduler
     Row(modifier = Modifier.clickable(
         onClick = {
-            updateInBackground.value = !updateInBackground.value
-            if (updateInBackground.value) {
-                Log.d(TAG, "Background Updates enabled")
-                backgroundDownloadScheduler.refreshPeriodicWork(context)
-            } else {
-                Log.d(TAG, "Background Updates disabled")
-                backgroundDownloadScheduler.cancelDownloadByTag(context, "backgroundMenuDownload")
-            }
+//            updateInBackground.value = !updateInBackground.value
             coroutineScope.launch {
-                preferencesDataStore.setBackgroundUpdatePreference(updateInBackground.value)
+                preferencesDataStore.setBackgroundUpdatePreference(!updateInBackground.value)
+
+                if (updateInBackground.value) {
+                    Log.d(TAG, "Background Updates enabled")
+                    backgroundDownloadScheduler.refreshPeriodicWork(context)
+                } else {
+                    Log.d(TAG, "Background Updates disabled")
+                    backgroundDownloadScheduler.cancelDownloadByTag(context, "backgroundMenuDownload")
+                }
             }
         },
     )) {
@@ -564,7 +607,7 @@ fun BackgroundUpdateSwitcher(updateInBackground: MutableState<Boolean>, preferen
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, showNotificationDialog: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
+fun ItemNotificationSwitcher(sendItemNotifications: State<Boolean>, showNotificationDialog: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
     val coroutineScope = rememberCoroutineScope()
     val notificationPermissionState = rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
     val favoritetext = "Will notify when favorites exist."
@@ -576,17 +619,26 @@ fun ItemNotificationSwitcher(sendItemNotifications: MutableState<Boolean>, showN
                     !notificationPermissionState.status.isGranted
                 ) {
                     Log.d(TAG,"Setting to false, permission not granted")
-                    sendItemNotifications.value = false
+//                    sendItemNotifications.value = false
+                    coroutineScope.launch {
+                        preferencesDataStore.setNotificationPreference(false)
+                    }
                 } else if (notificationPermissionState.status.isGranted) {
-                    sendItemNotifications.value = !sendItemNotifications.value
+//                    sendItemNotifications.value = !sendItemNotifications.value
+                    coroutineScope.launch {
+                        preferencesDataStore.setNotificationPreference(!sendItemNotifications.value)
+                    }
                 }
-                coroutineScope.launch {
-                    preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
-                }
+//                coroutineScope.launch {
+//                    preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
+//                }
             } else {
-                sendItemNotifications.value = !sendItemNotifications.value
+//                sendItemNotifications.value = !sendItemNotifications.value
+//                coroutineScope.launch {
+//                    preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
+//                }
                 coroutineScope.launch {
-                    preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
+                    preferencesDataStore.setNotificationPreference(!sendItemNotifications.value)
                 }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && sendItemNotifications.value) {
