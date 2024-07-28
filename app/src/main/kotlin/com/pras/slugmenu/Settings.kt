@@ -46,7 +46,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,6 +61,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -83,18 +83,12 @@ private const val TAG = "Settings"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Boolean>, useAmoledBlack: MutableState<Boolean>, themeChoice: MutableState<Int>, preferencesDataStore: PreferencesDatastore) {
+fun SettingsScreen(navController: NavController, useMaterialYou: State<Boolean>, useAmoledBlack: State<Boolean>, themeChoice: State<Int>, preferencesDataStore: PreferencesDatastore) {
 
-//    val useCollapsingTopBar = remember { mutableStateOf(true) }
-//    val useTwoPanes = remember { mutableStateOf(true) }
-//    val updateInBackground = remember { mutableStateOf(false) }
-//    val sendItemNotifications = remember { mutableStateOf(false) }
-//    val showNotificationDialog = remember { mutableStateOf(false) }
-
-    val useCollapsingTopBar = preferencesDataStore.getToolbarPreference.collectAsState(initial = false)
-    val useTwoPanes = preferencesDataStore.getPanePreference.collectAsState(initial = false)
-    val updateInBackground = preferencesDataStore.getBackgroundUpdatePreference.collectAsState(initial = false)
-    val sendItemNotifications = preferencesDataStore.getNotificationPreference.collectAsState(initial = false)
+    val useCollapsingTopBar = preferencesDataStore.getToolbarPreference.collectAsStateWithLifecycle(false)
+    val useTwoPanes = preferencesDataStore.getPanePreference.collectAsStateWithLifecycle(false)
+    val updateInBackground = preferencesDataStore.getBackgroundUpdatePreference.collectAsStateWithLifecycle(false)
+    val sendItemNotifications = preferencesDataStore.getNotificationPreference.collectAsStateWithLifecycle(false)
     
     val showNotificationDialog = remember { mutableStateOf(false) }
 
@@ -105,13 +99,6 @@ fun SettingsScreen(navController: NavController, useMaterialYou: MutableState<Bo
 
     val context = LocalContext.current
     val menuDatabase = MenuDatabase.getInstance(context)
-
-//    runBlocking {
-//        useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
-////        useTwoPanes.value = preferencesDataStore.getPanePreference.first()
-//        updateInBackground.value = preferencesDataStore.getBackgroundUpdatePreference.first()
-//        sendItemNotifications.value = preferencesDataStore.getNotificationPreference.first()
-//    }
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState(),
@@ -303,7 +290,7 @@ fun SectionText(text: String) {
 
 
 @Composable
-fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: MutableState<Int>) {
+fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: State<Int>) {
     val themeOptions = listOf("System Default", "Light", "Dark")
     val coroutineScope = rememberCoroutineScope()
 
@@ -349,13 +336,13 @@ fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: Mutab
 }
 
 @Composable
-fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
+fun MaterialYouSwitcher(useMaterialYou: State<Boolean>, preferencesDataStore: PreferencesDatastore) {
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier.clickable(
             onClick = {
-                useMaterialYou.value = !useMaterialYou.value
+//                useMaterialYou.value = !useMaterialYou.value
                 coroutineScope.launch {
-                    preferencesDataStore.setMaterialYouPreference(useMaterialYou.value)
+                    preferencesDataStore.setMaterialYouPreference(!useMaterialYou.value)
                 }
                 Log.d(TAG, "Material You toggled")
             },
@@ -378,13 +365,13 @@ fun MaterialYouSwitcher(useMaterialYou: MutableState<Boolean>, preferencesDataSt
 }
 
 @Composable
-fun AmoledSwitcher(useAmoledBlack: MutableState<Boolean>,preferencesDataStore: PreferencesDatastore) {
+fun AmoledSwitcher(useAmoledBlack: State<Boolean>, preferencesDataStore: PreferencesDatastore) {
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier.clickable(
             onClick = {
-                useAmoledBlack.value = !useAmoledBlack.value
+//                useAmoledBlack.value = !useAmoledBlack.value
                 coroutineScope.launch {
-                    preferencesDataStore.setAmoledPreference(useAmoledBlack.value)
+                    preferencesDataStore.setAmoledPreference(!useAmoledBlack.value)
                 }
                 Log.d(TAG, "amoled toggled")
             },

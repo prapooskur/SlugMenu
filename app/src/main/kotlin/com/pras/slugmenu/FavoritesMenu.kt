@@ -30,13 +30,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -44,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.pras.slugmenu.ui.elements.LongPressFloatingActionButton
 import kotlinx.coroutines.flow.first
@@ -61,15 +59,8 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
     val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
     val favoritesDao = menuDatabase.favoritesDao()
 
-    var favoritesList by remember { mutableStateOf(listOf<Favorite>()) }
+    val favoritesList = favoritesDao.getFavoritesFlow().collectAsStateWithLifecycle(initialValue = listOf())
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(key1 = Unit) {
-        coroutineScope.launch {
-            favoritesDao.getFavoritesFlow().collect {
-                favoritesList = it
-            }
-        }
-    }
 
     val showDeleteDialog = remember { mutableStateOf(false) }
     val showAddDialog = remember { mutableStateOf(false) }
@@ -124,11 +115,13 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
             }
         },
         content = { paddingValues ->
-            if (favoritesList.isEmpty()) {
+            if (favoritesList.value.isEmpty()) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
                 ) {
                     Text(
                         "No Favorites",
@@ -148,7 +141,7 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
                         .padding(paddingValues)
                         .fillMaxSize()
                 ) {
-                    items(favoritesList, key = { it.name }) { favorite ->
+                    items(favoritesList.value, key = { it.name }) { favorite ->
                         ListItem(
                             headlineContent = {
                                 Text(favorite.name)

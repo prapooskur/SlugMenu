@@ -14,35 +14,59 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -50,7 +74,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import androidx.window.layout.DisplayFeature
+import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
+import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.calculateDisplayFeatures
 import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import kotlinx.coroutines.delay
@@ -60,6 +87,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.IOException
 
 
@@ -71,7 +100,12 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
 private const val TAG = "MainActivity"
 
 // todo find better defaults
-data class DisplayFeatures(val features: List<DisplayFeature> = listOf(), val sizeClass: WindowSizeClass = WindowSizeClass.compute(1f,1f))
+data class DisplayFeatures(
+    val features: List<DisplayFeature> = listOf(),
+    val sizeClass: WindowSizeClass = WindowSizeClass.compute(1f,1f),
+    val twoPanePreference: Boolean = false
+)
+
 val LocalDisplayFeatures = compositionLocalOf { DisplayFeatures() }
 
 class MainActivity : ComponentActivity() {
@@ -112,32 +146,23 @@ class MainActivity : ComponentActivity() {
         preferencesDatastore = PreferencesDatastore(dataStore)
 
         setContent {
-            val themeChoice = remember { mutableIntStateOf(runBlocking { preferencesDatastore.getThemePreference.first() }) }
-            val useMaterialYou = remember { mutableStateOf(runBlocking { preferencesDatastore.getMaterialYouPreference.first() }) }
-            val useAmoledTheme = remember { mutableStateOf(runBlocking { preferencesDatastore.getAmoledPreference.first() }) }
+            val initThemeChoice = runBlocking { preferencesDatastore.getThemePreference.first() }
+            val initUseMaterialYou = runBlocking { preferencesDatastore.getMaterialYouPreference.first() }
+            val initUseAmoledTheme = runBlocking { preferencesDatastore.getAmoledPreference.first() }
+            val initUseTwoPane = runBlocking { preferencesDatastore.getPanePreference.first() }
 
-            // necessary to do this first, since otherwise ui takes a second to update
+            val themeChoice = preferencesDatastore.getThemePreference.collectAsStateWithLifecycle(initThemeChoice)
+            val useMaterialYou = preferencesDatastore.getMaterialYouPreference.collectAsStateWithLifecycle(initUseMaterialYou)
+            val useAmoledTheme = preferencesDatastore.getAmoledPreference.collectAsStateWithLifecycle(initUseAmoledTheme)
+            val useTwoPane = preferencesDatastore.getPanePreference.collectAsStateWithLifecycle(initUseTwoPane)
 
-            /*
-            runBlocking {
-                useMaterialYou.value = preferencesDatastore.getMaterialYouPreference.first()
-                themeChoice.intValue = preferencesDatastore.getThemePreference.first()
-                useAmoledTheme.value = preferencesDatastore.getAmoledPreference.first()
-            }
-             */
+            val useDarkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }
 
-            LaunchedEffect(Unit) {
-                preferencesDatastore.getThemePreference.collect {
-                    themeChoice.intValue = it
-                }
-                preferencesDatastore.getMaterialYouPreference.collect {
-                    useMaterialYou.value = it
-                }
-            }
-
-            val useDarkTheme = when (themeChoice.intValue) {1 -> false 2 -> true else -> isSystemInDarkTheme() }
-
-            val displayFeatures = DisplayFeatures(calculateDisplayFeatures(activity = this),currentWindowAdaptiveInfo().windowSizeClass)
+            val displayFeatures = DisplayFeatures(
+                calculateDisplayFeatures(activity = this),
+                currentWindowAdaptiveInfo().windowSizeClass,
+                useTwoPane.value
+            )
             CompositionLocalProvider(LocalDisplayFeatures provides displayFeatures) {
                 SlugMenuTheme(darkTheme = useDarkTheme, dynamicColor = useMaterialYou.value, amoledColor = useAmoledTheme.value) {
                     // Update the edge to edge configuration to match the theme
@@ -216,16 +241,97 @@ data class CustomDiningDate(val locationUrl: String, val dateUrl: String, val lo
 const val DELAYTIME = 350
 const val FADETIME = 200
 @Composable
-fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYou: MutableState<Boolean>, useAmoledTheme: MutableState<Boolean>, userSettings: PreferencesDatastore) {
+fun Init(startDestination: String, themeChoice: State<Int>, useMaterialYou: State<Boolean>, useAmoledTheme: State<Boolean>, userSettings: PreferencesDatastore) {
+
     val navController = rememberNavController()
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    val useTwoPanes = userSettings.getPanePreference.collectAsStateWithLifecycle(false)
 
+    val showTwoPanes = (windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT && useTwoPanes.value)
 
+    LaunchedEffect(key1 = showTwoPanes) {
+        if (!showTwoPanes) {
+            navController.popBackStack("home", false, false)
+        }
+    }
 
+    if (!showTwoPanes) {
+        BuildNavHost(navController, startDestination, themeChoice, useMaterialYou, useAmoledTheme, userSettings)
+    } else {
+
+        // build two pane structure outside the nav hierarchy
+        // this is so cursed
+
+        val locationOrder = userSettings.getLocationOrder.collectAsStateWithLifecycle(
+            initialValue = Json.encodeToString(
+                listOf(
+                    LocationOrderItem(navLocation = "ninelewis", locationName = "Nine/Lewis", visible = true),
+                    LocationOrderItem(navLocation = "cowellstev", locationName = "Cowell/Stevenson", visible = true),
+                    LocationOrderItem(navLocation = "crownmerrill", locationName = "Crown/Merrill", visible = true),
+                    LocationOrderItem(navLocation = "porterkresge", locationName = "Porter/Kresge", visible = true),
+                    LocationOrderItem(navLocation = "carsonoakes", locationName = "Carson/Oakes", visible = true),
+                    LocationOrderItem(navLocation = "perkcoffee", locationName = "Perk Coffee Bars", visible = true),
+                    LocationOrderItem(navLocation = "terrafresca", locationName = "Terra Fresca", visible = true),
+                    LocationOrderItem(navLocation = "portermarket", locationName = "Porter Market", visible = true),
+                    LocationOrderItem(navLocation = "stevcoffee", locationName = "Stevenson Coffee House", visible = true),
+                    LocationOrderItem(navLocation = "globalvillage", locationName = "Global Village Cafe", visible = false),
+                    LocationOrderItem(navLocation = "oakescafe", locationName = "Oakes Cafe", visible = true)
+                )
+        ))
+
+        val locationOrderDecode: List<LocationOrderItem> = Json.decodeFromString(locationOrder.value)
+        val visibleLocationOrder = locationOrderDecode.filter { it.visible }
+
+        val iconMap = mapOf(
+            //since the global village menu no longer exists, i've mapped the RCC icon to it for now until I can get a proper one.
+            "ninelewis"     to R.drawable.ninelewis,
+            "cowellstev"    to R.drawable.cowellstevenson,
+            "crownmerrill"  to R.drawable.crownmerrill,
+            "porterkresge"  to R.drawable.porterkresge,
+            "carsonoakes"   to R.drawable.globalvillagecafe,
+            "perkcoffee"    to R.drawable.perkcoffeebars,
+            "terrafresca"   to R.drawable.terrafresca,
+            "portermarket"  to R.drawable.portermarket,
+            "stevcoffee"    to R.drawable.stevensoncoffeehouse,
+            "globalvillage" to R.drawable.globalvillagecafe,
+            "oakescafe"     to R.drawable.oakescafe,
+            "settings"      to R.drawable.settings
+        )
+
+        TwoPane(
+            first = {
+                Scaffold { paddingValues ->
+                    AdaptiveNavCardList(
+                        navController = navController,
+                        innerPadding = paddingValues,
+                        inputLocationOrder = visibleLocationOrder,
+                        iconMap = iconMap
+                    )
+                }
+            },
+            second = {
+                BuildNavHost(navController, visibleLocationOrder[0].navLocation, themeChoice, useMaterialYou, useAmoledTheme, userSettings)
+            },
+            strategy = HorizontalTwoPaneStrategy(0.4f),
+            displayFeatures = LocalDisplayFeatures.current.features,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+@Composable
+fun BuildNavHost(
+    navController: NavHostController = rememberNavController(),
+    startDestination: String = "home",
+    themeChoice: State<Int>,
+    useMaterialYou: State<Boolean>,
+    useAmoledTheme: State<Boolean>,
+    userSettings: PreferencesDatastore,
+) {
     NavHost(
+        navController = navController,
         // modifier necessary to stop animation bug?
         modifier = Modifier.fillMaxSize(),
-        navController = navController,
         startDestination = startDestination,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }
@@ -587,5 +693,107 @@ fun Init(startDestination: String, themeChoice: MutableState<Int>, useMaterialYo
             )
         }
 
+    }
+}
+
+@Composable
+fun AdaptiveNavCardList(navController: NavController, innerPadding: PaddingValues, inputLocationOrder: List<LocationOrderItem>, iconMap: Map<String, Int>) {
+
+    val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+    // combine the padding values given by scaffold with the padding for bottom bar, so parts of
+    // the grid aren't stuck behind the bottom bar
+    val paddingAmount = 10.dp
+    val contentPadding = PaddingValues(start = paddingAmount, top = paddingAmount, end = paddingAmount, bottom = paddingAmount+navPadding)
+
+    val locationOrder = inputLocationOrder.plus(LocationOrderItem("settings", "Settings", true))
+
+    LazyColumn(
+        contentPadding = contentPadding,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues = innerPadding),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        items(locationOrder.size) { index ->
+            val location: String = locationOrder[index].navLocation
+            val name: String = locationOrder[index].locationName.replace("Perks", "Perk Coffee Bars")
+
+            // try to get icon from dictionary, default to nine/lewis icon if it isn't listed for some reason to avoid crash
+            // in practice, this should never need to fall back to the default.
+            val icon = iconMap.getOrDefault(location, R.drawable.ninelewis)
+
+            val currentDestination = navController.currentBackStackEntryFlow.collectAsStateWithLifecycle(navController.currentBackStackEntry)
+            val selected = currentDestination.value?.destination?.route == locationOrder[index].navLocation
+
+            Box(Modifier.heightIn(max=120.dp)) {
+                Card(
+                    onClick = {
+                        if (!selected) {
+                            navController.navigate(locationOrder[index].navLocation)
+                            Log.d(TAG, "Current destination: "+navController.currentDestination?.route.toString())
+                        }
+                    },
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier
+                        // todo get this to work properly and not cut off width
+//                    .heightIn(max = 120.dp)
+                        .aspectRatio(4f)
+                        .fillMaxWidth(),
+                    colors = if (selected) {
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(30.dp)
+                        )
+                    } else {
+                        CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                    }
+
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+
+                        // without this, the nine/lewis icon looks larger than the others despite being the same weight
+                        // extra padding instead of lower weight prevents it from taking up less space than the other icons
+                        val imageModifier = if (icon == R.drawable.ninelewis) {
+                            Modifier
+                                .aspectRatio(1f)
+                                .weight(0.4f)
+                                .padding(22.dp)
+                        } else {
+                            Modifier
+                                .aspectRatio(1f)
+                                .weight(0.4f)
+                                .padding(14.dp)
+                        }
+
+                        // a little start padding helps text not be too close to the icon
+                        val textModifier = Modifier
+                            .weight(1f)
+                            .padding(start = 8.dp)
+
+                        // no content description provided - image is purely decorative
+                        Image(
+                            painter = painterResource(icon),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
+                            alignment = Alignment.Center,
+                            modifier = imageModifier
+                        )
+
+                        Text(
+                            text = name,
+                            textAlign = TextAlign.Left,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontSize = 18.sp,
+                            modifier = textModifier
+                        )
+                    }
+                }
+            }
+        }
     }
 }

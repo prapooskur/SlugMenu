@@ -89,7 +89,10 @@ fun CollapsingLargeTopBar(
                 )
             },
             navigationIcon = {
-                if (!isHome && LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
+                if (
+                    !isHome &&
+                    (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference)
+                ) {
                     IconButton(
                         onClick = {
                             if (isClickable.value) {
@@ -112,7 +115,8 @@ fun CollapsingLargeTopBar(
                 }
             },
             actions = {
-                if (isHome) {
+                if (isHome &&
+                    (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference)) {
                     IconButton(onClick = { navController.navigate("settings") }) {
                         Icon(
                             imageVector = Icons.Outlined.Settings,
@@ -148,7 +152,6 @@ fun TopBar(
     trailingIcon: ImageVector = Icons.Default.Warning,
     iconDescription: String = "",
     iconPressed: MutableState<Boolean> = mutableStateOf(false),
-    twoPane: Boolean = false
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -162,7 +165,8 @@ fun TopBar(
                 )
             },
             navigationIcon = {
-                if (!isHome || (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT && twoPane)) {
+                if (!isHome &&
+                    (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference)) {
                     IconButton(onClick = {
                         if (isClickable.value) {
                             isClickable.value = !isClickable.value
@@ -180,7 +184,8 @@ fun TopBar(
                 }
             },
             actions = {
-                if (isHome) {
+                if (isHome &&
+                    (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference)) {
                     IconButton(onClick = { navController.navigate("settings") }) {
                         Icon(
                             imageVector = Icons.Outlined.Settings,
@@ -207,7 +212,7 @@ fun TopBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarClean(titleText: String, navController: NavController, twoPane: Boolean = false) {
+fun TopBarClean(titleText: String, navController: NavController) {
     TopAppBar(
         title = {
             Text(
@@ -217,7 +222,7 @@ fun TopBarClean(titleText: String, navController: NavController, twoPane: Boolea
             )
         },
         navigationIcon = {
-            if (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT && twoPane) {
+            if (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference) {
                 IconButton(onClick = {navController.navigateUp()}) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
@@ -232,7 +237,7 @@ fun TopBarClean(titleText: String, navController: NavController, twoPane: Boolea
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog: MutableState<Boolean> = mutableStateOf(false), twoPane: Boolean = false) {
+fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog: MutableState<Boolean> = mutableStateOf(false)) {
     TopAppBar(
         title = {
             Text(
@@ -242,7 +247,7 @@ fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog
             )
         },
         navigationIcon = {
-            if (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT && twoPane) {
+            if (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference) {
                 IconButton(onClick = {navController.navigateUp()}) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer

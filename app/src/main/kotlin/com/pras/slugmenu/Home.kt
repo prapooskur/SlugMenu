@@ -1,7 +1,6 @@
 package com.pras.slugmenu
 
 import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,14 +24,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,11 +42,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import androidx.window.core.layout.WindowWidthSizeClass
-import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
-import com.google.accompanist.adaptive.TwoPane
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -67,20 +61,9 @@ data class SelectedItem(val id: String)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDatastore) {
-    val useGridLayout = remember { mutableStateOf(true) }
-    val useCollapsingTopBar = remember { mutableStateOf(true) }
-    var locationOrder by remember { mutableStateOf(listOf<LocationOrderItem>()) }
-
-    runBlocking {
-        useGridLayout.value = preferencesDataStore.getListPreference.first()
-        useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
-        locationOrder = Json.decodeFromString(preferencesDataStore.getLocationOrder.first())
-    }
-
-    val themeChoice = remember { mutableIntStateOf(runBlocking { preferencesDataStore.getThemePreference.first() }) }
-    val useMaterialYou = remember { mutableStateOf(runBlocking { preferencesDataStore.getMaterialYouPreference.first() }) }
-    val useAmoledTheme = remember { mutableStateOf(runBlocking { preferencesDataStore.getAmoledPreference.first() }) }
-    val useTwoPanes = remember { mutableStateOf(runBlocking { preferencesDataStore.getPanePreference.first() }) }
+    val useGridLayout = preferencesDataStore.getListPreference.collectAsStateWithLifecycle(initialValue = true)
+    val useCollapsingTopBar = preferencesDataStore.getToolbarPreference.collectAsStateWithLifecycle(initialValue = true)
+    var locationOrder by remember { mutableStateOf(runBlocking {Json.decodeFromString<List<LocationOrderItem>>(preferencesDataStore.getLocationOrder.first())}) }
 
     // add rachel carson, hide global village
     LaunchedEffect(locationOrder) {
@@ -137,146 +120,57 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
         "settings"      to R.drawable.settings
     )
 
-    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-
-    if (windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT && useTwoPanes.value) {
-
-        // build a stack
-        val selectedDestination = remember { mutableStateListOf(visibleLocationOrder[0].navLocation) }
-
-        BackHandler(selectedDestination.size > 1) {
-            selectedDestination.removeLast()
-        }
-
-        TwoPane(
-            first = {
-                Scaffold { paddingValues ->
-                    AdaptiveCardList(
-                        clickAction = { item -> if (selectedDestination.last() != item.id) { selectedDestination.add(item.id) } },
-                        selectedItem = selectedDestination.last(),
-                        innerPadding = paddingValues,
-                        inputLocationOrder = locationOrder,
-                        iconMap = iconMap
-                    )
-                }
-
-            },
-            second = {
-                when(selectedDestination.last()) {
-                    "ninelewis" -> DiningMenu(navController,"Nine/Lewis","40&locationName=College+Nine%2fJohn+R.+Lewis+Dining+Hall&naFlag=1")
-                    "cowellstev" -> DiningMenu(navController,"Cowell/Stevenson","05&locationName=Cowell%2fStevenson+Dining+Hall&naFlag=1")
-                    "crownmerrill" -> DiningMenu(
-                        navController,
-                        "Crown/Merrill",
-                        "20&locationName=Crown%2fMerrill+Dining+Hall&naFlag=1"
-                    )
-                    "porterkresge" -> DiningMenu(
-                        navController,
-                        "Porter/Kresge",
-                        "25&locationName=Porter%2fKresge+Dining+Hall&naFlag=1"
-                    )
-                    "carsonoakes" -> DiningMenu(
-                        navController,
-                        "Carson/Oakes",
-                        "30&locationName=Rachel+Carson%2fOakes+Dining+Hall&naFlag=1"
-                    )
-                    "perkcoffee" -> NonDiningMenu(
-                        navController,
-                        "Perk Coffee Bars",
-                        "22&locationName=Perk+Coffee+Bars&naFlag=1"
-                    )
-                    "terrafresca" -> NonDiningMenu(
-                        navController,
-                        "Terra Fresca",
-                        "45&locationName=UCen+Coffee+Bar&naFlag=1"
-                    )
-                    "portermarket" -> NonDiningMenu(
-                        navController,
-                        "Porter Market",
-                        "50&locationName=Porter+Market&naFlag=1"
-                    )
-                    "stevcoffee" -> NonDiningMenu(
-                        navController,
-                        "Stevenson Coffee House",
-                        "26&locationName=Stevenson+Coffee+House&naFlag=1"
-                    )
-                    "globalvillage" -> NonDiningMenu(
-                        navController,
-                        "Global Village Cafe",
-                        "46&locationName=Global+Village+Cafe&naFlag=1"
-                    )
-                    "oakescafe" -> OakesCafeMenu(
-                        navController,
-                        "Oakes Cafe",
-                        "23&locationName=Oakes+Cafe&naFlag=1"
-                    )
-                    "settings" -> SettingsScreen(
-                        navController = navController,
-                        useMaterialYou = useMaterialYou,
-                        useAmoledBlack = useAmoledTheme,
-                        themeChoice = themeChoice,
-                        preferencesDataStore = preferencesDataStore
-                    )
-                    else -> throw Throwable("wtf")
-                }
-            },
-            strategy = HorizontalTwoPaneStrategy(0.4f),
-            displayFeatures = LocalDisplayFeatures.current.features
-        )
-
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+        rememberTopAppBarState(),
+        canScroll = { true })
+    val scaffoldModifier = if (useCollapsingTopBar.value) {
+        Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
     } else {
-        val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            rememberTopAppBarState(),
-            canScroll = { true })
-        val scaffoldModifier = if (useCollapsingTopBar.value) {
-            Modifier
-                .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-        } else {
-            Modifier.fillMaxSize()
-        }
+        Modifier.fillMaxSize()
+    }
 
-        Scaffold(
-            modifier = scaffoldModifier,
-            // custom insets necessary to render behind nav bar
-            contentWindowInsets = WindowInsets(0.dp),
-            topBar = {
-                if (useCollapsingTopBar.value) {
-                    CollapsingLargeTopBar(
+    Scaffold(
+        modifier = scaffoldModifier,
+        // custom insets necessary to render behind nav bar
+        contentWindowInsets = WindowInsets(0.dp),
+        topBar = {
+            if (useCollapsingTopBar.value) {
+                CollapsingLargeTopBar(
+                    titleText = "Slug Menu",
+                    navController = navController,
+                    scrollBehavior = scrollBehavior,
+                    isHome = true
+                )
+            } else {
+                Surface(shadowElevation = 4.dp) {
+                    TopBar(
                         titleText = "Slug Menu",
                         navController = navController,
-                        scrollBehavior = scrollBehavior,
                         isHome = true
-                    )
-                } else {
-                    Surface(shadowElevation = 4.dp) {
-                        TopBar(
-                            titleText = "Slug Menu",
-                            navController = navController,
-                            isHome = true
-                        )
-                    }
-                }
-            },
-            content = { innerPadding ->
-                if (useGridLayout.value) {
-                    TwoByTwoGridWithIcons(
-                        navController = navController,
-                        innerPadding = innerPadding,
-                        locationOrder = visibleLocationOrder,
-                        iconMap = iconMap
-                    )
-                } else {
-                    CardListWithIcons(
-                        navController = navController,
-                        innerPadding = innerPadding,
-                        locationOrder = visibleLocationOrder,
-                        iconMap = iconMap
                     )
                 }
             }
-        )
-    }
+        },
+        content = { innerPadding ->
+            if (useGridLayout.value) {
+                TwoByTwoGridWithIcons(
+                    navController = navController,
+                    innerPadding = innerPadding,
+                    locationOrder = visibleLocationOrder,
+                    iconMap = iconMap
+                )
+            } else {
+                CardListWithIcons(
+                    navController = navController,
+                    innerPadding = innerPadding,
+                    locationOrder = visibleLocationOrder,
+                    iconMap = iconMap
+                )
+            }
+        }
+    )
 }
 
 @Composable
