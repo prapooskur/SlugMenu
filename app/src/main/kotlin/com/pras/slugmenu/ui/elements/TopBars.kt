@@ -1,4 +1,4 @@
-package com.pras.slugmenu
+package com.pras.slugmenu.ui.elements
 
 import android.util.Log
 import androidx.compose.material.icons.Icons
@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
 import androidx.window.core.layout.WindowWidthSizeClass
+import com.pras.slugmenu.LocalDisplayFeatures
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

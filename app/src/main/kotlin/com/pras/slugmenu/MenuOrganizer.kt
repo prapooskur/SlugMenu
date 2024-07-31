@@ -40,6 +40,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.pras.slugmenu.data.repositories.PreferencesRepository
+import com.pras.slugmenu.ui.elements.CollapsingLargeTopBar
+import com.pras.slugmenu.ui.elements.TopBar
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -51,11 +54,6 @@ import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 
-/*
-@Serializable
-data class LocationOrderList(val locationOrder: List<LocationOrderItem>)
- */
-
 private const val TAG = "MenuOrganizer"
 
 @Serializable
@@ -63,13 +61,13 @@ data class LocationOrderItem(val navLocation: String, val locationName: String, 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuOrganizer(navController: NavController, preferencesDataStore: PreferencesDatastore) {
+fun MenuOrganizer(navController: NavController, preferencesRepository: PreferencesRepository) {
 
     var locationOrder: List<LocationOrderItem>
     val useCollapsingTopBar = remember { mutableStateOf(true) }
     runBlocking {
-        locationOrder = Json.decodeFromString(preferencesDataStore.getLocationOrder.first())
-        useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
+        locationOrder = Json.decodeFromString(preferencesRepository.getLocationOrder.first())
+        useCollapsingTopBar.value = preferencesRepository.getToolbarPreference.first()
     }
 
     val resetPressed = remember { mutableStateOf(false) }
@@ -125,13 +123,13 @@ fun MenuOrganizer(navController: NavController, preferencesDataStore: Preference
             }
         },
         content = { paddingValues ->
-            ReorderableLocationList(locationOrderInput = locationOrder, preferencesDataStore = preferencesDataStore, paddingValues = paddingValues, resetPressed = resetPressed)
+            ReorderableLocationList(locationOrderInput = locationOrder, preferencesRepository = preferencesRepository, paddingValues = paddingValues, resetPressed = resetPressed)
         }
     )
 }
 
 @Composable
-fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, preferencesDataStore: PreferencesDatastore, paddingValues: PaddingValues, resetPressed: MutableState<Boolean> = mutableStateOf(false)) {
+fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, preferencesRepository: PreferencesRepository, paddingValues: PaddingValues, resetPressed: MutableState<Boolean> = mutableStateOf(false)) {
 
     val locationOrderState = remember { mutableStateOf(locationOrderInput) }
     val coroutineScope = rememberCoroutineScope()
@@ -145,7 +143,7 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
                 add(to.index, removeAt(from.index))
             }
             coroutineScope.launch {
-                preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrderState.value.toList()))
+                preferencesRepository.setLocationOrder(Json.encodeToString(locationOrderState.value.toList()))
             }
 
         }
@@ -194,7 +192,7 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
                                 isVisible = !isVisible
                                 item.visible = isVisible
                                 coroutineScope.launch {
-                                    preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrderState.value))
+                                    preferencesRepository.setLocationOrder(Json.encodeToString(locationOrderState.value))
                                 }
                             },
                             colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(elevation.value))
@@ -221,7 +219,7 @@ fun ReorderableLocationList(locationOrderInput: List<LocationOrderItem>, prefere
                 LocationOrderItem(navLocation = "globalvillage", locationName = "Global Village Cafe", visible = false),
                 LocationOrderItem(navLocation = "oakescafe", locationName = "Oakes Cafe", visible = true)
             )
-            preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrderState.value))
+            preferencesRepository.setLocationOrder(Json.encodeToString(locationOrderState.value))
             resetPressed.value = false
             Log.d(TAG, "reset pressed, set preferences to default and set resetpressed to false.")
         }

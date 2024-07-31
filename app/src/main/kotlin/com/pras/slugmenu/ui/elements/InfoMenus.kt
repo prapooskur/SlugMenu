@@ -1,4 +1,4 @@
-package com.pras.slugmenu
+package com.pras.slugmenu.ui.elements
 
 import android.content.Context
 import android.util.Log
@@ -17,31 +17,21 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
+import com.pras.slugmenu.data.sources.AllHoursList
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
 import java.security.cert.CertPathValidatorException
 import java.security.cert.CertificateException
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.Period
-import java.time.format.DateTimeFormatter
 import javax.net.ssl.SSLHandshakeException
 
 private const val TAG = "InfoMenus"
@@ -63,7 +53,13 @@ fun exceptionText(e: Exception): String {
 }
 
 @Composable
-fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
+fun WaitzDialog(
+    showDialog: MutableState<Boolean>,
+    locationName: String,
+    waitzLoading: Boolean,
+    waitzException: Boolean,
+    waitzData: List<Map<String, List<String>>>
+) {
     //val locIndex = if (locationName == "Cowell/Stev") { "Cowell/Stevenson" } else { locationName }
 
     val locIndex = when (locationName) {
@@ -78,95 +74,14 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
         else -> locationName
     }
 
-    val dataLoadedState = remember { mutableStateOf(false) }
-
-    val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
-    val waitzDao = menuDatabase.waitzDao()
-    var waitzData by remember { mutableStateOf<List<Map<String,List<String>>>>(listOf(mapOf(),mapOf())) }
-    var exceptionFound by remember { mutableStateOf("No Exception") }
-
-    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-    var currentTime by remember { mutableStateOf(LocalDateTime.now().format(dateFormatter).toString()) }
-
-    LaunchedEffect(Unit) {
-
-        // Launch a coroutine to retrieve the menu from the databasey
-        withContext(Dispatchers.IO) {
-            val cachedWaitzData = waitzDao.getData("dh-oakes")
-            if (cachedWaitzData != null && cachedWaitzData.cacheTime == currentTime) {
-                waitzData = listOf(WaitzTypeConverters().fromWaitzString(cachedWaitzData.live),WaitzTypeConverters().fromWaitzString(cachedWaitzData.compare))
-                dataLoadedState.value = true
-            } else {
-                try {
-                    waitzData = getWaitzDataAsync()
-                    waitzDao.insertWaitz(
-                        Waitz (
-                            "dh-oakes",
-                            currentTime,
-                            WaitzTypeConverters().fromWaitzList(waitzData[0]),
-                            WaitzTypeConverters().fromWaitzList(waitzData[1])
-                        )
-                    )
-                } catch (e: Exception) {
-                    exceptionFound = when (e) {
-                        is UnresolvedAddressException -> "No Internet connection"
-                        is SocketTimeoutException -> "Connection timed out"
-                        is UnknownHostException -> "Failed to resolve URL"
-                        is CertificateException -> "Website's SSL certificate is invalid"
-                        is SSLHandshakeException -> "SSL handshake failed"
-                        else -> "Exception: $e"
-                    }
-                }
-                dataLoadedState.value = true
-            }
-
-        }
-    }
-
-    if (showDialog.value && currentTime != LocalDateTime.now().format(dateFormatter).toString()) {
-        dataLoadedState.value = false
-        val updatedTime = LocalDateTime.now().format(dateFormatter).toString()
-
-        LaunchedEffect(Unit) {
-            // Launch a coroutine to update the menu
-            withContext(Dispatchers.IO) {
-                try {
-                    waitzData = getWaitzDataAsync()
-                    waitzDao.insertWaitz(
-                        Waitz (
-                            "dh-oakes",
-                            updatedTime,
-                            WaitzTypeConverters().fromWaitzList(waitzData[0]),
-                            WaitzTypeConverters().fromWaitzList(waitzData[1])
-                        )
-                    )
-                } catch (e: Exception) {
-                    exceptionFound = when (e) {
-                        is UnresolvedAddressException -> "No Internet connection"
-                        is SocketTimeoutException -> "Connection timed out"
-                        is UnknownHostException -> "Failed to resolve URL"
-                        is CertificateException -> "Website's SSL certificate is invalid"
-                        is SSLHandshakeException -> "SSL handshake failed"
-                        else -> "Exception: $e"
-                    }
-                }
-                dataLoadedState.value = true
-            }
-            currentTime = updatedTime
-        }
-    }
-
-    if (showDialog.value && exceptionFound != "No Exception") {
+    if (showDialog.value && waitzException) {
         showDialog.value = false
-        shortToast(exceptionFound, LocalContext.current)
-        Log.d(TAG, "waitz error: $exceptionFound")
-    } else if (showDialog.value) {
-        Log.d(TAG,currentTime)
-        Log.d(TAG,LocalDateTime.now().format(dateFormatter).toString())
+        Log.d(TAG, "waitz error")
+    } else if (showDialog.value && waitzData.size == 2) {
         val locationData = waitzData[0][locIndex] ?: waitzData[0]["$locIndex College"]
         val compareData = waitzData[1][locIndex]
 
-        if (!dataLoadedState.value) {
+        if (waitzLoading) {
             AlertDialog(
                 onDismissRequest = {
                     showDialog.value = false
@@ -175,7 +90,7 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
                     Text(text = "⚫ Waitz: $locationName")
                 },
                 text = {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(strokeCap = StrokeCap.Round)
                 },
                 confirmButton = {
                     TextButton(
@@ -227,7 +142,6 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
                                         "Next hour: ${compareData[0].substring(18)}\n" +
                                         "Today: ${compareData[1].substring(9)}\n" +
                                         "Peak hours: ${compareData[2].substring(15)}\n" +
-                                        //"Best location: ${compareData[3].substringBefore(" is best right now")}",
                                         "Best location: ${compareData[3].substring(0,compareData[3].length-18)}",
                                 fontSize = 16.sp
                             )
@@ -250,55 +164,17 @@ fun WaitzDialog(showDialog: MutableState<Boolean>, locationName: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: SheetState, locationName: String) {
-    val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
-    val hoursDao = menuDatabase.hoursDao()
-    val currentDate = LocalDate.now()
+fun HoursBottomSheet(
+    openBottomSheet: MutableState<Boolean>,
+    bottomSheetState: SheetState,
+    locationName: String,
+    hoursLoading: Boolean,
+    hoursException: Boolean,
+    allHoursList: AllHoursList
+) {
 
-    val dataLoadedState = remember { mutableStateOf(false) }
-    var allHoursList by remember { mutableStateOf(AllHoursList()) }
-    var exceptionFound by remember { mutableStateOf("No Exception") }
-
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            val cachedHoursData = hoursDao.getHours("dh-nondh-oakes")
-            if (cachedHoursData != null && Period.between(LocalDate.parse(cachedHoursData.cacheDate), currentDate).days < 7) {
-                allHoursList = HoursTypeConverters().fromHoursString(cachedHoursData.hours)
-                dataLoadedState.value = true
-            } else {
-                try {
-                    allHoursList = getHoursData()
-                    hoursDao.insertHours(
-                        Hours(
-                            "dh-nondh-oakes",
-                            HoursTypeConverters().fromHoursList(allHoursList),
-                            currentDate.toString()
-                        )
-                    )
-                } catch (e: Exception) {
-                    allHoursList = if (cachedHoursData != null) {
-                        HoursTypeConverters().fromHoursString(cachedHoursData.hours)
-                    } else {
-                        Json.decodeFromString(fallbackHoursJson)
-                    }
-                    exceptionFound = when (e) {
-                        is UnresolvedAddressException -> "No Internet connection"
-                        is SocketTimeoutException -> "Connection timed out"
-                        is UnknownHostException -> "Failed to resolve URL"
-                        is CertificateException -> "Website's SSL certificate is invalid"
-                        is SSLHandshakeException -> "SSL handshake failed"
-                        else -> "Exception: $e"
-                    }
-                }
-                dataLoadedState.value = true
-            }
-        }
-    }
-
-    if (openBottomSheet.value && exceptionFound != "No Exception") {
-//        openBottomSheet.value = false
-        shortToast("Failed to get hours, falling back to cached data", LocalContext.current)
-        Log.d(TAG, "hours error: $exceptionFound")
+    if (openBottomSheet.value && hoursException) {
+        shortToast("Failed to get updated hours, falling back to hardcoded data", LocalContext.current)
     }
 
     if (openBottomSheet.value) {
@@ -322,7 +198,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                 thickness = 2.dp
             )
 
-            if (dataLoadedState.value) {
+            if (!hoursLoading) {
                 LazyColumn {
                     // custom handling for perks, since three separate locations exist
                     if (locationName == "Perk Coffee Bars") {
@@ -474,7 +350,7 @@ fun HoursBottomSheet(openBottomSheet: MutableState<Boolean>, bottomSheetState: S
                         .padding(top = 16.dp),
                     contentAlignment = Alignment.TopCenter
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(strokeCap = StrokeCap.Round)
                 }
             }
         }

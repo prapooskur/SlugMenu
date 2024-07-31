@@ -68,6 +68,11 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.pras.slugmenu.BackgroundDownloadScheduler.runSingleDownload
+import com.pras.slugmenu.data.repositories.PreferencesRepository
+import com.pras.slugmenu.data.scrapers.getLatestVersion
+import com.pras.slugmenu.ui.elements.CollapsingLargeTopBar
+import com.pras.slugmenu.ui.elements.TopBar
+import com.pras.slugmenu.ui.elements.shortToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -83,7 +88,7 @@ private const val TAG = "Settings"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(navController: NavController, useMaterialYou: State<Boolean>, useAmoledBlack: State<Boolean>, themeChoice: State<Int>, preferencesDataStore: PreferencesDatastore) {
+fun SettingsScreen(navController: NavController, useMaterialYou: State<Boolean>, useAmoledBlack: State<Boolean>, themeChoice: State<Int>, preferencesDataStore: PreferencesRepository) {
 
     val useCollapsingTopBar = preferencesDataStore.getToolbarPreference.collectAsStateWithLifecycle(false)
     val useTwoPanes = preferencesDataStore.getPanePreference.collectAsStateWithLifecycle(false)
@@ -276,7 +281,7 @@ fun SettingsScreen(navController: NavController, useMaterialYou: State<Boolean>,
 // function to display header text for each section
 // could this be replaced with a text style?
 @Composable
-fun SectionText(text: String) {
+private fun SectionText(text: String) {
     Text(
         text = text,
         style = MaterialTheme.typography.titleMedium,
@@ -290,7 +295,7 @@ fun SectionText(text: String) {
 
 
 @Composable
-fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: State<Int>) {
+private fun ThemeSwitcher(preferencesDataStore: PreferencesRepository, themeChoice: State<Int>) {
     val themeOptions = listOf("System Default", "Light", "Dark")
     val coroutineScope = rememberCoroutineScope()
 
@@ -336,7 +341,7 @@ fun ThemeSwitcher(preferencesDataStore: PreferencesDatastore, themeChoice: State
 }
 
 @Composable
-fun MaterialYouSwitcher(useMaterialYou: State<Boolean>, preferencesDataStore: PreferencesDatastore) {
+private fun MaterialYouSwitcher(useMaterialYou: State<Boolean>, preferencesDataStore: PreferencesRepository) {
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier.clickable(
             onClick = {
@@ -365,7 +370,7 @@ fun MaterialYouSwitcher(useMaterialYou: State<Boolean>, preferencesDataStore: Pr
 }
 
 @Composable
-fun AmoledSwitcher(useAmoledBlack: State<Boolean>, preferencesDataStore: PreferencesDatastore) {
+private fun AmoledSwitcher(useAmoledBlack: State<Boolean>, preferencesDataStore: PreferencesRepository) {
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier.clickable(
             onClick = {
@@ -394,7 +399,7 @@ fun AmoledSwitcher(useAmoledBlack: State<Boolean>, preferencesDataStore: Prefere
 }
 
 @Composable
-fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
+private fun LayoutSwitcher(preferencesDataStore: PreferencesRepository) {
     val themeOptions = listOf("Grid", "List")
     val currentChoice = remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
@@ -458,7 +463,7 @@ fun LayoutSwitcher(preferencesDataStore: PreferencesDatastore) {
 }
 
 @Composable
-fun PaneSwitcher(usePane: State<Boolean>, preferencesDataStore: PreferencesDatastore) {
+private fun PaneSwitcher(usePane: State<Boolean>, preferencesDataStore: PreferencesRepository) {
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier.clickable(
         onClick = {
@@ -486,7 +491,7 @@ fun PaneSwitcher(usePane: State<Boolean>, preferencesDataStore: PreferencesDatas
 }
 
 @Composable
-fun MenuOrganizerNavigator(navController: NavController) {
+private fun MenuOrganizerNavigator(navController: NavController) {
     ListItem(
         leadingContent = {
             Icon(
@@ -502,7 +507,7 @@ fun MenuOrganizerNavigator(navController: NavController) {
 }
 
 @Composable
-fun FavoritesNavigator(navController: NavController) {
+private fun FavoritesNavigator(navController: NavController) {
     ListItem(
         leadingContent = {
             Icon(
@@ -518,7 +523,7 @@ fun FavoritesNavigator(navController: NavController) {
 }
 
 @Composable
-fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar: State<Boolean>) {
+private fun TopAppBarSwitcher(preferencesDataStore: PreferencesRepository, useLargeTopBar: State<Boolean>) {
     val coroutineScope = rememberCoroutineScope()
     Row(modifier = Modifier.clickable(
         onClick = {
@@ -548,7 +553,7 @@ fun TopAppBarSwitcher(preferencesDataStore: PreferencesDatastore, useLargeTopBar
 }
 
 @Composable
-fun BackgroundUpdateSwitcher(updateInBackground: State<Boolean>, preferencesDataStore: PreferencesDatastore, context: Context) {
+private fun BackgroundUpdateSwitcher(updateInBackground: State<Boolean>, preferencesDataStore: PreferencesRepository, context: Context) {
     val coroutineScope = rememberCoroutineScope()
     val backgroundDownloadScheduler = BackgroundDownloadScheduler
     Row(modifier = Modifier.clickable(
@@ -594,36 +599,26 @@ fun BackgroundUpdateSwitcher(updateInBackground: State<Boolean>, preferencesData
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun ItemNotificationSwitcher(sendItemNotifications: State<Boolean>, showNotificationDialog: MutableState<Boolean>, preferencesDataStore: PreferencesDatastore) {
+private fun ItemNotificationSwitcher(sendItemNotifications: State<Boolean>, showNotificationDialog: MutableState<Boolean>, preferencesDataStore: PreferencesRepository) {
     val coroutineScope = rememberCoroutineScope()
     val notificationPermissionState = rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
     val favoritetext = "Will notify when favorites exist."
     Row(
         modifier = Modifier.clickable {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (
-                    notificationPermissionState.status.shouldShowRationale &&
-                    !notificationPermissionState.status.isGranted
-                ) {
+                if (notificationPermissionState.status.shouldShowRationale) {
                     Log.d(TAG,"Setting to false, permission not granted")
-//                    sendItemNotifications.value = false
                     coroutineScope.launch {
                         preferencesDataStore.setNotificationPreference(false)
                     }
                 } else if (notificationPermissionState.status.isGranted) {
-//                    sendItemNotifications.value = !sendItemNotifications.value
                     coroutineScope.launch {
                         preferencesDataStore.setNotificationPreference(!sendItemNotifications.value)
                     }
+                } else {
+                    notificationPermissionState.launchPermissionRequest()
                 }
-//                coroutineScope.launch {
-//                    preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
-//                }
             } else {
-//                sendItemNotifications.value = !sendItemNotifications.value
-//                coroutineScope.launch {
-//                    preferencesDataStore.setNotificationPreference(sendItemNotifications.value)
-//                }
                 coroutineScope.launch {
                     preferencesDataStore.setNotificationPreference(!sendItemNotifications.value)
                 }
@@ -776,7 +771,7 @@ fun TestNotificationButton(showNotificationDialog: MutableState<Boolean>) {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun ItemNotificationDialog(showDialog: MutableState<Boolean>) {
+private fun ItemNotificationDialog(showDialog: MutableState<Boolean>) {
     val notificationPermissionState = rememberPermissionState(android.Manifest.permission.POST_NOTIFICATIONS)
     if (showDialog.value) {
         AlertDialog(
@@ -810,7 +805,7 @@ fun ItemNotificationDialog(showDialog: MutableState<Boolean>) {
 }
 
 @Composable
-fun BackgroundOneTimeDownload(context: Context) {
+private fun BackgroundOneTimeDownload(context: Context) {
     ListItem(
         headlineContent = {
             Text(
@@ -825,7 +820,7 @@ fun BackgroundOneTimeDownload(context: Context) {
 }
 
 @Composable
-fun ClearCache(menuDatabase: MenuDatabase, context: Context) {
+private fun ClearCache(menuDatabase: MenuDatabase, context: Context) {
     ListItem(
         headlineContent = { Text("Clear App Cache") },
         supportingContent = { Text("Clears menu and busyness data for all locations.") },
@@ -843,7 +838,7 @@ fun ClearCache(menuDatabase: MenuDatabase, context: Context) {
 }
 
 @Composable
-fun AboutNavigator(navController: NavController, installedFromPlayStore: Boolean = false, appVersion: String = BuildConfig.VERSION_NAME) {
+private fun AboutNavigator(navController: NavController, installedFromPlayStore: Boolean = false, appVersion: String = BuildConfig.VERSION_NAME) {
     ListItem(
         leadingContent = {
             Icon(
@@ -865,7 +860,7 @@ fun AboutNavigator(navController: NavController, installedFromPlayStore: Boolean
 }
 
 @Composable
-fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState<String>, updateAvailable: MutableState<Boolean>) {
+private fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState<String>, updateAvailable: MutableState<Boolean>) {
     var latestVersion  by remember { mutableStateOf(appVersion) }
     var exceptionFound by remember { mutableStateOf("") }
     ListItem(
@@ -910,7 +905,7 @@ fun UpdateChecker(context: Context, appVersion: String, newVersion: MutableState
 }
 
 @Composable
-fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableState<String>, context: Context) {
+private fun UpdateDialog(updateAvailable: MutableState<Boolean>, newVersion: MutableState<String>, context: Context) {
     if (updateAvailable.value) {
         AlertDialog(
             onDismissRequest = { updateAvailable.value = false },

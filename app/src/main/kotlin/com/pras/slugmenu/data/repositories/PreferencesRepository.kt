@@ -1,4 +1,4 @@
-package com.pras.slugmenu
+package com.pras.slugmenu.data.repositories
 
 import android.util.Log
 import androidx.datastore.core.DataStore
@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.pras.slugmenu.LocationOrderItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -15,7 +16,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.IOException
 
-class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
+// no associated dataSource, directly pulls from datastore
+class PreferencesRepository(private val dataStore: DataStore<Preferences>) {
 
     private companion object {
         val USE_GRID_UI = booleanPreferencesKey("use_grid_ui")
@@ -27,8 +29,25 @@ class PreferencesDatastore(private val dataStore: DataStore<Preferences>) {
         val ENABLE_BACKGROUND_UPDATES = booleanPreferencesKey("enable_background_updates")
         val SEND_ITEM_NOTIFICATIONS = booleanPreferencesKey("send_item_notifications")
         val LOCATION_ORDER = stringPreferencesKey("location_order")
-//        val ICON_PREF = booleanPreferencesKey("icon_pref")
         const val TAG = "UserPreferencesRepo"
+    }
+
+    suspend fun setStringPreference(prefKey: String, prefValue: String) {
+        dataStore.edit { preferences ->
+            preferences[stringPreferencesKey(prefKey)] = prefValue
+        }
+    }
+
+    suspend fun setIntPreference(prefKey: String, prefValue: Int) {
+        dataStore.edit { preferences ->
+            preferences[intPreferencesKey(prefKey)] = prefValue
+        }
+    }
+
+    suspend fun setBoolPreference(prefKey: String, prefValue: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[booleanPreferencesKey(prefKey)] = prefValue
+        }
     }
 
     val getListPreference: Flow<Boolean> = dataStore.data

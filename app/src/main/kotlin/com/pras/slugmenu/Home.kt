@@ -25,7 +25,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,6 +44,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.pras.slugmenu.data.repositories.PreferencesRepository
+import com.pras.slugmenu.ui.elements.CollapsingLargeTopBar
+import com.pras.slugmenu.ui.elements.TopBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -60,10 +62,10 @@ data class SelectedItem(val id: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDatastore) {
-    val useGridLayout = preferencesDataStore.getListPreference.collectAsStateWithLifecycle(initialValue = true)
-    val useCollapsingTopBar = preferencesDataStore.getToolbarPreference.collectAsStateWithLifecycle(initialValue = true)
-    var locationOrder by remember { mutableStateOf(runBlocking {Json.decodeFromString<List<LocationOrderItem>>(preferencesDataStore.getLocationOrder.first())}) }
+fun HomeScreen(navController: NavController, preferencesRepository: PreferencesRepository) {
+    val useGridLayout = preferencesRepository.getListPreference.collectAsStateWithLifecycle(initialValue = true)
+    val useCollapsingTopBar = preferencesRepository.getToolbarPreference.collectAsStateWithLifecycle(initialValue = true)
+    var locationOrder by remember { mutableStateOf(runBlocking {Json.decodeFromString<List<LocationOrderItem>>(preferencesRepository.getLocationOrder.first())}) }
 
     // add rachel carson, hide global village
     LaunchedEffect(locationOrder) {
@@ -97,7 +99,7 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
                 )
             }
             withContext(Dispatchers.IO) {
-                preferencesDataStore.setLocationOrder(Json.encodeToString(locationOrder))
+                preferencesRepository.setLocationOrder(Json.encodeToString(locationOrder))
             }
         }
     }
@@ -155,14 +157,14 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
         },
         content = { innerPadding ->
             if (useGridLayout.value) {
-                TwoByTwoGridWithIcons(
+                TwoByTwoGrid(
                     navController = navController,
                     innerPadding = innerPadding,
                     locationOrder = visibleLocationOrder,
                     iconMap = iconMap
                 )
             } else {
-                CardListWithIcons(
+                CardList(
                     navController = navController,
                     innerPadding = innerPadding,
                     locationOrder = visibleLocationOrder,
@@ -174,7 +176,7 @@ fun HomeScreen(navController: NavController, preferencesDataStore: PreferencesDa
 }
 
 @Composable
-fun TwoByTwoGridWithIcons(navController: NavController, innerPadding: PaddingValues, locationOrder: List<LocationOrderItem>, iconMap: Map<String, Int>) {
+fun TwoByTwoGrid(navController: NavController, innerPadding: PaddingValues, locationOrder: List<LocationOrderItem>, iconMap: Map<String, Int>) {
 
     var clickable by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
@@ -272,7 +274,7 @@ fun TwoByTwoGridWithIcons(navController: NavController, innerPadding: PaddingVal
 }
 
 @Composable
-fun CardListWithIcons(navController: NavController, innerPadding: PaddingValues, locationOrder: List<LocationOrderItem>, iconMap: Map<String, Int>) {
+fun CardList(navController: NavController, innerPadding: PaddingValues, locationOrder: List<LocationOrderItem>, iconMap: Map<String, Int>) {
 
     var clickable by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
@@ -369,101 +371,6 @@ fun CardListWithIcons(navController: NavController, innerPadding: PaddingValues,
     }
 }
 
-@Composable
-fun AdaptiveCardList(clickAction: (SelectedItem) -> Unit, selectedItem: String, innerPadding: PaddingValues, inputLocationOrder: List<LocationOrderItem>, iconMap: Map<String, Int>) {
-
-    val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-
-    // combine the padding values given by scaffold with the padding for bottom bar, so parts of
-    // the grid aren't stuck behind the bottom bar
-    val paddingAmount = 10.dp
-    val contentPadding = PaddingValues(start = paddingAmount, top = paddingAmount, end = paddingAmount, bottom = paddingAmount+navPadding)
-
-    val locationOrder = inputLocationOrder.plus(LocationOrderItem("settings", "Settings", true))
-
-    LazyColumn(
-        contentPadding = contentPadding,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues = innerPadding),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        items(locationOrder.size) { index ->
-            val location: String = locationOrder[index].navLocation
-            val name: String = locationOrder[index].locationName.replace("Perks", "Perk Coffee Bars")
-            val selected = selectedItem == locationOrder[index].navLocation
-
-            // try to get icon from dictionary, default to nine/lewis icon if it isn't listed for some reason to avoid crash
-            // in practice, this should never need to fall back to the default.
-            val icon = iconMap.getOrDefault(location, R.drawable.ninelewis)
-
-            Card(
-                onClick = {
-                    clickAction(SelectedItem(location))
-                },
-                shape = MaterialTheme.shapes.small,
-                modifier = Modifier
-                    // todo get this to work properly and not cut off width
-//                    .heightIn(max = 120.dp)
-                    .aspectRatio(4f)
-                    .fillMaxWidth(),
-                colors = if (selected) {
-                    CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(30.dp)
-                    )
-                } else {
-                    CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-                }
-
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-
-                    // without this, the nine/lewis icon looks larger than the others despite being the same weight
-                    // extra padding instead of lower weight prevents it from taking up less space than the other icons
-                    val imageModifier = if (icon == R.drawable.ninelewis) {
-                        Modifier
-                            .aspectRatio(1f)
-                            .weight(0.4f)
-                            .padding(22.dp)
-                    } else {
-                        Modifier
-                            .aspectRatio(1f)
-                            .weight(0.4f)
-                            .padding(14.dp)
-                    }
-
-                    // a little start padding helps text not be too close to the icon
-                    val textModifier = Modifier
-                        .weight(1f)
-                        .padding(start = 8.dp)
-
-                    // no content description provided - image is purely decorative
-                    Image(
-                        painter = painterResource(icon),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
-                        alignment = Alignment.Center,
-                        modifier = imageModifier
-                    )
-
-                    Text(
-                        text = name,
-                        textAlign = TextAlign.Left,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontSize = 18.sp,
-                        modifier = textModifier
-                    )
-                }
-            }
-        }
-    }
-}
-
 
 @Preview
 @Composable
@@ -496,7 +403,7 @@ fun GridPreview() {
         "oakescafe"     to R.drawable.oakescafe
     )
 
-    TwoByTwoGridWithIcons(navController = navController, innerPadding = innerPadding, locationOrder = locationOrder, iconMap = iconMap)
+    TwoByTwoGrid(navController = navController, innerPadding = innerPadding, locationOrder = locationOrder, iconMap = iconMap)
     //CardListWithIcons(navController = navController, innerPadding = innerPadding, locationOrder = locationOrder, iconMap = iconMap)
 }
 
@@ -531,5 +438,5 @@ fun ListPreview() {
         "oakescafe"     to R.drawable.oakescafe
     )
 
-    CardListWithIcons(navController = navController, innerPadding = innerPadding, locationOrder = locationOrder, iconMap = iconMap)
+    CardList(navController = navController, innerPadding = innerPadding, locationOrder = locationOrder, iconMap = iconMap)
 }

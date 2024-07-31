@@ -28,19 +28,29 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.pras.slugmenu.ui.elements.HoursBottomSheet
 import com.pras.slugmenu.ui.elements.LongPressFloatingActionButton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.pras.slugmenu.ui.elements.SwipableTabBar
+import com.pras.slugmenu.ui.elements.TopBarClean
+import com.pras.slugmenu.ui.elements.TopBarWaitz
+import com.pras.slugmenu.ui.elements.WaitzDialog
+import com.pras.slugmenu.ui.elements.shortToast
+import com.pras.slugmenu.ui.viewmodels.MenuViewModel
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -49,73 +59,63 @@ private const val TAG = "DiningMenu"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiningMenu(navController: NavController, locationName: String, locationUrl: String) {
+fun DiningMenu(
+    navController: NavController,
+    locationName: String,
+    locationUrl: String,
+    viewModel: MenuViewModel = viewModel(factory = MenuViewModel.Factory)
+) {
 
-    val currentDate = LocalDate.now()
-
-    val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
-    val menuDao = menuDatabase.menuDao()
-    val favoritesDao = menuDatabase.favoritesDao()
-
-    // Define a state to hold the retrieved Menu
-    var menuList by remember { mutableStateOf<List<List<String>>>(listOf(listOf(), listOf())) }
-
-    // Define a state indicating whether the data has been loaded from the cache
-    val dataLoadedState = remember { mutableStateOf(false) }
-
-    var showDatePicker by remember { mutableStateOf(false) }
+    var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy")
     val titleDateFormat = DateTimeFormatter.ofPattern("M/dd/yy")
-    val encodedDate = currentDate.format(dateFormat).replace("-", "%2f")
-    Log.d(TAG, "current date: $encodedDate")
 
-    val showBottomSheet = remember { mutableStateOf(false) }
-
-    val showWaitzDialog = remember { mutableStateOf(false) }
+    val showBottomSheet = rememberSaveable { mutableStateOf(false) }
+    val showWaitzDialog = rememberSaveable { mutableStateOf(false) }
 
     val toastContext = LocalContext.current
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val haptics = LocalHapticFeedback.current
 
-    LaunchedEffect(Unit) {
-        // Launch a coroutine to retrieve the menu from the database
-        withContext(Dispatchers.IO) {
-            val menu = menuDao.getMenu(locationName)
-            //return cached menu if it was cached today, get new data if it wasn't
-            if (menu != null && menu.cacheDate == currentDate.toString()) {
-                menuList = MenuTypeConverters().fromString(menu.menus)
-                dataLoadedState.value = true
-            } else {
-                try {
-                    menuList = getDiningMenuAsync(locationUrl)
-                    menuDao.insertMenu(
-                        Menu(
-                            locationName,
-                            MenuTypeConverters().fromList(menuList),
-                            currentDate.toString()
-                        )
-                    )
-                } catch (e: Exception) {
-                    val exceptionFound = exceptionText(e)
-                    withContext(Dispatchers.Main) {
-                        shortToast(exceptionFound, toastContext)
-                    }
-                }
-                dataLoadedState.value = true
-            }
+    LaunchedEffect(key1 = Unit) {
+        viewModel.fetchMenu(locationName, locationUrl)
+        viewModel.fetchWaitz()
+        viewModel.fetchHours()
+    }
+
+    LaunchedEffect(key1 = uiState.value.error) {
+        if (uiState.value.error.isNotBlank()) {
+            shortToast(uiState.value.error, toastContext)
+            viewModel.clearError()
         }
     }
 
     Column {
-        if (dataLoadedState.value) {
+        if (!uiState.value.menuLoading) {
             // If the data has been loaded from the cache, display the menu
             Scaffold(
                 // custom insets necessary to render behind nav bar
                 contentWindowInsets = WindowInsets(0.dp),
 
                 topBar = {
-                    TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
+                    TopBarWaitz(
+                        titleText = locationName,
+                        navController = navController,
+                        showWaitzDialog = showWaitzDialog
+                    )
                 },
-                content = {padding ->
-                    SwipableTabBar(menuArray = menuList, favoritesDao = favoritesDao, padding = padding)
+                content = { padding ->
+                    SwipableTabBar(
+                        menuArray = uiState.value.menus,
+                        onFavorite = {
+                            viewModel.insertFavorite(it)
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        },
+                        onFullCollapse = {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        },
+                        padding = padding
+                    )
                 },
                 //floating action button
                 // opens date picker on click, opens bottom sheet on long click
@@ -159,8 +159,6 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                                 Log.d(TAG, "location date name: $locationDateName")
                                 val encodedLocationName = URLEncoder.encode(locationDateName, "UTF-8")
 
-//                                Log.d(TAG,"route: \"customdiningdate/$locationUrl/$dateUrl/$encodedLocationName\"")
-//                                navController.navigate("customdiningdate/$locationUrl/$dateUrl/$encodedLocationName")
                                 val encodedLocation = CustomDiningDate(locationUrl, dateUrl, encodedLocationName)
                                 Log.d(TAG,"route: $encodedLocation")
                                 navController.navigate(encodedLocation)
@@ -188,9 +186,22 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
             }
 
             Column(modifier = Modifier.fillMaxHeight()) {
-                HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = rememberModalBottomSheetState(), locationName = locationName.substringBefore(" "))
+                HoursBottomSheet(
+                    openBottomSheet = showBottomSheet,
+                    bottomSheetState = rememberModalBottomSheetState(),
+                    locationName = locationName.substringBefore(" "),
+                    hoursLoading = uiState.value.hoursLoading,
+                    hoursException = uiState.value.error.isNotEmpty(),
+                    allHoursList = uiState.value.hours
+                )
             }
-            WaitzDialog(showDialog = showWaitzDialog, locationName = locationName.replace("Stevenson", "Stev"))
+            WaitzDialog(
+                showDialog = showWaitzDialog,
+                locationName = locationName.replace("Stevenson", "Stev"),
+                waitzLoading = uiState.value.waitzLoading,
+                waitzException = uiState.value.error.isNotEmpty(),
+                waitzData = uiState.value.waitz
+            )
 
 
         } else {
@@ -206,7 +217,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
                     .padding(top = 16.dp),
                 contentAlignment = Alignment.TopCenter
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(strokeCap = StrokeCap.Round)
             }
         }
     }
@@ -216,10 +227,7 @@ fun DiningMenu(navController: NavController, locationName: String, locationUrl: 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String, dateUrl: String, inputLocationName: String) {
-
-    val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
-    val favoritesDao = menuDatabase.favoritesDao()
+fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String, dateUrl: String, inputLocationName: String, viewModel: MenuViewModel = viewModel(factory = MenuViewModel.Factory)) {
 
     val locationName = URLDecoder.decode(inputLocationName, "UTF-8")
     val locationUrl = inputLocationUrl.replace("/", "%2f")
@@ -231,35 +239,33 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
 
     Log.d(TAG,"full url: $fullUrl")
 
-    var showDatePicker by remember { mutableStateOf(false) }
+    var showDatePicker by rememberSaveable { mutableStateOf(false) }
     val dateFormat = DateTimeFormatter.ofPattern("M-dd-yyyy")
     val titleDateFormat = DateTimeFormatter.ofPattern("M/dd/yy")
 
-    val dataLoadedState = remember { mutableStateOf(false) }
+    val showBottomSheet = rememberSaveable { mutableStateOf(false) }
 
-    val showBottomSheet = remember { mutableStateOf(false) }
-
-    var menuList: List<List<String>> by remember { mutableStateOf(listOf(listOf(), listOf(), listOf(), listOf())) }
-
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     val toastContext = LocalContext.current
+    val haptics = LocalHapticFeedback.current
 
-    LaunchedEffect(Unit) {
-        // Launch a coroutine to retrieve the menu from the database
-        withContext(Dispatchers.IO) {
-            try {
-                menuList = getDiningMenuAsync(fullUrl)
-            } catch (e: Exception) {
-                val exceptionFound = exceptionText(e)
-                withContext(Dispatchers.Main) {
-                    shortToast(exceptionFound, toastContext)
-                }
-            }
-            dataLoadedState.value = true
+    LaunchedEffect(key1 = Unit) {
+        viewModel.fetchMenu(
+            locationName = locationName,
+            locationUrl = locationUrl,
+            checkCache = false
+        )
+    }
+
+    LaunchedEffect(key1 = uiState.value.error) {
+        if (uiState.value.error.isNotBlank()) {
+            shortToast(uiState.value.error, toastContext)
+            viewModel.clearError()
         }
     }
 
     Column {
-        if (dataLoadedState.value) {
+       if (!uiState.value.menuLoading) {
             // If the data has been loaded from the internet, display the menu
             Scaffold(
                 // custom insets necessary to render behind nav bar
@@ -268,7 +274,17 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                     TopBarClean(titleText = locationName, navController = navController)
                 },
                 content = {padding ->
-                    SwipableTabBar(menuArray = menuList, favoritesDao = favoritesDao, padding = padding)
+                    SwipableTabBar(
+                        menuArray = uiState.value.menus,
+                        onFavorite = {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.insertFavorite(it)
+                        },
+                        onFullCollapse = {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        },
+                        padding = padding
+                    )
                 },
                 //floating action button, currently shows date picker on short press and hours on long press
 
@@ -313,7 +329,6 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                                 val strippedLocationUrl = locationUrl.substringBefore("&WeeksMenus=UCSC+-+This+Week's+Menus&myaction=read&dtdate=")
 
                                 navController.navigateUp()
-//                                navController.navigate("customdiningdate/$strippedLocationUrl/$newDateUrl/$encodedLocationName")
                                 val encodedLocation = CustomDiningDate(
                                     strippedLocationUrl,
                                     newDateUrl,
@@ -344,9 +359,15 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                 }
             }
 
-            val bottomSheetState = rememberModalBottomSheetState()
             Column(modifier = Modifier.fillMaxHeight()) {
-                HoursBottomSheet(openBottomSheet = showBottomSheet, bottomSheetState = bottomSheetState, locationName = locationName.substringBefore(" "))
+                HoursBottomSheet(
+                    openBottomSheet = showBottomSheet,
+                    bottomSheetState = rememberModalBottomSheetState(),
+                    locationName = locationName.substringBefore(" "),
+                    hoursLoading = uiState.value.hoursLoading,
+                    hoursException = uiState.value.error.isNotEmpty(),
+                    allHoursList = uiState.value.hours
+                )
             }
 
         } else {
@@ -362,7 +383,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                     .padding(top = 16.dp),
                 contentAlignment = Alignment.TopCenter
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(strokeCap = StrokeCap.Round)
             }
         }
     }

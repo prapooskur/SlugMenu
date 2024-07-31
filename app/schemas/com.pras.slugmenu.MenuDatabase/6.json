@@ -1,0 +1,136 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 6,
+    "identityHash": "bc34cc7bea189b6579f3389d75997122",
+    "entities": [
+      {
+        "tableName": "menu",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`location` TEXT NOT NULL, `menus` TEXT NOT NULL, `cacheDate` TEXT NOT NULL, PRIMARY KEY(`location`))",
+        "fields": [
+          {
+            "fieldPath": "location",
+            "columnName": "location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "menus",
+            "columnName": "menus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cacheDate",
+            "columnName": "cacheDate",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "location"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "waitz",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`location` TEXT NOT NULL, `cacheTime` TEXT NOT NULL, `live` TEXT NOT NULL, `compare` TEXT NOT NULL, PRIMARY KEY(`location`))",
+        "fields": [
+          {
+            "fieldPath": "location",
+            "columnName": "location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cacheTime",
+            "columnName": "cacheTime",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "live",
+            "columnName": "live",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "compare",
+            "columnName": "compare",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "location"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "hours",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`location` TEXT NOT NULL, `hours` TEXT NOT NULL, `cacheDate` TEXT NOT NULL, PRIMARY KEY(`location`))",
+        "fields": [
+          {
+            "fieldPath": "location",
+            "columnName": "location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hours",
+            "columnName": "hours",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cacheDate",
+            "columnName": "cacheDate",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "location"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "favorites",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL COLLATE NOCASE, PRIMARY KEY(`name`))",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "name"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bc34cc7bea189b6579f3389d75997122')"
+    ]
+  }
+}

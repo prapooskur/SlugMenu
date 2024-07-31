@@ -15,6 +15,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import com.pras.slugmenu.data.sources.AllHoursList
+import com.pras.slugmenu.data.sources.MenuSection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -24,7 +26,7 @@ private const val TAG = "Room"
 @Entity(tableName = "menu")
 data class Menu(
     @PrimaryKey val location: String,
-    val menus: String,
+    val menus: List<List<MenuSection>>,
     val cacheDate: String,
 )
 
@@ -32,14 +34,14 @@ data class Menu(
 data class Waitz(
     @PrimaryKey val location: String,
     val cacheTime: String,
-    val live: String,
-    val compare: String,
+    val live: Map<String,List<String>>,
+    val compare: Map<String,List<String>>,
 )
 
 @Entity(tableName = "hours")
 data class Hours(
     @PrimaryKey val location: String,
-    val hours: String,
+    val hours: AllHoursList,
     val cacheDate: String
 )
 
@@ -63,13 +65,13 @@ interface MenuDao {
 
 class MenuTypeConverters {
     @TypeConverter
-    fun fromString(value: String): List<List<String>> {
+    fun fromString(value: String): List<List<MenuSection>> {
         Log.d(TAG,"from string value: $value")
         return(Json.decodeFromString(value))
     }
 
     @TypeConverter
-    fun fromList(value: List<List<String>>): String {
+    fun fromList(value: List<List<MenuSection>>): String {
         Log.d(TAG,"from list value: $value")
         return(Json.encodeToString(value))
     }
@@ -152,7 +154,7 @@ interface FavoritesDao {
 }
 
 
-@Database(version = 5, entities = [Menu::class, Waitz::class, Hours::class, Favorite::class])
+@Database(version = 6, entities = [Menu::class, Waitz::class, Hours::class, Favorite::class])
 @TypeConverters(MenuTypeConverters::class, WaitzTypeConverters::class, HoursTypeConverters::class)
 abstract class MenuDatabase : RoomDatabase() {
     abstract fun menuDao(): MenuDao

@@ -1,4 +1,4 @@
-package com.pras.slugmenu
+package com.pras.slugmenu.data.scrapers
 
 import android.util.Log
 import io.ktor.client.HttpClient

@@ -44,7 +44,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -79,6 +78,7 @@ import androidx.window.layout.DisplayFeature
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.calculateDisplayFeatures
+import com.pras.slugmenu.data.repositories.PreferencesRepository
 import com.pras.slugmenu.ui.theme.SlugMenuTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
@@ -109,7 +109,6 @@ data class DisplayFeatures(
 val LocalDisplayFeatures = compositionLocalOf { DisplayFeatures() }
 
 class MainActivity : ComponentActivity() {
-    private lateinit var preferencesDatastore: PreferencesDatastore
     override fun onCreate(savedInstanceState: Bundle?) {
 
         lifecycleScope.launch {
@@ -143,18 +142,18 @@ class MainActivity : ComponentActivity() {
         // This also sets up the initial system bar style based on the platform theme
         enableEdgeToEdge()
 
-        preferencesDatastore = PreferencesDatastore(dataStore)
+        val preferencesRepository = PreferencesRepository(dataStore)
 
         setContent {
-            val initThemeChoice = runBlocking { preferencesDatastore.getThemePreference.first() }
-            val initUseMaterialYou = runBlocking { preferencesDatastore.getMaterialYouPreference.first() }
-            val initUseAmoledTheme = runBlocking { preferencesDatastore.getAmoledPreference.first() }
-            val initUseTwoPane = runBlocking { preferencesDatastore.getPanePreference.first() }
+            val initThemeChoice = runBlocking { preferencesRepository.getThemePreference.first() }
+            val initUseMaterialYou = runBlocking { preferencesRepository.getMaterialYouPreference.first() }
+            val initUseAmoledTheme = runBlocking { preferencesRepository.getAmoledPreference.first() }
+            val initUseTwoPane = runBlocking { preferencesRepository.getPanePreference.first() }
 
-            val themeChoice = preferencesDatastore.getThemePreference.collectAsStateWithLifecycle(initThemeChoice)
-            val useMaterialYou = preferencesDatastore.getMaterialYouPreference.collectAsStateWithLifecycle(initUseMaterialYou)
-            val useAmoledTheme = preferencesDatastore.getAmoledPreference.collectAsStateWithLifecycle(initUseAmoledTheme)
-            val useTwoPane = preferencesDatastore.getPanePreference.collectAsStateWithLifecycle(initUseTwoPane)
+            val themeChoice = preferencesRepository.getThemePreference.collectAsStateWithLifecycle(initThemeChoice)
+            val useMaterialYou = preferencesRepository.getMaterialYouPreference.collectAsStateWithLifecycle(initUseMaterialYou)
+            val useAmoledTheme = preferencesRepository.getAmoledPreference.collectAsStateWithLifecycle(initUseAmoledTheme)
+            val useTwoPane = preferencesRepository.getPanePreference.collectAsStateWithLifecycle(initUseTwoPane)
 
             val useDarkTheme = when (themeChoice.value) {1 -> false 2 -> true else -> isSystemInDarkTheme() }
 
@@ -192,7 +191,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        Init("home", themeChoice, useMaterialYou, useAmoledTheme, preferencesDatastore)
+                        Init("home", preferencesRepository)
                     }
                 }
             }
@@ -241,7 +240,7 @@ data class CustomDiningDate(val locationUrl: String, val dateUrl: String, val lo
 const val DELAYTIME = 350
 const val FADETIME = 200
 @Composable
-fun Init(startDestination: String, themeChoice: State<Int>, useMaterialYou: State<Boolean>, useAmoledTheme: State<Boolean>, userSettings: PreferencesDatastore) {
+fun Init(startDestination: String, userSettings: PreferencesRepository) {
 
     val navController = rememberNavController()
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
@@ -251,12 +250,19 @@ fun Init(startDestination: String, themeChoice: State<Int>, useMaterialYou: Stat
 
     LaunchedEffect(key1 = showTwoPanes) {
         if (!showTwoPanes) {
-            navController.popBackStack("home", false, false)
+            navController.popBackStack(route = "home", inclusive = false, saveState = false)
+        }
+    }
+
+    // todo get this working
+    LaunchedEffect(key1 = windowSizeClass) {
+        if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
+            navController.popBackStack(route = "home", inclusive = false, saveState = false)
         }
     }
 
     if (!showTwoPanes) {
-        BuildNavHost(navController, startDestination, themeChoice, useMaterialYou, useAmoledTheme, userSettings)
+        BuildNavHost(navController, startDestination, userSettings)
     } else {
 
         // build two pane structure outside the nav hierarchy
@@ -277,10 +283,13 @@ fun Init(startDestination: String, themeChoice: State<Int>, useMaterialYou: Stat
                     LocationOrderItem(navLocation = "globalvillage", locationName = "Global Village Cafe", visible = false),
                     LocationOrderItem(navLocation = "oakescafe", locationName = "Oakes Cafe", visible = true)
                 )
-        ))
+            )
+        )
+//        val locationOrder = runBlocking { userSettings.getLocationOrder.first() }
 
         val locationOrderDecode: List<LocationOrderItem> = Json.decodeFromString(locationOrder.value)
         val visibleLocationOrder = locationOrderDecode.filter { it.visible }
+        val initialNavLocation = remember { visibleLocationOrder.getOrNull(0)?.navLocation ?: "ninelewis" }
 
         val iconMap = mapOf(
             //since the global village menu no longer exists, i've mapped the RCC icon to it for now until I can get a proper one.
@@ -310,7 +319,7 @@ fun Init(startDestination: String, themeChoice: State<Int>, useMaterialYou: Stat
                 }
             },
             second = {
-                BuildNavHost(navController, visibleLocationOrder[0].navLocation, themeChoice, useMaterialYou, useAmoledTheme, userSettings)
+                BuildNavHost(navController, initialNavLocation, userSettings)
             },
             strategy = HorizontalTwoPaneStrategy(0.4f),
             displayFeatures = LocalDisplayFeatures.current.features,
@@ -323,11 +332,11 @@ fun Init(startDestination: String, themeChoice: State<Int>, useMaterialYou: Stat
 fun BuildNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: String = "home",
-    themeChoice: State<Int>,
-    useMaterialYou: State<Boolean>,
-    useAmoledTheme: State<Boolean>,
-    userSettings: PreferencesDatastore,
+    userSettings: PreferencesRepository,
 ) {
+
+    // instantiate viewModels
+
     NavHost(
         navController = navController,
         // modifier necessary to stop animation bug?
@@ -340,7 +349,7 @@ fun BuildNavHost(
             "home",
             enterTransition = { fadeIn() },
             exitTransition = { fadeOut() }
-        ) { HomeScreen(navController = navController, preferencesDataStore = userSettings) }
+        ) { HomeScreen(navController = navController, preferencesRepository = userSettings) }
         composable(
             "ninelewis",
             enterTransition = {
@@ -628,13 +637,14 @@ fun BuildNavHost(
             exitTransition = { fadeOut() }
 
         ) {
-            SettingsScreen(
-                navController,
-                useMaterialYou,
-                useAmoledTheme,
-                themeChoice,
-                userSettings
-            )
+//            SettingsScreen(
+//                navController,
+//                useMaterialYou,
+//                useAmoledTheme,
+//                themeChoice,
+//                userSettings
+//            )
+            SettingsNew(navController = navController)
         }
 
         //about menu

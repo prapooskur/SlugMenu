@@ -21,3 +21,5 @@ install.sh
 install.ps1
 uninstall.ps1
 installgeneric.ps1
+
+.kotlin

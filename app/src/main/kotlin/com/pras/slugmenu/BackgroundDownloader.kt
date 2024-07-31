@@ -21,6 +21,12 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.pras.slugmenu.data.repositories.MenuRepository
+import com.pras.slugmenu.data.repositories.PreferencesRepository
+import com.pras.slugmenu.data.sources.HoursDataSource
+import com.pras.slugmenu.data.sources.MenuDataSource
+import com.pras.slugmenu.data.sources.RoomDataSource
+import com.pras.slugmenu.data.sources.WaitzDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -51,7 +57,19 @@ private const val CHANNEL_ID = "FAVORITES"
 //todo update to also download location hours?
 class BackgroundDownloadWorker(context: Context, params: WorkerParameters): CoroutineWorker(context, params) {
 
-    private val preferencesDatastore = PreferencesDatastore(context.dataStore)
+    private val menuRepository: MenuRepository by lazy {
+        val roomDatabase = MenuDatabase.getInstance(applicationContext)
+        val roomDataSource = RoomDataSource(roomDatabase.menuDao(), roomDatabase.waitzDao(), roomDatabase.hoursDao(), roomDatabase.favoritesDao())
+        val menuDataSource = MenuDataSource()
+        val waitzDataSource = WaitzDataSource()
+        val hoursDataSource = HoursDataSource()
+
+        MenuRepository(roomDataSource, menuDataSource, waitzDataSource, hoursDataSource)
+    }
+
+    private val preferencesRepository: PreferencesRepository by lazy {
+        PreferencesRepository(context.dataStore)
+    }
 
     override suspend fun doWork(): Result {
 
@@ -71,7 +89,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
 
         return try {
             if (locationList.isNotEmpty()) {
-                // Schema: three-element class of string/string/enum/bool
+                // Schema: three-element class of string/string/enum
                 // String 1: location name
                 // String 2: location URL
                 // Enum: type of menu (dining menu, non dining menu, oakes)
@@ -79,7 +97,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                 coroutineScope {
 
                     val notifyPreference = withContext(Dispatchers.IO) {
-                        preferencesDatastore.getNotificationPreference.first()
+                        preferencesRepository.getNotificationPreference.first()
                     }
 
                     val notifyPermissionGranted =
@@ -107,22 +125,22 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                         async(Dispatchers.IO) {
                             val locationName = location.name
                             val locationUrl = location.url
-                            val menuType = location.type
 
                             try {
                                 Log.d(TAG, "Downloading menu in background for $locationName")
-                                val menuList: List<List<String>> = when (menuType) {
-                                    LocationType.Dining     -> getDiningMenuAsync(locationUrl)
-                                    LocationType.NonDining  -> getSingleMenuAsync(locationUrl)
-                                    LocationType.Oakes      -> getOakesMenuAsync(locationUrl)
-                                }
+                                val menuList = menuRepository.fetchMenu(locationName, locationUrl)
                                 if (menuList.isNotEmpty()) {
                                     // send notifications if user has requested it, making sure to check if permissions were granted
-                                    // should this only notify for background downloads, or for both background and user-requested ones?
                                     if (notifyFavorites && favoritesExist) {
                                         // queue up favorited item notifications
                                         for (menu in menuList.indices) {
-                                            val favoritesList = favoritesDao.selectFavorites(menuList[menu].toSet())
+
+                                            // convert list of menusections to set
+                                            val mealSet = menuList[menu]
+                                                .flatMap { it.items }
+                                                .mapTo(mutableSetOf()) { it.name }
+
+                                            val favoriteList = favoritesDao.selectFavorites(mealSet)
                                             val time = when (menu) {
                                                 0 -> "Breakfast"
                                                 1 -> "Lunch"
@@ -130,7 +148,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                                 3 -> "Late Night"
                                                 else -> "Unknown?"
                                             }
-                                            for (favorite in favoritesList) {
+                                            for (favorite in favoriteList) {
                                                 // get item in the map associated with favorite at location if it exists, otherwise create a new entry
                                                 // then, update it with the proper times
                                                 val favoriteKey = favorite.name
@@ -142,10 +160,11 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
                                         }
                                     }
 
+                                    // todo see if this works
                                     menuDao.insertMenu(
                                         Menu(
                                             locationName,
-                                            MenuTypeConverters().fromList(menuList),
+                                            menuList,
                                             LocalDate.now().toString()
                                         )
                                     )

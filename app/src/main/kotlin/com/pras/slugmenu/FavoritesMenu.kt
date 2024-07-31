@@ -43,18 +43,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.pras.slugmenu.data.repositories.PreferencesRepository
+import com.pras.slugmenu.ui.elements.CollapsingLargeTopBar
 import com.pras.slugmenu.ui.elements.LongPressFloatingActionButton
+import com.pras.slugmenu.ui.elements.TopBar
+import com.pras.slugmenu.ui.elements.shortToast
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.Locale
 
 private const val TAG = "FavoritesMenu"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoritesMenu(navController: NavController, preferencesDataStore: PreferencesDatastore) {
+fun FavoritesMenu(navController: NavController, preferencesRepository: PreferencesRepository) {
 
-    val useCollapsingTopBar = runBlocking { preferencesDataStore.getToolbarPreference.first() }
+    val useCollapsingTopBar = runBlocking { preferencesRepository.getToolbarPreference.first() }
 
     val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
     val favoritesDao = menuDatabase.favoritesDao()
@@ -130,7 +135,7 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
                         modifier = Modifier.padding(8.dp)
                     )
                     Text(
-                        "Long-press dining hall items to add favorites",
+                        "Long-press menu items to add favorites",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(8.dp),
                     )
@@ -141,7 +146,8 @@ fun FavoritesMenu(navController: NavController, preferencesDataStore: Preference
                         .padding(paddingValues)
                         .fillMaxSize()
                 ) {
-                    items(favoritesList.value, key = { it.name }) { favorite ->
+                    val sortedFavorites = favoritesList.value.sortedBy { it.name.lowercase(Locale.getDefault()) }
+                    items(sortedFavorites, key = { it.name }) { favorite ->
                         ListItem(
                             headlineContent = {
                                 Text(favorite.name)

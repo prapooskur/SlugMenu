@@ -94,14 +94,14 @@ dependencies {
 
 
     implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.3")
-    implementation("androidx.activity:activity-ktx:1.9.0")
-    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
+    implementation("androidx.activity:activity-ktx:1.9.1")
+    implementation("androidx.activity:activity-compose:1.9.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
-    val composeUiVersion = "1.7.0-beta05"
+    val composeUiVersion = "1.7.0-beta06"
 
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
@@ -121,7 +121,7 @@ dependencies {
 
     // Android navigation
     // upgrading to compose 1.7 should have fixed bug?
-    implementation("androidx.navigation:navigation-compose:2.8.0-beta05")
+    implementation("androidx.navigation:navigation-compose:2.8.0-beta06")
 
     // Material 3
     val mat3Version = "1.2.1"
@@ -174,6 +174,9 @@ dependencies {
     implementation("androidx.compose.material3.adaptive:adaptive-layout:1.0.0-beta04")
     implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.0.0-beta04")
     implementation("com.google.accompanist:accompanist-adaptive:0.35.1-alpha")
+
+    // viewModelScope
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
 }
 
 

@@ -15,6 +15,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,24 +28,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import com.pras.slugmenu.data.repositories.PreferencesRepository
+import com.pras.slugmenu.ui.elements.CollapsingLargeTopBar
+import com.pras.slugmenu.ui.elements.TopBar
 
 private const val TAG = "About"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutScreen(navController: NavController, preferencesDataStore: PreferencesDatastore) {
-    val useCollapsingTopBar = remember { mutableStateOf(true) }
-    runBlocking {
-        useCollapsingTopBar.value = preferencesDataStore.getToolbarPreference.first()
-    }
+fun AboutScreen(navController: NavController, preferencesDataStore: PreferencesRepository) {
+    val useCollapsingTopBar = preferencesDataStore.getToolbarPreference.collectAsStateWithLifecycle(true)
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         rememberTopAppBarState(),
         canScroll = { true })
+
 
     val scaffoldModifier = if (useCollapsingTopBar.value) {
         Modifier
@@ -85,7 +88,14 @@ fun AboutScreen(navController: NavController, preferencesDataStore: PreferencesD
                     ContactItem(context = context)
                 }
                 item {
-                    SectionText(text = "Credits")
+                    Text(
+                        text = "Credits",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp)
+                    )
                 }
                 item {
                     CreditItem(
@@ -106,7 +116,6 @@ fun AboutScreen(navController: NavController, preferencesDataStore: PreferencesD
     )
 }
 
-//Not currently necessary, since the update checker already shows the version number
 @Composable
 fun AboutItem(appVersion: String) {
     ListItem(
