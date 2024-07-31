@@ -14,11 +14,11 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-#-renamesourcefileattribute SourceFile
+-renamesourcefileattribute SourceFile
 
 # needed for ktor - see https://youtrack.jetbrains.com/issue/KTOR-5528
 -dontwarn org.slf4j.impl.StaticLoggerBinder
@@ -26,4 +26,7 @@
 # needed to ignore jsr 305 warnings
 -dontwarn javax.annotation.Nullable
 -dontwarn javax.annotation.ParametersAreNonnullByDefault
+
+# the app is open-source anyway
+-dontobfuscate
 

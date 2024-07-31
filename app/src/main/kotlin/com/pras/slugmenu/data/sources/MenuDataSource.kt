@@ -15,6 +15,7 @@ import kotlinx.serialization.Serializable
 import org.jsoup.Jsoup
 import org.jsoup.select.Elements
 import java.security.cert.X509Certificate
+import java.util.Collections
 import javax.net.ssl.X509TrustManager
 
 @Serializable
@@ -178,9 +179,6 @@ class MenuDataSource {
                     }
 
                 }
-
-                // increment iterator
-
             }
 
             // add one last time after loop
@@ -192,6 +190,23 @@ class MenuDataSource {
 
                 currentCategory = ""
                 currentList.clear()
+            }
+
+            //swap double and single to stop them being printed out of order
+            // without the equality check, caramel latte was being swapped with cappuccino
+            for (currentSection in listItems) {
+                for ((itemIndex, item) in currentSection.items.withIndex()) {
+                    if (
+                        itemIndex < currentSection.items.size-2 &&
+                        item.name.contains("Double") &&
+                        currentSection.items[itemIndex+1].name.contains("Single") &&
+                        item.name.substringBefore(",") == currentSection.items[itemIndex+1].name.substringBefore(",")
+                    ) {
+                        Log.d(TAG, "swapping ${currentSection.items[itemIndex]} and ${currentSection.items[itemIndex+1]}")
+                        Collections.swap(currentSection.items,itemIndex,itemIndex+1)
+                        Log.d(TAG, "swapped ${currentSection.items[itemIndex]} and ${currentSection.items[itemIndex+1]}")
+                    }
+                }
             }
 
             allListItems.add(listItems)
