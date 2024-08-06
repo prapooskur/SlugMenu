@@ -30,10 +30,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -42,14 +42,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.pras.slugmenu.data.repositories.PreferencesRepository
 import com.pras.slugmenu.ui.elements.CollapsingLargeTopBar
 import com.pras.slugmenu.ui.elements.LongPressFloatingActionButton
 import com.pras.slugmenu.ui.elements.TopBar
 import com.pras.slugmenu.ui.elements.shortToast
+import com.pras.slugmenu.ui.viewmodels.FavoritesViewModel
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
@@ -57,18 +58,16 @@ private const val TAG = "FavoritesMenu"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoritesMenu(navController: NavController, preferencesRepository: PreferencesRepository) {
+fun FavoritesMenu(
+    navController: NavController,
+    preferencesRepository: PreferencesRepository,
+    viewModel: FavoritesViewModel = viewModel(factory = FavoritesViewModel.Factory)
+) {
+
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val favoritesList = uiState.value.favorites
 
     val useCollapsingTopBar = runBlocking { preferencesRepository.getToolbarPreference.first() }
-
-    val menuDatabase = MenuDatabase.getInstance(LocalContext.current)
-    val favoritesDao = menuDatabase.favoritesDao()
-
-    val favoritesList = favoritesDao.getFavoritesFlow().collectAsStateWithLifecycle(initialValue = listOf())
-    val coroutineScope = rememberCoroutineScope()
-
-    val showDeleteDialog = remember { mutableStateOf(false) }
-    val showAddDialog = remember { mutableStateOf(false) }
 
     // make it so that you can't accidentally press items while navigating out of screen
     val clickable = remember { mutableStateOf(true) }
@@ -86,6 +85,22 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
         Modifier.fillMaxSize()
     }
 
+    // todo refactor top bars to use callbacks so this isn't necessary
+    val showDeleteDialogLocal = rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(key1 = showDeleteDialogLocal.value) {
+        if (showDeleteDialogLocal.value) {
+            viewModel.setDeleteDialog(true)
+        }
+    }
+
+    val errorContext = LocalContext.current
+    LaunchedEffect(key1 = uiState.value.error) {
+        if (uiState.value.error.isNotEmpty()) {
+            shortToast(uiState.value.error, errorContext)
+            viewModel.clearError()
+        }
+    }
+
     Scaffold(
         modifier = scaffoldModifier,
         // custom insets necessary to render behind nav bar
@@ -100,7 +115,7 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
                     hasTrailingIcon = true,
                     trailingIcon = Icons.Default.Delete,
                     iconDescription = "Delete all favorites",
-                    iconPressed = showDeleteDialog,
+                    iconPressed = showDeleteDialogLocal,
                     isClickable = clickable,
                     delay = FADETIME.toLong()
                 )
@@ -112,7 +127,7 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
                         hasTrailingIcon = true,
                         trailingIcon = Icons.Default.Delete,
                         iconDescription = "Delete all favorites",
-                        iconPressed = showDeleteDialog,
+                        iconPressed = showDeleteDialogLocal,
                         isClickable = clickable,
                         delay = FADETIME.toLong()
                     )
@@ -120,7 +135,7 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
             }
         },
         content = { paddingValues ->
-            if (favoritesList.value.isEmpty()) {
+            if (favoritesList.isEmpty()) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -146,7 +161,7 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
                         .padding(paddingValues)
                         .fillMaxSize()
                 ) {
-                    val sortedFavorites = favoritesList.value.sortedBy { it.name.lowercase(Locale.getDefault()) }
+                    val sortedFavorites = favoritesList.sortedBy { it.name.lowercase(Locale.getDefault()) }
                     items(sortedFavorites, key = { it.name }) { favorite ->
                         ListItem(
                             headlineContent = {
@@ -155,9 +170,10 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
                             trailingContent = {
                                 IconButton(
                                     onClick = {
-                                        coroutineScope.launch {
-                                            favoritesDao.deleteFavorite(favorite)
-                                        }
+                                        viewModel.deleteFavorite(favorite)
+//                                        coroutineScope.launch {
+//                                            favoritesDao.deleteFavorite(favorite)
+//                                        }
                                     }
                                 ) {
                                     Icon(
@@ -176,8 +192,8 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
         },
         floatingActionButton = {
             LongPressFloatingActionButton(
-                onClick = { showAddDialog.value = !showAddDialog.value },
-                onLongClick = { showDeleteDialog.value = !showDeleteDialog.value },
+                onClick = { viewModel.toggleAddDialog() },
+                onLongClick = { viewModel.toggleDeleteDialog() },
                 modifier = Modifier.systemBarsPadding()
             ) {
                 Icon(Icons.Filled.Add,"Add new favorite")
@@ -186,18 +202,16 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
         floatingActionButtonPosition = FabPosition.End
     )
 
-    if (showDeleteDialog.value) {
+    if (uiState.value.showDeleteDialog) {
         AlertDialog(
             title = { Text(text = "Delete all favorites") },
             text = { Text(text = "Would you like to delete all favorited items?") },
-            onDismissRequest = { showDeleteDialog.value = false },
+            onDismissRequest = { viewModel.setDeleteDialog(false) },
             confirmButton = {
                 Button(
                     onClick = {
-                        coroutineScope.launch {
-                            favoritesDao.deleteAllFavorites()
-                        }
-                        showDeleteDialog.value = false
+                        viewModel.deleteAllFavorites()
+                        viewModel.setDeleteDialog(false)
                     },
                 ) {
                     Text("Confirm")
@@ -206,7 +220,7 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
             dismissButton = {
                 OutlinedButton(
                     onClick = {
-                        showDeleteDialog.value = false
+                        viewModel.setDeleteDialog(false)
                     },
                 ) {
                     Text("Dismiss")
@@ -217,28 +231,28 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
         )
     }
 
-    val name = remember { mutableStateOf("") }
     val context = LocalContext.current
-    if (showAddDialog.value) {
+    if (uiState.value.showAddDialog) {
         AlertDialog(
             title = { Text(text = "Add new favorite") },
-            text = { AddFavorite(name) },
-            onDismissRequest = { showAddDialog.value = false },
+            text = {
+                TextField(
+                    value = uiState.value.addDialogText,
+                    onValueChange = { viewModel.setAddDialogText(it) },
+                    label = { Text("Item Name") }
+                )
+            },
+            onDismissRequest = { viewModel.setAddDialog(false) },
             confirmButton = {
                 Button(
                     onClick = {
-                        coroutineScope.launch {
-                            if (favoritesDao.selectFavorite(name.value) == null) {
-                                favoritesDao.insertFavorite(
-                                    Favorite(
-                                        name = name.value.replace("\n","")
-                                    )
-                                )
-                                name.value = ""
-                                showAddDialog.value = false
-                            } else {
-                                shortToast("Item is already favorited", context)
-                            }
+                        val updatedName = uiState.value.addDialogText.replace("\n", "")
+                        if (!favoritesList.contains(Favorite(updatedName))) {
+                            viewModel.insertFavorite(Favorite(updatedName))
+                            viewModel.setAddDialogText("")
+                            viewModel.setAddDialog(false)
+                        } else {
+                            shortToast("Item is already favorited", context)
                         }
 
                     },
@@ -249,7 +263,7 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
             dismissButton = {
                 OutlinedButton(
                     onClick = {
-                        showAddDialog.value = false
+                        viewModel.setAddDialog(false)
                     },
                 ) {
                     Text("Dismiss")
@@ -257,13 +271,4 @@ fun FavoritesMenu(navController: NavController, preferencesRepository: Preferenc
             }
         )
     }
-}
-
-@Composable
-fun AddFavorite(name: MutableState<String>) {
-    TextField(
-        value = name.value,
-        onValueChange = { name.value = it },
-        label = { Text("Item Name") }
-    )
 }

@@ -12,6 +12,7 @@ import com.pras.slugmenu.data.sources.MenuSection
 import com.pras.slugmenu.data.sources.RoomDataSource
 import com.pras.slugmenu.data.sources.WaitzDataSource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -93,8 +94,20 @@ class MenuRepository(
         }
     }
 
+    suspend fun fetchFavorites(): Flow<List<Favorite>> {
+        return roomDataSource.fetchFavoritesFlow()
+    }
+
     suspend fun insertFavorite(item: Favorite) {
         roomDataSource.insertFavorite(item)
+    }
+
+    suspend fun deleteFavorite(item: Favorite) {
+        roomDataSource.deleteFavorite(item)
+    }
+
+    suspend fun deleteAllFavorites() {
+        roomDataSource.deleteAllFavorites()
     }
 
     suspend fun clearLocalData() {
