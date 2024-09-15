@@ -96,8 +96,8 @@ fun SwipableTabBar(
             // dinner from 5PM-8PM
             currentHour in 17..<20 -> 2
             // Late night from 8PM-11PM if available, keep showing dinner otherwise
-            currentHour in 20..23 && (menuArray[3].isNotEmpty()) -> 3
-            currentHour in 20..23 && (menuArray[3].isEmpty()) -> 2
+            currentHour in 20..23 && (menuArray.size > 3 && menuArray[3].isNotEmpty()) -> 3
+            currentHour in 20..23 && (menuArray.size <= 3 || menuArray[3].isEmpty()) -> 2
             // if all else fails (even though it never should), default to breakfast
             else -> 0
         }
