@@ -250,7 +250,9 @@ fun Init(startDestination: String, userSettings: PreferencesRepository) {
 
     LaunchedEffect(key1 = showTwoPanes) {
         if (!showTwoPanes) {
-            navController.popBackStack(route = "home", inclusive = false, saveState = false)
+            // currentdestination should never be null
+            navController.popBackStack(route = navController.currentDestination?.route ?: "home", true)
+            navController.navigate("home")
         }
     }
 
