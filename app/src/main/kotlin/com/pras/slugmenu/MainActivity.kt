@@ -350,7 +350,8 @@ fun Init(startDestination: String, userSettings: PreferencesRepository) {
                         navController = navController,
                         innerPadding = paddingValues,
                         inputLocationOrder = visibleLocationOrder,
-                        iconMap = iconMap
+                        iconMap = iconMap,
+                        inTwoPane = true
                     )
                 }
             },
@@ -743,7 +744,7 @@ fun BuildNavHost(
 }
 
 @Composable
-fun AdaptiveNavCardList(navController: NavController, innerPadding: PaddingValues, inputLocationOrder: List<LocationOrderItem>, iconMap: Map<String, Int>) {
+fun AdaptiveNavCardList(navController: NavController, innerPadding: PaddingValues, inputLocationOrder: List<LocationOrderItem>, iconMap: Map<String, Int>, inTwoPane: Boolean = false) {
 
     val navPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
@@ -804,11 +805,17 @@ fun AdaptiveNavCardList(navController: NavController, innerPadding: PaddingValue
 
                         // without this, the nine/lewis icon looks larger than the others despite being the same weight
                         // extra padding instead of lower weight prevents it from taking up less space than the other icons
-                        val imageModifier = if (icon == R.drawable.ninelewis) {
+                        // however, it looks weird in two-pane mode so make it a bit bigger there
+                        val imageModifier = if (icon == R.drawable.ninelewis && !inTwoPane) {
                             Modifier
                                 .aspectRatio(1f)
                                 .weight(0.4f)
                                 .padding(22.dp)
+                        } else if (icon == R.drawable.ninelewis && inTwoPane) {
+                            Modifier
+                                .aspectRatio(1f)
+                                .weight(0.4f)
+                                .padding(18.dp)
                         } else {
                             Modifier
                                 .aspectRatio(1f)
