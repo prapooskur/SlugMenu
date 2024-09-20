@@ -33,11 +33,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -51,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -235,16 +241,16 @@ fun TouchBlocker(navController: NavController, delay: Long, clickable: MutableSt
 @Serializable
 data class CustomDiningDate(val locationUrl: String, val dateUrl: String, val locationName: String)
 
-
-
 const val DELAYTIME = 350
 const val FADETIME = 200
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Init(startDestination: String, userSettings: PreferencesRepository) {
 
     val navController = rememberNavController()
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-    val useTwoPanes = userSettings.getPanePreference.collectAsStateWithLifecycle(false)
+
+    val useTwoPanes = userSettings.getPanePreference.collectAsStateWithLifecycle(runBlocking{userSettings.getPanePreference.first()})
 
     val showTwoPanes = (windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT && useTwoPanes.value)
 
@@ -256,7 +262,7 @@ fun Init(startDestination: String, userSettings: PreferencesRepository) {
         }
     }
 
-    // todo get this working
+    // when switching from large to small screen, return app to home and clear nav graph
     LaunchedEffect(key1 = windowSizeClass) {
         if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
             navController.popBackStack(route = "home", inclusive = false, saveState = false)
@@ -269,6 +275,8 @@ fun Init(startDestination: String, userSettings: PreferencesRepository) {
 
         // build two pane structure outside the nav hierarchy
         // this is so cursed
+
+        val useCollapsingTopBar = userSettings.getToolbarPreference.collectAsStateWithLifecycle(runBlocking{userSettings.getToolbarPreference.first()})
 
         val locationOrder = userSettings.getLocationOrder.collectAsStateWithLifecycle(
             initialValue = Json.encodeToString(
@@ -309,9 +317,35 @@ fun Init(startDestination: String, userSettings: PreferencesRepository) {
             "settings"      to R.drawable.settings
         )
 
+        val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            rememberTopAppBarState(),
+            canScroll = { true })
+
+        val scaffoldModifier = if (useCollapsingTopBar.value) {
+            Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+        } else {
+            Modifier.fillMaxSize()
+        }
+
         TwoPane(
             first = {
-                Scaffold { paddingValues ->
+                Scaffold (
+                    modifier = scaffoldModifier,
+                    topBar = {
+                        if (useCollapsingTopBar.value) {
+                            LargeTopAppBar(
+                                title = { Text("Slug Menu") },
+                                scrollBehavior = scrollBehavior
+                            )
+                        } else {
+                            TopAppBar(
+                                title = { Text("Slug Menu") }
+                            )
+                        }
+                    }
+                ) { paddingValues ->
                     AdaptiveNavCardList(
                         navController = navController,
                         innerPadding = paddingValues,

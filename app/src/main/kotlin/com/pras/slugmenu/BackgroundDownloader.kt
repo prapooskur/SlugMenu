@@ -33,7 +33,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -96,9 +95,7 @@ class BackgroundDownloadWorker(context: Context, params: WorkerParameters): Coro
 
                 coroutineScope {
 
-                    val notifyPreference = withContext(Dispatchers.IO) {
-                        preferencesRepository.getNotificationPreference.first()
-                    }
+                    val notifyPreference = preferencesRepository.getNotificationPreference.first()
 
                     val notifyPermissionGranted =
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
