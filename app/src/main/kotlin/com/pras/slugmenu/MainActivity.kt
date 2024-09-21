@@ -78,6 +78,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.toRoute
+import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import androidx.window.layout.DisplayFeature
@@ -252,7 +253,7 @@ fun Init(startDestination: String, userSettings: PreferencesRepository) {
 
     val useTwoPanes = userSettings.getPanePreference.collectAsStateWithLifecycle(runBlocking{userSettings.getPanePreference.first()})
 
-    val showTwoPanes = (windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT && useTwoPanes.value)
+    val showTwoPanes = (windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT && windowSizeClass.windowHeightSizeClass != WindowHeightSizeClass.COMPACT && useTwoPanes.value)
 
     LaunchedEffect(key1 = showTwoPanes) {
         if (!showTwoPanes) {
