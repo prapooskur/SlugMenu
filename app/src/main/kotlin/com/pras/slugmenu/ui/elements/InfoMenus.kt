@@ -323,25 +323,12 @@ fun HoursBottomSheet(
                                     }
                                 )
                             }
-                            /*
-                            items(daysList.size) { item ->
-                                ListItem(
-                                    headlineContent = {
-                                        Text(
-                                            text = daysList[item],
-                                            lineHeight = 30.sp
-                                        )
-                                    }
-                                )
-                            }
-
-                             */
                         }
                     }
-                    item {
+                    /*item {
                         // add some padding to the bottom
                         Text("")
-                    }
+                    }*/
                 }
             } else {
                 Box(
