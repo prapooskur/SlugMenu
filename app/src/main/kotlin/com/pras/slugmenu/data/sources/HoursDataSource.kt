@@ -152,13 +152,13 @@ fun getDiningHours(location: String, pageBody: String): HoursList {
     val days = page.select("div#${location} > p:has(strong)")
 
     val daysRemovedPatterns = Regex("<p><strong>|</strong></p>")
-    val daysList = days.map { it.toString().replace(daysRemovedPatterns, "") }
+    val daysList = days.map { it.text().replace(daysRemovedPatterns, "") }
 
     val hours = page.select("div#${location} > ul")
     val hoursRemovedPattern = Regex("<li>|</li>| \\(limited entree options\\)\\*")
     val hoursList = hours.map { i ->
         val items = i.select("li")
-        items.map { it.toString().replace(hoursRemovedPattern, "") }
+        items.map { it.text().replace(hoursRemovedPattern, "") }
     }
 
     return if (daysList.size == hoursList.size) {
@@ -181,8 +181,8 @@ fun getNonDiningHours(location: String, pageBody: String): List<String> {
     val hoursRemovedPatterns = Regex("<td>|</td>")
     return if (hours.size % 2 == 0) {
         for (i in 0..<hours.size step 2) {
-            val day = hours[i].toString().replace(hoursRemovedPatterns, "")
-            val openHours = hours[i + 1].toString().replace(hoursRemovedPatterns, "")
+            val day = hours[i].text().replace(hoursRemovedPatterns, "")
+            val openHours = hours[i + 1].text().replace(hoursRemovedPatterns, "")
             hoursList.add("$day: $openHours")
         }
         Log.d(TAG, hoursList.toString())
