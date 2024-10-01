@@ -94,14 +94,14 @@ dependencies {
 
 
     implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
-    implementation("androidx.activity:activity-ktx:1.9.1")
-    implementation("androidx.activity:activity-compose:1.9.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
+    implementation("androidx.activity:activity-ktx:1.9.2")
+    implementation("androidx.activity:activity-compose:1.9.2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
-    val composeUiVersion = "1.7.0-beta06"
+    val composeUiVersion = "1.7.2"
 
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
@@ -121,10 +121,10 @@ dependencies {
 
     // Android navigation
     // upgrading to compose 1.7 should have fixed bug?
-    implementation("androidx.navigation:navigation-compose:2.8.0-beta06")
+    implementation("androidx.navigation:navigation-compose:2.8.1")
 
     // Material 3
-    val mat3Version = "1.2.1"
+    val mat3Version = "1.3.0"
     implementation("androidx.compose.material3:material3:$mat3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
@@ -155,10 +155,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 
     // Desugaring (allows minSdk below 26)
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 
     // WorkManager (allows app to download data in background)
-    val workVersion = "2.9.0"
+    val workVersion = "2.9.1"
     implementation("androidx.work:work-runtime:$workVersion")
     // Kotlin + coroutines - no longer needed with workmanager 2.9.0?
     // implementation("androidx.work:work-runtime-ktx:$workVersion")
@@ -170,13 +170,13 @@ dependencies {
     implementation("com.google.accompanist:accompanist-permissions:0.35.1-alpha")
 
     // adaptive ui
-    implementation("androidx.compose.material3.adaptive:adaptive:1.0.0-beta04")
-    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.0.0-beta04")
-    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.0.0-beta04")
+    implementation("androidx.compose.material3.adaptive:adaptive:1.0.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.0.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.0.0")
     implementation("com.google.accompanist:accompanist-adaptive:0.35.1-alpha")
 
     // viewModelScope
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
 }
 
 
