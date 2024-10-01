@@ -100,8 +100,8 @@ fun DiningMenu(
                 topBar = {
                     TopBarWaitz(
                         titleText = locationName,
-                        navController = navController,
-                        showWaitzDialog = showWaitzDialog
+                        onBack = { navController.navigateUp() },
+                        onToggle = { showWaitzDialog.value = !showWaitzDialog.value }
                     )
                 },
                 content = { padding ->
@@ -208,7 +208,7 @@ fun DiningMenu(
             // Otherwise, display a loading indicator
             Surface {
                 Column {
-                    TopBarClean(titleText = locationName, navController = navController)
+                    TopBarClean(titleText = locationName, onBack = { navController.navigateUp() })
                 }
             }
             Box(
@@ -271,7 +271,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                 // custom insets necessary to render behind nav bar
                 contentWindowInsets = WindowInsets(0.dp),
                 topBar = {
-                    TopBarClean(titleText = locationName, navController = navController)
+                    TopBarClean(titleText = locationName, onBack = { navController.navigateUp() })
                 },
                 content = {padding ->
                     SwipableTabBar(
@@ -374,7 +374,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
             // Otherwise, display a loading indicator
             Surface {
                 Column {
-                    TopBarClean(titleText = locationName, navController = navController)
+                    TopBarClean(titleText = locationName, onBack = { navController.navigateUp() })
                 }
             }
             Box(

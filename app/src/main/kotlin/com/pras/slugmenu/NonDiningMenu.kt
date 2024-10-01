@@ -1,5 +1,6 @@
 package com.pras.slugmenu
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -77,9 +78,13 @@ fun NonDiningMenu(
                 contentWindowInsets = WindowInsets(0.dp),
                 topBar = {
                     if (useWaitz) {
-                        TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
+                        TopBarWaitz(
+                            titleText = locationName,
+                            onBack = { navController.navigateUp() },
+                            onToggle = { showWaitzDialog.value = !showWaitzDialog.value; Log.d(TAG,showWaitzDialog.value.toString()) }
+                        )
                     } else {
-                        TopBarClean(titleText = locationName, navController = navController)
+                        TopBarClean(titleText = locationName, onBack = { navController.navigateUp() })
                     }
                 },
                 content = { padding ->
@@ -139,7 +144,7 @@ fun NonDiningMenu(
                 waitzData = uiState.value.waitz
             )
         } else {
-            TopBarClean(titleText = locationName, navController = navController)
+            TopBarClean(titleText = locationName, onBack = { navController.navigateUp() })
             Box(
                 modifier = Modifier
                     .fillMaxSize()

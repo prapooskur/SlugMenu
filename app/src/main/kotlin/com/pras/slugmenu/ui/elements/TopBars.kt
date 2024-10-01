@@ -1,6 +1,5 @@
 package com.pras.slugmenu.ui.elements
 
-import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import androidx.navigation.NavController
+import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.pras.slugmenu.LocalDisplayFeatures
 import kotlinx.coroutines.delay
@@ -79,6 +79,9 @@ fun CollapsingLargeTopBar(
 
     val coroutineScope = rememberCoroutineScope()
 
+    val compactDisplay = (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || LocalDisplayFeatures.current.sizeClass.windowHeightSizeClass == WindowHeightSizeClass.COMPACT)
+    val inTwoPane = (!compactDisplay && LocalDisplayFeatures.current.twoPanePreference)
+
     Surface(shadowElevation = topBarElevation) {
         LargeTopAppBar(
             title = {
@@ -90,10 +93,7 @@ fun CollapsingLargeTopBar(
                 )
             },
             navigationIcon = {
-                if (
-                    !isHome &&
-                    (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference)
-                ) {
+                if (!isHome && !inTwoPane) {
                     IconButton(
                         onClick = {
                             if (isClickable.value) {
@@ -116,8 +116,7 @@ fun CollapsingLargeTopBar(
                 }
             },
             actions = {
-                if (isHome &&
-                    (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference)) {
+                if (isHome && !inTwoPane) {
                     IconButton(onClick = { navController.navigate("settings") }) {
                         Icon(
                             imageVector = Icons.Outlined.Settings,
@@ -156,6 +155,10 @@ fun TopBar(
 ) {
 
     val coroutineScope = rememberCoroutineScope()
+
+    val compactDisplay = (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || LocalDisplayFeatures.current.sizeClass.windowHeightSizeClass == WindowHeightSizeClass.COMPACT)
+    val inTwoPane = (!compactDisplay && LocalDisplayFeatures.current.twoPanePreference)
+
     Surface(shadowElevation = 4.dp) {
         TopAppBar(
             title = {
@@ -166,8 +169,7 @@ fun TopBar(
                 )
             },
             navigationIcon = {
-                if (!isHome &&
-                    (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference)) {
+                if (!isHome && !inTwoPane) {
                     IconButton(onClick = {
                         if (isClickable.value) {
                             isClickable.value = !isClickable.value
@@ -185,8 +187,7 @@ fun TopBar(
                 }
             },
             actions = {
-                if (isHome &&
-                    (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference)) {
+                if (isHome && !inTwoPane) {
                     IconButton(onClick = { navController.navigate("settings") }) {
                         Icon(
                             imageVector = Icons.Outlined.Settings,
@@ -213,7 +214,10 @@ fun TopBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarClean(titleText: String, navController: NavController) {
+fun TopBarClean(titleText: String, onBack: () -> Unit) {
+    val compactDisplay = (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || LocalDisplayFeatures.current.sizeClass.windowHeightSizeClass == WindowHeightSizeClass.COMPACT)
+    val inTwoPane = (!compactDisplay && LocalDisplayFeatures.current.twoPanePreference)
+
     TopAppBar(
         title = {
             Text(
@@ -223,8 +227,8 @@ fun TopBarClean(titleText: String, navController: NavController) {
             )
         },
         navigationIcon = {
-            if (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference) {
-                IconButton(onClick = {navController.navigateUp()}) {
+            if (!inTwoPane) {
+                IconButton(onClick = { onBack() }) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -238,7 +242,10 @@ fun TopBarClean(titleText: String, navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog: MutableState<Boolean> = mutableStateOf(false)) {
+fun TopBarWaitz(titleText: String, onBack: () -> Unit, onToggle: () -> Unit) {
+    val compactDisplay = (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || LocalDisplayFeatures.current.sizeClass.windowHeightSizeClass == WindowHeightSizeClass.COMPACT)
+    val inTwoPane = (!compactDisplay && LocalDisplayFeatures.current.twoPanePreference)
+
     TopAppBar(
         title = {
             Text(
@@ -248,8 +255,8 @@ fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog
             )
         },
         navigationIcon = {
-            if (LocalDisplayFeatures.current.sizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT || !LocalDisplayFeatures.current.twoPanePreference) {
-                IconButton(onClick = {navController.navigateUp()}) {
+            if (!inTwoPane) {
+                IconButton(onClick = { onBack() }) {
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back",tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -260,8 +267,11 @@ fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog
         actions = {
             IconButton(
                 onClick = {
+                    onToggle()
+                    /*
                     showWaitzDialog.value = !showWaitzDialog.value
                     Log.d(TAG,showWaitzDialog.value.toString())
+                    */
                 }
             ) {
                 Icon(
@@ -270,7 +280,5 @@ fun TopBarWaitz(titleText: String, navController: NavController, showWaitzDialog
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-//        backgroundColor = MaterialTheme.colorScheme.primaryContainer
-//        elevation = 8.dp
     )
 }

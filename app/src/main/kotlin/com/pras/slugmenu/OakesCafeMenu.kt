@@ -76,7 +76,11 @@ fun OakesCafeMenu(
                 contentWindowInsets = WindowInsets(0.dp),
 
                 topBar = {
-                    TopBarWaitz(titleText = locationName, navController = navController, showWaitzDialog = showWaitzDialog)
+                    TopBarWaitz(
+                        titleText = locationName,
+                        onBack = { navController.navigateUp() },
+                        onToggle = { showWaitzDialog.value = !showWaitzDialog.value }
+                    )
                 },
                 content = { padding ->
                     SwipableTabBar(
@@ -123,7 +127,7 @@ fun OakesCafeMenu(
         }
         else {
             // Otherwise, display a loading indicator
-            TopBarClean(titleText = locationName, navController = navController)
+            TopBarClean(titleText = locationName, onBack = { navController.navigateUp() })
             Box(
                 modifier = Modifier
                     .fillMaxSize()
