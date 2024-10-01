@@ -109,7 +109,7 @@ fun SwipableTabBar(
             //Breakfast from 7AM-11AM, then continuous till 11:30AM (but start showing it from beginning of the day)
             (currentHour in 0..<11) || (currentHour == 11 && currentMinute < 30) -> 0
             // Lunch from 11:30AM-2PM, then continuous till 5PM
-            (currentHour in 11..<17) || (menuArray[2].isEmpty()) -> 1
+            (currentHour in 11..<17) || menuArray.size <= 2 || menuArray[2].isEmpty() -> 1
             // dinner from 5PM-8PM
             currentHour in 17..<20 -> 2
             // Late night from 8PM-11PM if available, keep showing dinner otherwise
