@@ -49,6 +49,7 @@ import com.pras.slugmenu.data.sources.MenuSection
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDateTime
+import kotlin.math.min
 
 
 private const val TAG = "TabMenus"
@@ -85,7 +86,7 @@ fun SwipableTabBar(
         4 -> listOf("Breakfast", "Lunch", "Dinner", "Late Night")
     }
 
-    val initState = if (currentDay == DayOfWeek.SATURDAY || currentDay == DayOfWeek.SUNDAY) {
+    val initTimeState = if (currentDay == DayOfWeek.SATURDAY || currentDay == DayOfWeek.SUNDAY) {
         // weekend hours
         when {
             titles.size == 1 -> 0
@@ -118,6 +119,8 @@ fun SwipableTabBar(
             else -> 0
         }
     }
+
+    val initState = min(initTimeState, menuArray.size)
 
     var state by remember { mutableIntStateOf(initState) }
     val pagerState = rememberPagerState(
