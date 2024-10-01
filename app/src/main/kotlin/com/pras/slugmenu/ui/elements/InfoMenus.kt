@@ -161,8 +161,29 @@ fun WaitzDialog(
                 }
             )
         }
+    } else if (showDialog.value && waitzLoading) {
+        AlertDialog(
+            onDismissRequest = {
+                showDialog.value = false
+            },
+            title = {
+                Text(text = "⚫ Waitz: $locationName")
+            },
+            text = {
+                CircularProgressIndicator(strokeCap = StrokeCap.Round)
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDialog.value = false
+                    }
+                ) {
+                    Text("Close")
+                }
+            }
+        )
     } else if (showDialog.value) {
-        Log.d(TAG, "??? ${waitzData}")
+        Log.d(TAG, "??? $waitzData")
     }
 }
 
