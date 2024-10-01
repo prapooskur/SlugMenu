@@ -52,6 +52,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            // better native debugging?
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
     }
 
