@@ -52,8 +52,15 @@ fun NonDiningMenu(
     val toastContext = LocalContext.current
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
+    val waitzList = setOf("Porter Market", "Global Village Cafe", "Stevenson Coffee House")
+    val useWaitz = waitzList.contains(locationName)
+
     LaunchedEffect(key1 = Unit) {
         viewModel.fetchMenu(locationName, locationUrl)
+        if (useWaitz) {
+            viewModel.fetchWaitz()
+        }
+        viewModel.fetchHours()
     }
 
     LaunchedEffect(key1 = uiState.value.error) {
@@ -65,8 +72,6 @@ fun NonDiningMenu(
 
     val showBottomSheet = rememberSaveable { mutableStateOf(false) }
 
-    val waitzList = setOf("Porter Market", "Global Village Cafe", "Stevenson Coffee House")
-    val useWaitz = waitzList.contains(locationName)
     val showWaitzDialog = rememberSaveable { mutableStateOf(false) }
 
     val haptics = LocalHapticFeedback.current
@@ -81,7 +86,10 @@ fun NonDiningMenu(
                         TopBarWaitz(
                             titleText = locationName,
                             onBack = { navController.navigateUp() },
-                            onToggle = { showWaitzDialog.value = !showWaitzDialog.value; Log.d(TAG,showWaitzDialog.value.toString()) }
+                            onToggle = {
+                                showWaitzDialog.value = !showWaitzDialog.value
+                                Log.d(TAG,showWaitzDialog.value.toString())
+                            }
                         )
                     } else {
                         TopBarClean(titleText = locationName, onBack = { navController.navigateUp() })

@@ -66,6 +66,7 @@ class MenuViewModel(
                         waitz = listOf(busynessData.first, busynessData.second)
                     )
                 }
+                Log.d(TAG, "waitz: "+uiState.value.waitz.toString())
             } catch (e: Exception) {
                 _uiState.update { it.copy(waitzLoading = false, error = exceptionText(e)) }
             }

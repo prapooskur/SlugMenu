@@ -101,7 +101,10 @@ fun DiningMenu(
                     TopBarWaitz(
                         titleText = locationName,
                         onBack = { navController.navigateUp() },
-                        onToggle = { showWaitzDialog.value = !showWaitzDialog.value }
+                        onToggle = {
+                            showWaitzDialog.value = !showWaitzDialog.value
+                            Log.d(TAG,showWaitzDialog.value.toString())
+                        }
                     )
                 },
                 content = { padding ->

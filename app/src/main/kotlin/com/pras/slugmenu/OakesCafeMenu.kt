@@ -60,6 +60,8 @@ fun OakesCafeMenu(
 
     LaunchedEffect(key1 = Unit) {
         viewModel.fetchMenu(locationName, locationUrl)
+        viewModel.fetchWaitz()
+        viewModel.fetchHours()
     }
 
     LaunchedEffect(key1 = uiState.value.error) {
@@ -79,7 +81,10 @@ fun OakesCafeMenu(
                     TopBarWaitz(
                         titleText = locationName,
                         onBack = { navController.navigateUp() },
-                        onToggle = { showWaitzDialog.value = !showWaitzDialog.value }
+                        onToggle = {
+                            showWaitzDialog.value = !showWaitzDialog.value
+                            Log.d(TAG,showWaitzDialog.value.toString())
+                        }
                     )
                 },
                 content = { padding ->
@@ -117,6 +122,7 @@ fun OakesCafeMenu(
                     allHoursList = uiState.value.hours
                 )
             }
+
             WaitzDialog(
                 showDialog = showWaitzDialog,
                 locationName = locationName.replace("Stevenson", "Stev"),

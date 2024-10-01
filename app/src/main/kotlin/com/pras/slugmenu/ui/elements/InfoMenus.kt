@@ -74,6 +74,8 @@ fun WaitzDialog(
         else -> locationName
     }
 
+//    LaunchedEffect(showDialog.value) { Log.d(TAG, "dialog launched for $locationName ${showDialog.value}") }
+
     if (showDialog.value && waitzException) {
         showDialog.value = false
         Log.d(TAG, "waitz error")
@@ -159,6 +161,8 @@ fun WaitzDialog(
                 }
             )
         }
+    } else if (showDialog.value) {
+        Log.d(TAG, "??? ${waitzData}")
     }
 }
 

@@ -120,7 +120,8 @@ fun SwipableTabBar(
         }
     }
 
-    val initState = min(initTimeState, menuArray.size)
+    // if all else fails
+    val initState = min(initTimeState, menuArray.size-1)
 
     var state by remember { mutableIntStateOf(initState) }
     val pagerState = rememberPagerState(
