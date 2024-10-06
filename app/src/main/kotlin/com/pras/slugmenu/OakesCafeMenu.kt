@@ -1,20 +1,8 @@
 package com.pras.slugmenu
 
 import android.util.Log
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -30,12 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.pras.slugmenu.ui.elements.HoursBottomSheet
-import com.pras.slugmenu.ui.elements.SwipableTabBar
-import com.pras.slugmenu.ui.elements.TopBarClean
-import com.pras.slugmenu.ui.elements.TopBarWaitz
-import com.pras.slugmenu.ui.elements.WaitzDialog
-import com.pras.slugmenu.ui.elements.shortToast
+import com.pras.slugmenu.ui.elements.*
 import com.pras.slugmenu.ui.viewmodels.MenuViewModel
 
 private const val TAG = "OakesCafeMenu"
@@ -116,7 +99,7 @@ fun OakesCafeMenu(
                 HoursBottomSheet(
                     openBottomSheet = showBottomSheet,
                     bottomSheetState = rememberModalBottomSheetState(),
-                    locationName = locationName.substringBefore(" "),
+                    locationName = locationName,
                     hoursLoading = uiState.value.hoursLoading,
                     hoursException = uiState.value.error.isNotEmpty(),
                     allHoursList = uiState.value.hours
