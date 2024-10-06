@@ -26,8 +26,8 @@ android {
         applicationId = "com.pras.slugmenu"
         minSdk = 24
         targetSdk = 35
-        versionCode = 24
-        versionName = "1.4.0"
+        versionCode = 25
+        versionName = "1.4.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -106,7 +106,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
-    val composeUiVersion = "1.7.2"
+    val composeUiVersion = "1.7.3"
 
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
@@ -126,7 +126,7 @@ dependencies {
 
     // Android navigation
     // upgrading to compose 1.7 should have fixed bug?
-    implementation("androidx.navigation:navigation-compose:2.8.1")
+    implementation("androidx.navigation:navigation-compose:2.8.2")
 
     // Material 3
     val mat3Version = "1.3.0"
@@ -134,7 +134,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
     //kotlinx serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 
     // Save settings
     implementation("androidx.datastore:datastore-preferences:1.1.1")
