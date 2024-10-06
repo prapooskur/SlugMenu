@@ -178,11 +178,11 @@ fun getNonDiningHours(location: String, pageBody: String): List<String> {
     val hours = page.select("div#${location} > table > tbody > tr > td")
 
     val hoursList = mutableListOf<String>()
-    val hoursRemovedPatterns = Regex("<td>|</td>")
+//    val hoursRemovedPatterns = Regex("<td>|</td>")
     return if (hours.size % 2 == 0) {
         for (i in 0..<hours.size step 2) {
-            val day = hours[i].text().replace(hoursRemovedPatterns, "")
-            val openHours = hours[i + 1].text().replace(hoursRemovedPatterns, "")
+            val day = hours[i].text()
+            val openHours = hours[i + 1].text()
             hoursList.add("$day: $openHours")
         }
         Log.d(TAG, hoursList.toString())
