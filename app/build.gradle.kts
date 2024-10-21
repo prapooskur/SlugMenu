@@ -20,7 +20,7 @@ composeCompiler {
 
 android {
     namespace = "com.pras.slugmenu"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.pras.slugmenu"
@@ -100,13 +100,13 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
-    implementation("androidx.activity:activity-ktx:1.9.2")
-    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation("androidx.activity:activity-ktx:1.9.3")
+    implementation("androidx.activity:activity-compose:1.9.3")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
-    val composeUiVersion = "1.7.3"
+    val composeUiVersion = "1.7.4"
 
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
@@ -119,14 +119,14 @@ dependencies {
     implementation("org.jsoup:jsoup:1.18.1")
 
     // ktor for http requests
-    val ktorVersion = "2.3.12"
+    val ktorVersion = "3.0.0"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Android navigation
     // upgrading to compose 1.7 should have fixed bug?
-    implementation("androidx.navigation:navigation-compose:2.8.2")
+    implementation("androidx.navigation:navigation-compose:2.8.3")
 
     // Material 3
     val mat3Version = "1.3.0"
@@ -134,7 +134,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
     //kotlinx serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
     // Save settings
     implementation("androidx.datastore:datastore-preferences:1.1.1")
@@ -155,7 +155,7 @@ dependencies {
 
 
     // Flow stuff
-    val coroutineVersion = "1.8.1"
+    val coroutineVersion = "1.9.0"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 
@@ -172,7 +172,7 @@ dependencies {
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 
     // accompanist for easier permission management
-    implementation("com.google.accompanist:accompanist-permissions:0.35.1-alpha")
+    implementation("com.google.accompanist:accompanist-permissions:0.36.0")
 
     // adaptive ui
     implementation("androidx.compose.material3.adaptive:adaptive:1.0.0")
