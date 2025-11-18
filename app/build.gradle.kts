@@ -106,7 +106,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.11.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
 
     val composeUiVersion = "1.9.4"
 
@@ -135,6 +135,9 @@ dependencies {
     implementation("androidx.compose.material3:material3:$mat3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
+    // manually added after removal in mat3 1.4.0
+    implementation("androidx.compose.material:material-icons-core:1.7.8")
+
     //kotlinx serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
@@ -154,7 +157,6 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$roomVersion")
-
 
     // Flow stuff
     val coroutineVersion = "1.10.2"
