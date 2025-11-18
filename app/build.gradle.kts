@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_EXPRESSION")
 
 import com.android.build.api.dsl.Packaging
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.application")
@@ -14,18 +15,20 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-composeCompiler {
-    enableStrongSkippingMode = true
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+    }
 }
 
 android {
     namespace = "com.pras.slugmenu"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.pras.slugmenu"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 25
         versionName = "1.4.1"
 
@@ -67,10 +70,9 @@ android {
         //Version 17 required by KSP
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+
     buildFeatures {
         compose = true
         buildConfig = true
@@ -98,15 +100,15 @@ ksp {
 dependencies {
 
 
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
-    implementation("androidx.activity:activity-ktx:1.9.3")
-    implementation("androidx.activity:activity-compose:1.9.3")
+    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
+    implementation("androidx.activity:activity-ktx:1.11.0")
+    implementation("androidx.activity:activity-compose:1.11.0")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
-    val composeUiVersion = "1.7.4"
+    val composeUiVersion = "1.9.4"
 
     implementation("androidx.compose.ui:ui:$composeUiVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
@@ -116,34 +118,34 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeUiVersion")
 
     // jsoup HTML parser library @ https://jsoup.org/
-    implementation("org.jsoup:jsoup:1.18.1")
+    implementation("org.jsoup:jsoup:1.21.2")
 
     // ktor for http requests
-    val ktorVersion = "3.0.0"
+    val ktorVersion = "3.3.2"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
 
     // Android navigation
     // upgrading to compose 1.7 should have fixed bug?
-    implementation("androidx.navigation:navigation-compose:2.8.3")
+    implementation("androidx.navigation:navigation-compose:2.9.6")
 
     // Material 3
-    val mat3Version = "1.3.0"
+    val mat3Version = "1.4.0"
     implementation("androidx.compose.material3:material3:$mat3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$mat3Version")
 
     //kotlinx serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     // Save settings
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
 
     // Colored Splash Screen
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.core:core-splashscreen:1.2.0")
 
     // Room (caching implementation)
-    val roomVersion = "2.6.1"
+    val roomVersion = "2.8.3"
 
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
@@ -155,15 +157,15 @@ dependencies {
 
 
     // Flow stuff
-    val coroutineVersion = "1.9.0"
+    val coroutineVersion = "1.10.2"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion")
 
     // Desugaring (allows minSdk below 26)
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
     // WorkManager (allows app to download data in background)
-    val workVersion = "2.9.1"
+    val workVersion = "2.11.0"
     implementation("androidx.work:work-runtime:$workVersion")
     // Kotlin + coroutines - no longer needed with workmanager 2.9.0?
     // implementation("androidx.work:work-runtime-ktx:$workVersion")
@@ -172,16 +174,16 @@ dependencies {
     implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
 
     // accompanist for easier permission management
-    implementation("com.google.accompanist:accompanist-permissions:0.36.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.37.3")
 
     // adaptive ui
-    implementation("androidx.compose.material3.adaptive:adaptive:1.0.0")
-    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.0.0")
-    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.0.0")
-    implementation("com.google.accompanist:accompanist-adaptive:0.35.1-alpha")
+    implementation("androidx.compose.material3.adaptive:adaptive:1.2.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.2.0")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.2.0")
+    implementation("com.google.accompanist:accompanist-adaptive:0.37.3")
 
     // viewModelScope
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4")
 }
 
 
