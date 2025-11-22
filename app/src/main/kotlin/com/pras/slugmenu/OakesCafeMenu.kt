@@ -61,13 +61,9 @@ fun OakesCafeMenu(
                 contentWindowInsets = WindowInsets(0.dp),
 
                 topBar = {
-                    TopBarWaitz(
+                    TopBarClean(
                         titleText = locationName,
                         onBack = { navController.navigateUp() },
-                        onToggle = {
-                            showWaitzDialog.value = !showWaitzDialog.value
-                            Log.d(TAG,showWaitzDialog.value.toString())
-                        }
                     )
                 },
                 content = { padding ->
@@ -106,13 +102,13 @@ fun OakesCafeMenu(
                 )
             }
 
-            WaitzDialog(
-                showDialog = showWaitzDialog,
-                locationName = locationName.replace("Stevenson", "Stev"),
-                waitzLoading = uiState.value.waitzLoading,
-                waitzException = uiState.value.error.isNotEmpty(),
-                waitzData = uiState.value.waitz
-            )
+//            WaitzDialog(
+//                showDialog = showWaitzDialog,
+//                locationName = locationName.replace("Stevenson", "Stev"),
+//                waitzLoading = uiState.value.waitzLoading,
+//                waitzException = uiState.value.error.isNotEmpty(),
+//                waitzData = uiState.value.waitz
+//            )
         }
         else {
             // Otherwise, display a loading indicator

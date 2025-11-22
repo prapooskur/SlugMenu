@@ -268,10 +268,6 @@ fun TopBarWaitz(titleText: String, onBack: () -> Unit, onToggle: () -> Unit) {
             IconButton(
                 onClick = {
                     onToggle()
-                    /*
-                    showWaitzDialog.value = !showWaitzDialog.value
-                    Log.d(TAG,showWaitzDialog.value.toString())
-                    */
                 }
             ) {
                 Icon(

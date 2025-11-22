@@ -44,8 +44,6 @@ import com.pras.slugmenu.ui.elements.HoursBottomSheet
 import com.pras.slugmenu.ui.elements.LongPressFloatingActionButton
 import com.pras.slugmenu.ui.elements.SwipableTabBar
 import com.pras.slugmenu.ui.elements.TopBarClean
-import com.pras.slugmenu.ui.elements.TopBarWaitz
-import com.pras.slugmenu.ui.elements.WaitzDialog
 import com.pras.slugmenu.ui.elements.shortToast
 import com.pras.slugmenu.ui.viewmodels.MenuViewModel
 import java.net.URLDecoder
@@ -98,13 +96,9 @@ fun DiningMenu(
                 contentWindowInsets = WindowInsets(0.dp),
 
                 topBar = {
-                    TopBarWaitz(
+                    TopBarClean(
                         titleText = locationName,
                         onBack = { navController.navigateUp() },
-                        onToggle = {
-                            showWaitzDialog.value = !showWaitzDialog.value
-                            Log.d(TAG,showWaitzDialog.value.toString())
-                        }
                     )
                 },
                 content = { padding ->
@@ -198,13 +192,13 @@ fun DiningMenu(
                     allHoursList = uiState.value.hours
                 )
             }
-            WaitzDialog(
-                showDialog = showWaitzDialog,
-                locationName = locationName.replace("Stevenson", "Stev"),
-                waitzLoading = uiState.value.waitzLoading,
-                waitzException = uiState.value.error.isNotEmpty(),
-                waitzData = uiState.value.waitz
-            )
+//            WaitzDialog(
+//                showDialog = showWaitzDialog,
+//                locationName = locationName.replace("Stevenson", "Stev"),
+//                waitzLoading = uiState.value.waitzLoading,
+//                waitzException = uiState.value.error.isNotEmpty(),
+//                waitzData = uiState.value.waitz
+//            )
 
 
         } else {

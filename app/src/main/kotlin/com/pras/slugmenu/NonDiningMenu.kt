@@ -66,13 +66,9 @@ fun NonDiningMenu(
                 contentWindowInsets = WindowInsets(0.dp),
                 topBar = {
                     if (useWaitz) {
-                        TopBarWaitz(
+                        TopBarClean (
                             titleText = locationName,
                             onBack = { navController.navigateUp() },
-                            onToggle = {
-                                showWaitzDialog.value = !showWaitzDialog.value
-                                Log.d(TAG,showWaitzDialog.value.toString())
-                            }
                         )
                     } else {
                         TopBarClean(titleText = locationName, onBack = { navController.navigateUp() })
@@ -127,13 +123,13 @@ fun NonDiningMenu(
                     allHoursList = uiState.value.hours
                 )
             }
-            WaitzDialog(
-                showDialog = showWaitzDialog,
-                locationName = locationName.replace("Stevenson", "Stev"),
-                waitzLoading = uiState.value.waitzLoading,
-                waitzException = uiState.value.error.isNotEmpty(),
-                waitzData = uiState.value.waitz
-            )
+//            WaitzDialog(
+//                showDialog = showWaitzDialog,
+//                locationName = locationName.replace("Stevenson", "Stev"),
+//                waitzLoading = uiState.value.waitzLoading,
+//                waitzException = uiState.value.error.isNotEmpty(),
+//                waitzData = uiState.value.waitz
+//            )
         } else {
             TopBarClean(titleText = locationName, onBack = { navController.navigateUp() })
             Box(
