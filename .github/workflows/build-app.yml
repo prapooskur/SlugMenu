@@ -60,6 +60,12 @@ jobs:
         with:
           name: app-build
           path: app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload aab as artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: app-build-aab
+          path: app/build/outputs/bundle/release/app-release.aab
       
 #      - name: Upload apk to releases
 #        uses: softprops/action-gh-release@v1
