@@ -34,18 +34,14 @@ jobs:
         working-directory: .
         run: chmod +x ./gradlew
 
-      - name: Build app
-        working-directory: .
-        run: ./gradlew buildRelease
-
-      - name: Sign app
+      - name: Build/Sign app
         env:
           KEYSTORE_PASSWORD: ${{ secrets.keystore_password }}
           KEY_ALIAS: ${{ secrets.key_alias }}
           KEY_PASSWORD: ${{ secrets.key_password }}
         working-directory: .
         run: |
-          ./gradlew assembleRelease \
+          ./gradlew buildRelease bundleRelease assembleRelease \
             -Pandroid.injected.signing.store.file=$GITHUB_WORKSPACE/signing-key.jks \
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
             -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
