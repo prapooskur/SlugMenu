@@ -22,7 +22,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
+#          cache: 'gradle'
 
       - uses: actions/checkout@v6
       - name: Retrieve the secret and decode it to a file
