@@ -63,6 +63,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -94,7 +95,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.IOException
 
@@ -147,7 +147,7 @@ class MainActivity : ComponentActivity() {
 
         // including IME animations, and go edge-to-edge
         // This also sets up the initial system bar style based on the platform theme
-        enableEdgeToEdge()
+        WindowCompat.enableEdgeToEdge(window)
 
         val preferencesRepository = PreferencesRepository(dataStore)
 
