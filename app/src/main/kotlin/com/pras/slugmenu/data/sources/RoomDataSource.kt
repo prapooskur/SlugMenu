@@ -48,17 +48,21 @@ class RoomDataSource(
     }
 
     // hours dao
-    suspend fun fetchHours(): Hours? {
+    suspend fun fetchHours(locationId: String): Hours? {
         // hardcoded key
-        return withContext(Dispatchers.IO) { hoursDao.getHours("dh-nondh-oakes") }
+        return withContext(Dispatchers.IO) { hoursDao.getHours(locationId) }
     }
 
     suspend fun insertHours(hours: Hours) {
         withContext(Dispatchers.IO) { hoursDao.insertHours(hours) }
     }
 
-    suspend fun deleteHours() {
-        withContext(Dispatchers.IO) { hoursDao.deleteHours() }
+    suspend fun deleteHours(locationId: String) {
+        withContext(Dispatchers.IO) { hoursDao.deleteHours(locationId) }
+    }
+
+    suspend fun deleteAllHours() {
+        withContext(Dispatchers.IO) { hoursDao.deleteAllHours() }
     }
 
     // favorites dao

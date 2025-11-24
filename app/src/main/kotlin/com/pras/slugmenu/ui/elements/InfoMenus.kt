@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pras.slugmenu.data.sources.AllHoursList
+import com.pras.slugmenu.data.sources.HoursList
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
@@ -187,7 +187,7 @@ fun HoursBottomSheet(
     locationName: String,
     hoursLoading: Boolean,
     hoursException: Boolean,
-    allHoursList: AllHoursList
+    locationHours: List<HoursList>
 ) {
 
     if (openBottomSheet.value && hoursException) {
@@ -216,13 +216,12 @@ fun HoursBottomSheet(
             )
 
             if (!hoursLoading) {
-                Log.d(TAG, "$locationName: $allHoursList")
+                Log.d(TAG, "$locationName: $locationHours")
                 LazyColumn {
                     // custom handling for perks, since three separate locations exist
                     if (locationName == "Perk Coffee Bars") {
                         val titlesList = listOf("Perk Baskin Engineering", "Perk Physical Sciences", "Perk Earth and Marine Sciences")
-                        val locationHoursList = listOf(allHoursList.perkbe,allHoursList.perkpsb,allHoursList.perkems)
-                        if (locationHoursList.all { it.daysList.isEmpty() }) {
+                        if (locationHours.all { it.daysList.isEmpty() }) {
                             item {
                                 ListItem (
                                     headlineContent = {
@@ -236,10 +235,10 @@ fun HoursBottomSheet(
                                 )
                             }
                         } else {
-                            for (i in locationHoursList.indices) {
+                            for ((i, value) in locationHours.withIndex()) {
                                 val locationTitle = titlesList[i]
-                                val daysList = locationHoursList[i].daysList
-                                val combinedDays = daysList.joinToString("\n")
+                                val daysList = value.daysList
+                                val combinedDays = value.daysList.joinToString("\n")
                                 if (daysList.isNotEmpty()) {
                                     item {
                                         HorizontalDivider()
@@ -268,24 +267,8 @@ fun HoursBottomSheet(
                             }
                         }
                     } else {
-                        val locationHoursList = when (locationName) {
-                            "Nine/Lewis" -> allHoursList.ninelewis
-                            "Cowell/Stevenson" -> allHoursList.cowellstev
-                            "Cowell/Stev" -> allHoursList.cowellstev
-                            "Crown/Merrill" -> allHoursList.crownmerrill
-                            "Porter/Kresge" -> allHoursList.porterkresge
-                            "Carson/Oakes" -> allHoursList.carsonoakes
-                            "Terra Fresca" -> allHoursList.terrafresca
-                            "Porter Market" -> allHoursList.portermarket
-                            "Stevenson Coffee House" -> allHoursList.stevcoffee
-                            "Global Village Cafe" -> allHoursList.globalvillage
-                            "Oakes Cafe" -> allHoursList.oakescafe
-                            // fallback to nine/lewis hours if it's an unexpected location
-                            else -> allHoursList.ninelewis
-                        }
-
-                        val daysList = locationHoursList.daysList
-                        val hoursList = locationHoursList.hoursList
+                        val daysList = locationHours.first().daysList
+                        val hoursList = locationHours.first().hoursList
 
                         if (daysList.isEmpty() && hoursList.isEmpty()) {
                             item {

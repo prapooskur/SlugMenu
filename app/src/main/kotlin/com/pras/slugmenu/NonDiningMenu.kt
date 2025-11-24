@@ -1,6 +1,5 @@
 package com.pras.slugmenu
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -35,15 +34,20 @@ fun NonDiningMenu(
     val toastContext = LocalContext.current
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
-    val waitzList = setOf("Porter Market", "Global Village Cafe", "Stevenson Coffee House")
-    val useWaitz = waitzList.contains(locationName)
+//    val waitzList = setOf("Porter Market", "Global Village Cafe", "Stevenson Coffee House")
+//    val useWaitz = waitzList.contains(locationName)
 
     LaunchedEffect(key1 = Unit) {
         viewModel.fetchMenu(locationName, locationUrl)
-        if (useWaitz) {
-            viewModel.fetchWaitz()
+//        if (useWaitz) {
+//            viewModel.fetchWaitz()
+//        }
+        if (locationName.startsWith("Perk")) {
+            viewModel.fetchHoursMulti(listOf("perkbe", "perkpsb", "perkem"))
+        } else {
+            viewModel.fetchHours(locationName)
         }
-        viewModel.fetchHours()
+
     }
 
     LaunchedEffect(key1 = uiState.value.error) {
@@ -55,7 +59,7 @@ fun NonDiningMenu(
 
     val showBottomSheet = rememberSaveable { mutableStateOf(false) }
 
-    val showWaitzDialog = rememberSaveable { mutableStateOf(false) }
+//    val showWaitzDialog = rememberSaveable { mutableStateOf(false) }
 
     val haptics = LocalHapticFeedback.current
 
@@ -65,14 +69,7 @@ fun NonDiningMenu(
                 // custom insets necessary to render behind nav bar
                 contentWindowInsets = WindowInsets(0.dp),
                 topBar = {
-                    if (useWaitz) {
-                        TopBarClean (
-                            titleText = locationName,
-                            onBack = { navController.navigateUp() },
-                        )
-                    } else {
-                        TopBarClean(titleText = locationName, onBack = { navController.navigateUp() })
-                    }
+                    TopBarClean(titleText = locationName, onBack = { navController.navigateUp() })
                 },
                 content = { padding ->
                     Box(Modifier.padding(padding)) {
@@ -120,7 +117,7 @@ fun NonDiningMenu(
                     locationName = locationName,
                     hoursLoading = uiState.value.hoursLoading,
                     hoursException = uiState.value.error.isNotEmpty(),
-                    allHoursList = uiState.value.hours
+                    locationHours = uiState.value.hours
                 )
             }
 //            WaitzDialog(

@@ -5,8 +5,8 @@ import com.pras.slugmenu.Favorite
 import com.pras.slugmenu.Hours
 import com.pras.slugmenu.Menu
 import com.pras.slugmenu.Waitz
-import com.pras.slugmenu.data.sources.AllHoursList
 import com.pras.slugmenu.data.sources.HoursDataSource
+import com.pras.slugmenu.data.sources.HoursList
 import com.pras.slugmenu.data.sources.MenuDataSource
 import com.pras.slugmenu.data.sources.MenuSection
 import com.pras.slugmenu.data.sources.RoomDataSource
@@ -75,22 +75,22 @@ class MenuRepository(
         }
     }
 
-    suspend fun fetchHours(currentDate: LocalDate): AllHoursList {
-        val cachedHours = roomDataSource.fetchHours()
+    suspend fun fetchHours(locationId: String, currentDate: LocalDate): HoursList {
+        val cachedHours = roomDataSource.fetchHours(locationId)
         if (cachedHours != null && Period.between(LocalDate.parse(cachedHours.cacheDate), currentDate).days < 7) {
             Log.d(TAG, "returning cached hours")
             return cachedHours.hours
         } else {
-            val allHoursList = hoursDataSource.fetchData()
+            val hoursList = hoursDataSource.fetchSpecificData(locationId)
             roomDataSource.insertHours(
                 Hours(
-                    "dh-nondh-oakes",
-                    allHoursList,
+                    locationId,
+                    hoursList,
                     currentDate.toString()
                 )
             )
-            Log.d(TAG, "returning fetched hours: $allHoursList")
-            return allHoursList
+            Log.d(TAG, "returning fetched hours: $hoursList")
+            return hoursList
         }
     }
 
@@ -113,7 +113,8 @@ class MenuRepository(
     suspend fun clearLocalData() {
         roomDataSource.deleteMenus()
         roomDataSource.deleteWaitz()
-        roomDataSource.deleteHours()
+        roomDataSource.deleteAllHours()
+        roomDataSource.deleteAllFavorites()
     }
 
 }

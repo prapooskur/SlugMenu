@@ -37,14 +37,14 @@ fun OakesCafeMenu(
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     val showBottomSheet = rememberSaveable { mutableStateOf(false) }
-    val showWaitzDialog = rememberSaveable { mutableStateOf(false) }
+//    val showWaitzDialog = rememberSaveable { mutableStateOf(false) }
 
     val haptics = LocalHapticFeedback.current
 
     LaunchedEffect(key1 = Unit) {
         viewModel.fetchMenu(locationName, locationUrl)
-        viewModel.fetchWaitz()
-        viewModel.fetchHours()
+//        viewModel.fetchWaitz()
+        viewModel.fetchHours(locationName)
     }
 
     LaunchedEffect(key1 = uiState.value.error) {
@@ -98,7 +98,7 @@ fun OakesCafeMenu(
                     locationName = locationName,
                     hoursLoading = uiState.value.hoursLoading,
                     hoursException = uiState.value.error.isNotEmpty(),
-                    allHoursList = uiState.value.hours
+                    locationHours = uiState.value.hours
                 )
             }
 

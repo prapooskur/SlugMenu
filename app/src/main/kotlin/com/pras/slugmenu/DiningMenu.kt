@@ -69,7 +69,7 @@ fun DiningMenu(
     val titleDateFormat = DateTimeFormatter.ofPattern("M/dd/yy")
 
     val showBottomSheet = rememberSaveable { mutableStateOf(false) }
-    val showWaitzDialog = rememberSaveable { mutableStateOf(false) }
+//    val showWaitzDialog = rememberSaveable { mutableStateOf(false) }
 
     val toastContext = LocalContext.current
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -77,8 +77,8 @@ fun DiningMenu(
 
     LaunchedEffect(key1 = Unit) {
         viewModel.fetchMenu(locationName, locationUrl)
-        viewModel.fetchWaitz()
-        viewModel.fetchHours()
+//        viewModel.fetchWaitz()
+        viewModel.fetchHours(locationName)
     }
 
     LaunchedEffect(key1 = uiState.value.error) {
@@ -189,7 +189,7 @@ fun DiningMenu(
                     locationName = locationName.substringBefore(" "),
                     hoursLoading = uiState.value.hoursLoading,
                     hoursException = uiState.value.error.isNotEmpty(),
-                    allHoursList = uiState.value.hours
+                    locationHours = uiState.value.hours
                 )
             }
 //            WaitzDialog(
@@ -363,7 +363,7 @@ fun DiningMenuCustomDate(navController: NavController, inputLocationUrl: String,
                     locationName = locationName.substringBefore(" "),
                     hoursLoading = uiState.value.hoursLoading,
                     hoursException = uiState.value.error.isNotEmpty(),
-                    allHoursList = uiState.value.hours
+                    locationHours = uiState.value.hours
                 )
             }
 

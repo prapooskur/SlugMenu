@@ -1,6 +1,7 @@
 package com.pras.slugmenu.data.sources
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.util.Log
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -37,15 +38,66 @@ data class AllHoursList(
 
 class HoursDataSource {
 
-    suspend fun fetchData(): AllHoursList {
+    suspend fun fetchAllData(): AllHoursList {
         return withContext(Dispatchers.IO) {
-            scrapeData()
+            scrapeAllData()
         }
     }
 
-    private suspend fun scrapeData(): AllHoursList {
+    suspend fun fetchSpecificData(locationId: String): HoursList {
+        return withContext(Dispatchers.IO) {
+            scrapeSpecificData(locationId)
+        }
+    }
 
-        val url = "https://dining.ucsc.edu/eat/"
+    private suspend fun scrapeAllData(): AllHoursList {
+        val diningMap = listOf(
+            "Nine/Lewis",
+            "Cowell/Stevenson",
+            "Crown/Merrill",
+            "Porter/Kresge",
+            "Carson/Oakes",
+        )
+
+        val nonDiningMap = mapOf(
+            "Global Village Cafe" to Uri.encode("Global Village Cafe"),
+            "perkem" to Uri.encode("Perk Coffee Bar at Earth & Marine Sciences"),
+            "perkbe" to Uri.encode("Perk Coffee Bar at Baskin Engineering"),
+            "perkpsb" to Uri.encode("Perk Coffee Bar at Physical Sciences Building"),
+            "Terra Fresca" to Uri.encode("University Center Cafe"),
+            "Porter Market" to Uri.encode("Porter Market"),
+            "Stevenson Coffee House" to Uri.encode("Stevenson Coffee House"),
+            "Oakes Cafe" to Uri.encode("Oakes Cafe"),
+            "Banana Joe's" to Uri.encode("Banana Joe's Late Night")
+        ).keys
+
+        val keys = diningMap + nonDiningMap
+
+        val finalList = keys.map { i ->
+            scrapeSpecificData(i)
+        }
+
+        return AllHoursList(
+            finalList[0],
+            finalList[1],
+            finalList[2],
+            finalList[3],
+            finalList[4],
+            finalList[5],
+            finalList[6],
+            finalList[7],
+            finalList[8],
+            finalList[9],
+            finalList[10],
+            finalList[11],
+            finalList[12],
+        )
+
+    }
+
+
+    private suspend fun scrapeSpecificData(location: String): HoursList {
+
         val client = HttpClient(CIO) {
             // SSL validation is disabled because UCSC's webserver doesn't properly serve intermediate certs sometimes.
             engine {
@@ -63,100 +115,44 @@ class HoursDataSource {
                 }
             }
         }
-        val pageData = client.get(url)
+        val pageData = client.get(getLocationUrl(location))
         val pageBody = pageData.body<String>()
 
-        val locationList = listOf(
-            "ninelewis",
-            "csdh",
-            "cmdh",
-            "porterdh",
-            "rodh",
-            "global",
-            "perkem",
-            "perkbe",
-            "perkpsb",
-            "ucentercafe",
-            "portermarket",
-            "stevenson",
-            "oakes"
+        val diningSet = setOf(
+            "Nine/Lewis",
+            "Cowell/Stevenson",
+            "Crown/Merrill",
+            "Porter/Kresge",
+            "Carson/Oakes",
         )
 
-        val altLocationList = listOf(
-            "altnine",
-            "altcsdh",
-            "altcmdh",
-            "altpdh",
-            "altglobal",
-            "altrodh",
-            "altperkbe",
-            "altperkpsb",
-            "altperkem",
-            "altucentercafe",
-            "altportermarket",
-            "altstevenson",
-            "altoakes"
-        )
-
-        val tempDiningList = mutableListOf<HoursList>()
-        val tempNonDiningList = mutableListOf<List<String>>()
-        locationList.forEachIndexed { index, location ->
-            Log.d(TAG, "Getting hours for $location")
-            if (index < 5) {
-                val diningHours = getDiningHours(location,pageBody)
-                Log.d(TAG,"hours, $diningHours")
-                if (diningHours.daysList.isEmpty() && diningHours.hoursList.isEmpty()) {
-                    // fall back to alternate list, sometimes this might work
-                    val altDiningHours = getDiningHours(altLocationList[index],pageBody)
-                    Log.d(TAG,"falling back to alt hours: $altDiningHours")
-                    tempDiningList.add(altDiningHours)
-                } else {
-                    tempDiningList.add(diningHours)
-                }
-            } else {
-                val nonDiningHours = getNonDiningHours(location, pageBody)
-                Log.d(TAG,"hours, $nonDiningHours")
-                if (nonDiningHours.isEmpty()) {
-                    // fall back to alternate list, sometimes this might work
-                    Log.d(TAG,"falling back to alt nd hours: $nonDiningHours")
-                    val altNonDiningHours = getNonDiningHours(altLocationList[index], pageBody)
-                    tempNonDiningList.add(altNonDiningHours)
-                } else {
-                    tempNonDiningList.add(nonDiningHours)
-                }
-            }
+        val hours = if (diningSet.contains(location)) {
+            // dh path
+            getDiningHours(pageBody)
+        } else {
+            // cafe path
+            getNonDiningHours(pageBody)
         }
 
-        Log.d(TAG, "successfully returning!")
-        return AllHoursList(
-            tempDiningList[0],
-            tempDiningList[1],
-            tempDiningList[2],
-            tempDiningList[3],
-            tempDiningList[4],
-            HoursList(tempNonDiningList[0]),
-            HoursList(tempNonDiningList[1]),
-            HoursList(tempNonDiningList[2]),
-            HoursList(tempNonDiningList[3]),
-            HoursList(tempNonDiningList[4]),
-            HoursList(tempNonDiningList[5]),
-            HoursList(tempNonDiningList[6]),
-            HoursList(tempNonDiningList[7])
-        )
+        return hours
     }
 
 }
 
-fun getDiningHours(location: String, pageBody: String): HoursList {
+fun getDiningHours(pageBody: String): HoursList {
+
+//    return HoursList(listOf(), listOf())
+
     val page = Jsoup.parse(pageBody)
 
-    val days = page.select("div#${location} > p:has(strong)")
+    // todo see if this breaks?
+    val dayQuery = "p:has(strong:matches(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday))"
+    val days = page.select(dayQuery)
+    val hours = page.select("$dayQuery + ul.wp-block-list")
 
-    val daysRemovedPatterns = Regex("<p><strong>|</strong></p>")
-    val daysList = days.map { it.text().replace(daysRemovedPatterns, "") }
+    val daysList = days.map { it.text() }
 
-    val hours = page.select("div#${location} > ul")
-    val hoursRemovedPattern = Regex("<li>|</li>| \\(limited entree options\\)\\*")
+    val hoursRemovedPattern = Regex("\\(limited entree options\\)\\*")
     val hoursList = hours.map { i ->
         val items = i.select("li")
         items.map { it.text().replace(hoursRemovedPattern, "") }
@@ -174,22 +170,45 @@ fun getDiningHours(location: String, pageBody: String): HoursList {
     }
 }
 
-fun getNonDiningHours(location: String, pageBody: String): List<String> {
+fun getNonDiningHours(pageBody: String): HoursList {
+    // todo see if this breaks?
     val page = Jsoup.parse(pageBody)
-    val hours = page.select("div#${location} > table > tbody > tr > td")
 
-    val hoursList = mutableListOf<String>()
-//    val hoursRemovedPatterns = Regex("<td>|</td>")
-    return if (hours.size % 2 == 0) {
-        for (i in 0..<hours.size step 2) {
-            val day = hours[i].text()
-            val openHours = hours[i + 1].text()
-            hoursList.add("$day: $openHours")
-        }
-        Log.d(TAG, hoursList.toString())
-        hoursList
+    val hours = page.select(".mabel-bhi-businesshours-inline > span")
+    Log.d(TAG, "retrieved $hours")
+
+    val hoursPerDay = hours.toList().map { i ->
+        i.text().replaceFirst(" ", ": ")
+    }
+
+    // todo refactor to make this more clear
+    return HoursList(hoursPerDay, listOf())
+}
+
+fun getLocationUrl(locationId: String): String {
+    val diningMap = mapOf(
+        "Nine/Lewis" to Uri.encode("nine-jrl"),
+        "Cowell/Stevenson" to Uri.encode("cowell-stevenson"),
+        "Crown/Merrill" to Uri.encode("crown-merrill"),
+        "Porter/Kresge" to Uri.encode("porter-kresge"),
+        "Carson/Oakes" to Uri.encode("rcc-oakes"),
+    )
+
+    val nonDiningMap = mapOf(
+        "Global Village Cafe" to Uri.encode("Global Village Cafe"),
+        "perkem" to Uri.encode("Perk Coffee Bar at Earth & Marine Sciences"),
+        "perkbe" to Uri.encode("Perk Coffee Bar at Baskin Engineering"),
+        "perkpsb" to Uri.encode("Perk Coffee Bar at Physical Sciences Building"),
+        "Terra Fresca" to Uri.encode("University Center Cafe"),
+        "Porter Market" to Uri.encode("Porter Market"),
+        "Stevenson Coffee House" to Uri.encode("Stevenson Coffee House"),
+        "Oakes Cafe" to Uri.encode("Oakes Cafe"),
+        "Banana Joe's" to Uri.encode("Banana Joe's Late Night")
+    )
+
+    return if (locationId in diningMap) {
+        "https://dining.ucsc.edu/locations-hours/${diningMap[locationId]}"
     } else {
-        Log.d(TAG,"site syntax has changed, returning an empty list")
-        listOf()
+        "https://dining.wordpress.ucsc.edu/wp-admin/admin-ajax.php?action=mb-bhipro-fetch-shortcode&code=mbhi_hours&options=location%3D%22${nonDiningMap[locationId]}%22%20format%3D%2212%22%20display%3D%22normal%22%20output%3D%22div%22%20includeholidays%3D%22false%22%20includevacations%3D%22false%22%20abbreviatedays%3D%22false%22%20consolidationseparator%3D%22%20-%20%22%20hourseparator%3D%22%20-%20%22%20entryseparator%3D%22%2C%20%22%20mhbr%3D%22true%22%20showonlytoday%3D%22%22%20dayentryseparator%3D%22%20%22%20removezeroes%3D%22true%22%20seo%3D%22true%22%20%20hide_hours%3D%22false%22%20startonsunday%3D%22false%22%20extra_classes%3D%22%22%20dates_in_past%3D%22false%22%20replace_with_specials%3D%22false%22%20replace_with_vacations%3D%22false%22%20date_format%3D%22day%20first%22%20replaced_vacations_format%3D%22%7Bday%7D%20(%7Bname%7D)%22%20replaced_specials_format%3D%22%7Bday%7D%20(%7Bname%7D)%22%20included_vacations_format%3D%22%7Bfrom_day_of_month%7D%20%7Bfrom_month_short%7D%20-%20%7Bto_day_of_month%7D%20%7Bto_month_short%7D%22%20included_specials_format%3D%22%7Bday_of_month%7D%20%7Bmonth_short%7D%22%20day_format%3D%22%7Bday%7D%20%22%20view%3D%22normal%22%20rollover%3D%22false%22%20rollover_from%3D%2230%22%20rollover_to%3D%2214%22"
     }
 }

@@ -15,10 +15,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.pras.slugmenu.data.sources.AllHoursList
+import com.pras.slugmenu.data.sources.HoursList
 import com.pras.slugmenu.data.sources.MenuSection
 import kotlinx.coroutines.flow.Flow
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 private const val TAG = "Room"
@@ -41,7 +40,7 @@ data class Waitz(
 @Entity(tableName = "hours")
 data class Hours(
     @PrimaryKey val location: String,
-    val hours: AllHoursList,
+    val hours: HoursList,
     val cacheDate: String
 )
 
@@ -111,19 +110,22 @@ interface HoursDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertHours(hours: Hours)
 
+    @Query("DELETE FROM hours WHERE location = :location")
+    fun deleteHours(location: String)
+
     @Query("DELETE FROM hours")
-    fun deleteHours()
+    fun deleteAllHours()
 }
 
 class HoursTypeConverters {
     @TypeConverter
-    fun fromHoursString(value: String): AllHoursList {
+    fun fromHoursString(value: String): HoursList {
         Log.d(TAG,"from string value: $value")
         return(Json.decodeFromString(value))
     }
 
     @TypeConverter
-    fun fromHoursList(value: AllHoursList): String {
+    fun fromHoursList(value: HoursList): String {
         Log.d(TAG,"from list value: $value")
         return(Json.encodeToString(value))
     }
@@ -169,8 +171,12 @@ abstract class MenuDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): MenuDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(context.applicationContext, MenuDatabase::class.java, "menus.db")
-                    .fallbackToDestructiveMigration()
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    MenuDatabase::class.java,
+                    "menus.db"
+                )
+                    .fallbackToDestructiveMigration(true)
                     .build()
                 INSTANCE = instance
                 instance
