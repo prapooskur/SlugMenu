@@ -29,8 +29,8 @@ android {
         applicationId = "com.pras.slugmenu"
         minSdk = 24
         targetSdk = 36
-        versionCode = 27
-        versionName = "1.5.1"
+        versionCode = 28
+        versionName = "1.5.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -121,7 +121,7 @@ dependencies {
     implementation("org.jsoup:jsoup:1.21.2")
 
     // ktor for http requests
-    val ktorVersion = "3.3.2"
+    val ktorVersion = "3.3.3"
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-websockets:$ktorVersion")
