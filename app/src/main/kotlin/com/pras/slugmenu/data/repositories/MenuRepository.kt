@@ -110,11 +110,10 @@ class MenuRepository(
         roomDataSource.deleteAllFavorites()
     }
 
-    suspend fun clearLocalData() {
+    suspend fun clearLocalCache() {
         roomDataSource.deleteMenus()
         roomDataSource.deleteWaitz()
         roomDataSource.deleteAllHours()
-        roomDataSource.deleteAllFavorites()
     }
 
 }

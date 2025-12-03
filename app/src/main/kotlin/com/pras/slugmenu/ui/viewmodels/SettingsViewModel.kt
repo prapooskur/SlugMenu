@@ -107,7 +107,7 @@ class SettingsViewModel(
     fun clearMenuCache() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                menuRepository.clearLocalData()
+                menuRepository.clearLocalCache()
             }
         }
     }
